@@ -1,0 +1,197 @@
+<h3>Grid</h3>
+<div class="row">
+  <div class="col-sm-5 col-md-3" id="divUserTypes"></div>
+  <div class="col-sm-5 col-md-3" id="divActions"></div>
+</div>
+<div class="row">
+  <div class="col-sm-0 col-md-1"></div>
+  <div class="col-sm-12 col-md-10" id="divGrid">
+  </div>
+  <div class="col-sm-0 col-md-1"></div>
+</div>
+<script>
+  url = "/grids";
+  var gridData = {};
+
+
+  $(document).ready(function(){
+    loadUserTypes();
+  });
+  
+  function loadUserTypes() {
+    var userTypeUrl = '/user_types.json';
+    $.ajax({url: userTypeUrl,
+        contentType: "application/json", 
+        type: "GET",
+        dataType: "json"})
+        .done(function(resdata){addSelectOptions(resdata);})
+        .fail(function(){});
+  } 
+  
+  function addSelectOptions(userTypes) {
+    var selectTag = '<div class="input-group">';
+    selectTag += '<select id="userTypes" class="form-control">';
+    selectTag += '<option value="">--Select User Type--</option>'
+    for(var i in userTypes) {
+       selectTag += '<option value="' + userTypes[i].id + '">' + userTypes[i].name + '</option>';
+    }
+    selectTag += '</select>';
+    selectTag += '<span class="input-group-btn"><button class="btn btn-default" onclick="loadGrid()">Go</button></span>';
+    selectTag += '</div>';
+    
+    $('#divUserTypes').append($(selectTag));
+  }
+  
+  function loadGrid() {
+      event.preventDefault();
+      if($('#userTypes').val() == "") {
+        alert("Please select one user type");
+        return;
+      }
+      var gridUrl = '/grids.json';
+      gridUrl += '?userType=' + $('#userTypes').val();
+      $.ajax({url: gridUrl,
+        contentType: "application/json", 
+        type: "GET",
+        dataType: "json",
+        async: false
+   })
+        .done(function(resdata){drawGrid(resdata);})
+        .fail(function( jqXHR) {handleGridError(jqXHR)});
+  }
+  
+  function handleGridError(jqXHR) {
+    if(jqXHR.responseJSON.statusCode == "404") {
+      drawGrid(getGridTemplate());
+    }
+  }
+  
+  function getGridTemplate() {
+    gridTemplate = {};
+    gridTemplate.userType = $('#userTypes').val();
+    gridTemplate.cells = [];
+    for(var i=0; i < 25; i++ ) {
+      gridTemplate.cells[gridTemplate.cells.length] = {index: i, description: '', imgSrc: ''};
+    }
+    return gridTemplate;
+  }
+  
+  function drawGrid(data) {
+    var noCols = 5;
+    var gridHtml = '';
+    
+    gridData = data;
+    
+    for (var cell in gridData.cells) {
+      if(cell % noCols == 0) {
+        if(gridHtml != '') {
+          gridHtml += '</div>';
+        }
+        gridHtml += '<div class="row">';
+      }
+      gridHtml += '<div class="grid-padding col-sm-2 col-md-2">';
+      gridHtml += '<div id="cell_' + gridData.cells[cell].index + '" class="grid-bordered">';
+      gridHtml += '<textarea id="desc_' + gridData.cells[cell].index + '" class="form-control grid-textarea" maxLength="50" rows="4">' + gridData.cells[cell].description + '</textarea></div>';
+      gridHtml += '</div>';
+    }
+    if(gridHtml != '') {
+       gridHtml += '</div>';
+    }
+    $('#divGrid').empty().append(gridHtml);
+    
+    if(!gridData.id) {
+      makeGridEditable();
+    }
+    else {
+      makeGridNonEditable();
+    }
+  }
+  
+  function drawGridActions(fEdit) {
+    var actionTag = '';
+    if(fEdit) {
+      actionTag = '<a href="#" onclick="saveGrid();return false;" class="btn btn-primary"><i class="glyphicon glyphicon-ok"></i>&nbsp;Save</a>&nbsp;';
+      actionTag += '<a href="#" onclick="cancelEditGrid();return false;" class="btn btn-default"><i class="glyphicon glyphicon-remove">&nbsp;Cancel</i></a>';
+    }
+    else {
+      actionTag = '<a href="#" onclick="editGrid();return false;" class="btn btn-primary"><i class="glyphicon glyphicon-edit">&nbsp;Edit</i></a>&nbsp;';
+    }
+    $('#divActions').empty().append(actionTag);
+  }
+  
+  
+  function makeGridEditable() {
+    $('textarea').each(function(){
+      $(this).prop("readonly", "");
+    });
+    drawGridActions(true);
+  }
+ 
+  function makeGridNonEditable() {
+    $('textarea').each(function(){
+      $(this).prop("readonly", "readonly");
+    });
+    drawGridActions(false);
+  }
+
+  function editGrid() {
+    makeGridEditable();
+  } 
+  
+  function saveGrid() {
+    updateGridData();
+    var type = "POST";
+    var saveUrl = url;
+    if(gridData.id) {
+      saveUrl += "/" + gridData.id;
+      type = "PUT";
+    }
+    saveUrl += ".json"
+    $.ajax({url: saveUrl,
+        data: JSON.stringify(gridData), 
+        contentType: "application/json", 
+        type: type,
+        dataType: "json"})
+        .done(function(resdata){saveGridSuccess(resdata);})
+        .fail(function( jqXHR) {saveFailed(jqXHR)});
+  }
+
+  function updateGridData() {
+    for(var iCell=0, gridSize = gridData.cells.length; iCell<gridSize; iCell++) {
+      gridData.cells[iCell].description = $('#desc_' + gridData.cells[iCell].index).val();
+    }
+    if(gridData.id == "-1") {
+      gridData.id = null;
+    }
+  }
+  
+  function getId(element) {
+   var elementId =  $(element).prop('id');
+   if(elementId) {
+        var idArr = elementId.split('_');
+        if(idArr.length > 1) {
+          return idArr[1];
+        }
+   }
+   return "-1";
+  }
+  
+  function saveGridSuccess(data) {
+    gridData = data;
+    makeGridNonEditable();
+  }
+  
+  function cancelEditGrid() {
+    if(!confirm('Are you sure you want to cancel the changes you made?')) {
+       return false;
+    }
+    resetGridCells();
+    makeGridNonEditable();
+  }
+  
+  function resetGridCells() {
+    for(var iCell=0, gridSize = gridData.cells.length; iCell<gridSize; iCell++) {
+      $('#desc_' + gridData.cells[iCell].index).val(gridData.cells[iCell].description);
+    }
+  }
+</script>

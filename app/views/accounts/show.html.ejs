@@ -1,0 +1,93 @@
+<h3>Account Details</h3>
+<%
+    function getValue(data, propertyName) {
+        if(typeof data != 'undefined' && typeof data[propertyName] != 'undefined') {
+            return data[propertyName];
+        }
+        return "";
+    }
+    var branchLookup = {};
+    var userTypeLookup = {};
+    for(var iBr in branches) {
+      branchLookup[branches[iBr].id] = branches[iBr].name;
+    }
+    for(var iUT in userTypes) {
+      userTypeLookup[userTypes[iUT].id] = userTypes[iUT].name;
+    }
+%>
+<div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+    <dl class="dl-horizontal">
+      <dt>Account&nbsp;Name</dt>
+      <dd><%=account.accountName%></dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>Email&nbsp;Address</dt>
+      <dd><%=account.emailAddress%></dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>Branch</dt>
+      <dd><%=getValue(branchLookup, account.branchId)%></dd>
+    </dl>
+    <dl class="dl-horizontal">
+      <dt>Role</dt>
+      <dd><%=account.role%></dd>
+    </dl>
+  </div>
+</div>
+<%if(typeof account.users != 'undefined' && account.users.length > 0) {%>
+      <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+          <table class="table table-primary">
+            <tr>
+              <th class="col-md-4">First&nbsp;Name</th>
+              <th class="col-md-4">Last&nbsp;Name</th>
+              <th class="col-md-4">User&nbsp;Type</th>
+              <th>&nbsp;</th>
+            </tr>
+            <%
+              var user;
+              for(var iUser in account.users) {
+                user = account.users[iUser];
+                %>
+              <tr>
+                <td><%=user.firstName%></td>
+                <td><%=user.lastName%></td>
+                <td><%=getValue(userTypeLookup, user.userType)%></td>
+                <td><a href="#" onclick="toggleDisplay('<%=user.id%>');return false;"><i id="chevron_<%=user.id%>" class="glyphicon glyphicon-chevron-down"></i></a></td>
+              </tr>
+              <tr class="user-hide" id="users_<%=user.id%>">
+                <td colspan="4" class="further-detail">
+                <%if(typeof user.grids === 'undefined' || user.grids.length == 0) { %>
+                    <div class="row">
+                      <div class="col-md-1"></div>
+                      <div class="col-md-11">
+                        No Grids to show
+                      </div>
+                    </div>
+                <%}else{%>
+                    <div class="row">
+                      <div class="col-md-1"></div>
+                      <div class="col-md-11">
+                      </div>
+                    </div>
+                  <%}%>
+                </td>
+              </tr>
+            <%}%>
+          </table>
+        </div>
+       </div>
+<%}%>
+
+<script>
+  $(document).ready(function(){
+  });
+  
+  var toggleDisplay = function(id) {
+    $('#users_' + id).toggleClass('user-hide user-show');
+    $('#chevron_' + id).toggleClass("glyphicon-chevron-down glyphicon-chevron-up");
+  }
+</script>

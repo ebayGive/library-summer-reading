@@ -1,0 +1,18 @@
+<div class="hero-unit">
+  <h2 class="name"><%= branch.name %></h2>
+  <%- linkTo('Edit this branch', editBranchPath(params.id), {class: 'btn pull-right'}); %>
+  <%- linkTo('Back to list', branchPath(''), {class: 'btn pull-right'}); %>
+</div>
+
+<h2>Branch Properties</h2>
+<% for(var i in branch) { -%>
+<% if(i !== 'saved') { -%>
+<div class="row list-item">
+  <div class="span4">
+    <h3><%= i %></h3>
+  </div>
+  <div class="span8">
+    <h3><i class="icon-list-alt"></i><span class="<%= i %>"><%= branch[i] %></span></h3>
+  </div>
+</div>
+<% } -%><% } -%>

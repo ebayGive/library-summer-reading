@@ -1,0 +1,216 @@
+<%
+    function getInputValue(account, propertyName) {
+        if(account != null && typeof account[propertyName] != 'undefined') {
+            return account[propertyName];
+        }
+        return "";
+    }
+%>
+<form class="form-horizontal" role="role">
+    <%- contentTag('input', getInputValue(account, 'id'), {type: 'hidden', id: 'id', name: 'id'});%>
+    <div class="form-group">
+        <div class="col-md-1"></div>
+        <label for="accountName" class="col-md-2 control-label">Account&nbsp;Name</label>
+        <div class="col-md-3">
+          <%- contentTag('input', getInputValue(account, 'accountName'), {class: 'form-control', id: 'accountName', name: 'accountName', placeholder: 'Account Name'});%>
+        </div>    
+        <label for="emailAddress" class="col-md-2 control-label">Email&nbsp;Address</label>
+        <div class="col-md-3">
+          <%- contentTag('input', getInputValue(account, 'emailAddress'), {type: 'email', class: 'form-control', id: 'emailAddress', name: 'emailAddress', placeholder: 'Email Address'});%>
+        </div>    
+     </div>
+    <div class="form-group">
+        <div class="col-md-1"></div>
+        <label for="branchId" class="col-md-2 control-label">Branch&nbsp;Id</label>
+        <div class="col-md-3">
+          <%
+            var branchOptions = [];
+            branchOptions[branchOptions.length] = {text: '---- Branch ----', value: '-1'};
+            for(var iBr in branches) {
+              branchOptions[branchOptions.length] = {text: branches[iBr].name, value: branches[iBr].id}
+            }
+           %>
+           <%- selectTag(branchOptions, getInputValue(account, 'branchId'), {id: 'branchId', name: 'branchId', class: 'form-control'});%>
+        </div>
+        <label for="role" class="col-md-2 control-label">Account&nbsp;Role</label>
+        <div class="col-md-3">
+          <%
+            var roleOptions = [];
+            roleOptions[roleOptions.length] = {text: '---- Role ----', value: '-1'};
+            for(var iRl in roles) {
+              roleOptions[roleOptions.length] = {text: roles[iRl].name, value: roles[iRl].id}
+            }
+           %>
+           <%- selectTag(roleOptions, getInputValue(account, 'role'), {id: 'role', name: 'role', class: 'form-control'});%>
+        </div>
+     </div>
+     <div class="form-group">
+        <div class="col-md-1"></div>
+        <label for="passcode" class="col-md-2 control-label">Passcode</label>
+        <% if(getInputValue(account, 'passcode').length == 0) {%>
+          <div class="col-md-3">
+            <%- contentTag('input', getInputValue(account, 'passcode'), {class: 'form-control', id: 'passcode', name: 'passcode', type: 'password', placeholder: 'Passcode'});%>
+          </div>    
+         <% } else {%>  
+          <div class="col-md-2" id="divPasscode">
+            <%- contentTag('span', '********', {class: 'form-control', id: 'passcode', name: 'passcode'});%>
+           </div>
+          <div class="col-md-1" id="divPasscodeLink">
+              <a href="#" onclick="javascript:makePasscodeEditable();return false;"><i class="glyphicon glyphicon-edit"></i></a>
+           </div>
+          <% } %>  
+     </div>
+     <%
+            var userTypeOptions = [];
+            for(var iUt in userTypes) {
+              userTypeOptions[userTypeOptions.length] = {text: userTypes[iUt].name, value: userTypes[iUt].id}
+            }
+     %>
+     <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-sm-12 col-md-10">
+            <table class="table table-primary" id="dataTable">
+                <tbody>
+                    <tr>
+                        <th class="col-md-4">First&nbsp;Name</th>
+                        <th class="col-md-4">Last&nbsp;Name</th>
+                        <th class="col-md-4">User&nbsp;Type</th>
+                        <th><a href="#" onclick="javascript:addUserRow();return false;"><i class="glyphicon glyphicon-plus"></i></a></th>
+                    </tr>
+                    <% if(account != null && typeof account.users === "object" && account.users.length > 0) {
+                      for(var iUser in account.users) {%>
+                        <tr id="row_<%=account.users[iUser].id%>">
+                          <td><%- contentTag('input', account.users[iUser].firstName, {id: 'firstName_' + account.users[iUser].id, name: 'firstName_' + account.users[iUser].id, class: 'form-control'}); %></td>
+                          <td><%- contentTag('input', account.users[iUser].lastName, {id: 'lastName_' + account.users[iUser].id, name: 'lastName_' + account.users[iUser].id, class: 'form-control'}); %></td>
+                          <td><%- selectTag(userTypeOptions, account.users[iUser].userType, {id: 'userType_' + account.users[iUser].id, name: 'userType_' + account.users[iUser].id, class: 'form-control'});%></td>
+                          <td><a href="#" onclick="javascript:deleteUserRow('<%=account.users[iUser].id%>');return false;"><i class="glyphicon glyphicon-remove"></i></a></td>
+                        </tr>
+                    <% }
+                     } else {%>
+                        <tr>
+                            <td colspan="4" class='info'>Add Users</td>
+                        </tr>
+                    <%}%>
+                </tbody>
+            </table>
+        </div>
+     </div>
+</form>
+
+<script>
+    var newUsers = [];
+    var userIds = [];
+    var deletedUsers = [];
+    accountParams = {id: "", accountName: "", emailAddress: "", branchId: "", role: "", passcode: ""};
+    userParams = {id: "", firstName: "", lastName: "", userType: ""};
+    userProperties = [{name: "firstName", type: "text", maxLength: 100}, {name: "lastName", type: "text", maxLength: 100}, {name: "userType", type: "select", maxLength: 100}];
+   
+    var saveAccount = function() {
+        var type = "POST";
+        var saveUrl = '/accounts';
+        if($('#id').val() != "") {
+          saveUrl += "/" + $('#id').val();
+          type = "PUT";
+        }
+        saveUrl += ".json";
+        $.ajax({url: saveUrl,
+            data: JSON.stringify(getAccount()), 
+            contentType: "application/json", 
+            type: type,
+            dataType: "json"})
+            .done(function(resdata){saveAccountSuccess(resdata);})
+            .fail(function( jqXHR) {saveFailed(jqXHR)});
+    }
+    
+    var saveAccountSuccess = function(account) {
+        document.location.href = "/accounts/" + account.id + "/edit";
+    }
+    
+    var getAccount = function() {
+        var account = {};
+        $.each(accountParams, function(key){
+             account[key] = $('#' + key).val();
+        });
+        var users = [];
+        userIds = userIds.concat(newUsers);
+        $.each(userIds, function(index, userId){
+            var userIndex = users.length;
+            users[userIndex] = {};
+            $.each(userParams,function(prop) {
+                if(prop == "id") {
+                    users[userIndex][prop] = userId;
+                }else{
+                    users[userIndex][prop] = $('#' + prop + '_' + userId).val();
+                }
+            });
+        });
+        account["users"] = users;
+        account["deletedUsers"] = deletedUsers;
+        return account;
+    } 
+    
+    var addUserRow = function () {
+        if(newUsers.length == 0) {
+            newUsers[0] = -1;
+        }
+        else{
+          newUsers[newUsers.length] = (newUsers[newUsers.length-1] * -1 + 1) * -1;
+        }
+      $("#dataTable > tbody").find("td[colspan]").detach();
+      var rowElem = $("<tr id='row_" + newUsers[newUsers.length-1] + "'></tr>");
+      for(var i = 0; i < userProperties.length; i++) {
+        if(userProperties[i].type != "select") {
+            rowElem.append('<td><input type="' + userProperties[i].type + '" id="' + userProperties[i].name + '_' + newUsers[newUsers.length-1] + '" class="form-control" maxLength="' + userProperties[i].maxLength + '"/></td>');
+        }else{
+            rowElem.append('<td>' + selectTag(optionsForSelect, "", {name: userProperties[i].name + '_' + newUsers[newUsers.length-1]}) + '</td>');
+        }
+      }
+      rowElem.append('<td><div class="pull-right"><a href="#" onclick="javascript:deleteUserRow(\'' + newUsers[newUsers.length-1] + '\');return false;"><i class="glyphicon glyphicon-remove"/></a></div></td>');
+      $("#dataTable > tbody").find("tr:last").after(rowElem);
+    }
+    
+    var deleteUserRow = function (userId) {
+      if(!confirm('Are you sure you want to delete this user')) {
+          return;
+      }
+      if(isNaN(userId)) {
+          deletedUsers[deletedUsers.length] = userId;
+          userIds.splice(userIds.indexOf(userId), 1);
+      }
+      else {
+          newUsers.splice(newUsers.indexOf(parseInt(userId)), 1);
+      }
+      $("#row_" + userId).detach();
+    }
+    
+    var makePasscodeEditable = function() {
+        $("#divPasscode").empty().append("<input type='password' class='form-control' id='passcode' name='passcode'>");
+        $("#divPasscodeLink").empty().append("<a href='#' onclick='makePasscodeNoneditable(); return false;'><i class='glyphicon glyphicon-remove'></i></a>");
+    }
+
+    var makePasscodeNoneditable = function() {
+        $("#divPasscode").empty().append("<span class='form-control' id='passcode' name='passcode'>********</span>");
+        $("#divPasscodeLink").empty().append("<a href='#' onclick='makePasscodeEditable(); return false;'><i class='glyphicon glyphicon-edit'></i></a>");
+    }
+    
+  $(document).ready(function(){
+    loadUserTypes();
+    $("[name^='" + userProperties[0].name + "']").each(function(){userIds[userIds.length] = getId($(this).attr('id'));});
+  });
+  
+  function loadUserTypes() {
+    var userTypeUrl = '/user_types.json';
+    $.ajax({url: userTypeUrl,
+        contentType: "application/json", 
+        type: "GET",
+        dataType: "json"})
+        .done(function(resdata){getOptions(resdata);})
+        .fail(function(){});
+  } 
+  
+  function getOptions(userTypes) {
+    for(var i in userTypes) {
+       optionsForSelect[optionsForSelect.length] = {text: userTypes[i].name, value: userTypes[i].id};
+    }
+  }
+</script>

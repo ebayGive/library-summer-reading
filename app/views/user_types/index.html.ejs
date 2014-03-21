@@ -1,0 +1,44 @@
+<h3>User Type</h3>
+<div class="row">
+  <div class="col-sm-0 col-md-1"></div>
+  <div class="col-sm-12 col-md-10">
+  <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <table class="table table-bordered" id="dataTable">
+          <tbody>
+            <tr>
+              <th class="col-md-3">Name</th>
+              <th class="col-md-6">Description</th>
+              <th class="col-md-1">Min Age</th>
+              <th class="col-md-1">Max Age</th>
+              <th class="col-md-1"><%- linkTo("<i class='glyphicon glyphicon-plus'></i>", "#", {id: "lnkAdd", _escapeContent: false, onclick: "addRow()"}); %></th>
+            </tr>
+    <% if (userTypes && userTypes.length > 0) { %>
+        <%for (var i=0, ii = userTypes.length; i < ii; i++) { %>
+            <tr id="row_<%=userTypes[i].id%>">
+              <td><%=userTypes[i].name%></td>
+              <td><%=userTypes[i].description%></td>
+              <td><%=userTypes[i].minAge%></td>
+              <td><%=userTypes[i].maxAge%></td>
+              <td><%- linkTo("<i class='glyphicon glyphicon-edit'></i>", "#", {onclick: "editRow('" + userTypes[i].id + "')", _escapeContent: false}); %>
+              <%- linkTo("<i class='glyphicon glyphicon-trash'></i>", "#", {onclick: "deleteRow('" + userTypes[i].id + "')", _escapeContent: false}); %></td>
+            </tr>
+        <%}%>
+      <%} else { %>
+          <tr class="warning"><td colspan="5">No User Types defined</td></tr>
+    <% } %>
+          <tbody>
+        </table>
+      </div>
+  </div>
+  </div>
+  <div class="col-sm-0 col-md-1"></div>
+</div>
+<script>
+  params = {id: "", name: "", description: "", minAge: "", maxAge: ""};
+  properties = [{name: "name", type: "text", maxLength: 30}, {name: "description", type: "text", maxLength: 200}, {name: "minAge", type: "number", maxLength: 2} , {name: "maxAge", type: "number", maxLength: 2}];
+  url = "/user_types";
+
+  $(document).ready(function(){
+  });
+</script>

@@ -1,0 +1,122 @@
+<%
+    function getValue(data, propertyName) {
+        if(typeof data != 'undefined' && typeof data[propertyName] != 'undefined') {
+            return data[propertyName];
+        }
+        return "";
+    }
+%>
+  <form class="form-inline" role="form" action="<%=urlFor({controller: 'accounts', action: 'index'})%>" method="get">
+    <div class="form-group">
+      <label class="sr-only" for="accountName">Account Name</label>
+      <%- contentTag('input', params['accountName'], {name: "accountName", id: "accountName", placeholder: "Account Name", class: 'form-control'});%>
+    </div>
+    <div class="form-group">
+      <label class="sr-only" for="emailAddress">Account Name</label>
+      <%- contentTag('input', params['emailAddress'], {name: "emailAddress", id: "emailAddress", placeholder: "Email Address", class: 'form-control'});%>
+    </div>
+    <div class="form-group">
+      <label class="sr-only" for="branchId">Branch</label>
+      <div class="col-md-3">
+      <%
+        var branchOptions = [];
+        var branchLookup = {};
+        var userTypeLookup = {};
+        branchOptions[branchOptions.length] = {text: '---- Branch ----', value: ' '};
+        for(var iBr in branches) {
+          branchOptions[branchOptions.length] = {text: branches[iBr].name, value: branches[iBr].id}
+          branchLookup[branches[iBr].id] = branches[iBr].name;
+        }
+        for(var iUT in userTypes) {
+          userTypeLookup[userTypes[iUT].id] = userTypes[iUT].name;
+        }
+       %>
+       <%- selectTag(branchOptions, params['branchId'], {id: 'branchId', name: 'branchId', class: 'form-control'});%>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"> Search</i></button>
+  </form>
+  <br/><br/>
+  <%if(typeof params['accountName'] != 'undefined') {%>
+    <div class='row'>
+      <div class='col-md-1 col-sm-1'>
+      </div>
+      <div class='col-md-10 col-sm-10'>
+        <table class="table table-accounts">
+          <tbody>
+            <tr>
+              <th class='col-md-2'>Account&nbsp;Name</th>
+              <th class='col-md-3'>Email&nbsp;Address</th>
+              <th class='col-md-4'>Branch</th>
+              <th class='col-md-2'>Role</th>
+              <th class='col-md-1'></th>
+            </tr>
+            <% if(typeof accounts != 'undefined' && accounts.length > 0) {
+                for(var iAct in accounts) {%>
+                  <tr>
+                    <td><%=accounts[iAct].accountName%></td>
+                    <td><%=accounts[iAct].emailAddress%></td>
+                    <td><%=getValue(branchLookup, accounts[iAct].branchId)%></td>
+                    <td><%=accounts[iAct].role%></td>
+                    <td>
+                          <a href="#" onclick="editAccount('<%=accounts[iAct].id%>');return false;"><i class="glyphicon glyphicon-edit"></i></a>
+                          <a href="#" onclick="showAcccount('<%=accounts[iAct].id%>');return false;"><i class="glyphicon glyphicon-list"></i></a>
+
+                    <%if(typeof accounts[iAct].users === 'undefined' || accounts[iAct].users.length == 0) {%>
+                        </td>
+                     <tr>
+                     <tr id="users_<%=accounts[iAct].id%>" class="user-hide">
+                    <%}
+                    else{%>
+                          <a href="#" onclick="toggleDisplay('<%=accounts[iAct].id%>');return false;"><i id="chevron_<%=accounts[iAct].id%>" class="glyphicon glyphicon-chevron-down"></i></a>
+                        </td>
+                      </tr>
+                      <tr id="users_<%=accounts[iAct].id%>" class="user-hide">
+                        <td colspan="5" class="further-detail">
+                                <table class="table table-users">
+                                  <tr>
+                                    <th>First&nbsp;Name</th>
+                                    <th>Last&nbsp;Name</th>
+                                    <th>User&nbsp;Type</th>
+                                  </tr>
+                                  <%for(var iUser in accounts[iAct].users) {%>
+                                    <tr>
+                                      <td><%=accounts[iAct].users[iUser].firstName%></td>
+                                      <td><%=accounts[iAct].users[iUser].lastName%></td>
+                                      <td><%=getValue(userTypeLookup, accounts[iAct].users[iUser].userType)%></td>
+                                    </tr>
+                                  <%}%>
+                                </table>
+                         </td>
+                    <%}%>
+                </tr>
+            <%  }
+              }
+              else {%>
+              <tr><td colspan="4">No Accounts found</td></tr>
+            <%}%>
+          </tbody>
+        </table>
+      </div>
+      <div class='col-md-1 col-sm-1'>
+      </div>
+    </div>
+  <%}%>
+<script>
+  $(document).ready(function(){
+  });
+  
+  var toggleDisplay = function(id) {
+    $('#users_' + id).toggleClass('user-hide user-show');
+    $('#chevron_' + id).toggleClass("glyphicon-chevron-down glyphicon-chevron-up");
+  }
+  
+  var editAccount = function(id) {
+      $(document).attr("location", "/accounts/" + id + "/edit");
+  }
+  
+  var showAcccount = function(id) {
+      $(document).attr("location", "/accounts/" + id);
+  }
+
+</script>

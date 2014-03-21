@@ -1,0 +1,62 @@
+<h3>Prizes</h3>
+<div class="row">
+  <div class="col-sm-0 col-md-1"></div>
+  <div class="col-sm-12 col-md-10">
+  <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <table class="table table-bordered" id="dataTable">
+          <tbody>
+            <tr>
+              <th class="col-md-3">User Type</th>
+              <th class="col-md-3">Prize Type</th>
+              <th class="col-md-5">Description</th>
+              <th class="col-md-1"><%- linkTo("<i class='glyphicon glyphicon-plus'></i>", "#", {id: "lnkAdd", _escapeContent: false, onclick: "addRow()"}); %></th>
+            </tr>
+    <% if (prizes && prizes.length > 0) { %>
+        <%for (var i=0, ii = prizes.length; i < ii; i++) { %>
+            <tr id="row_<%=prizes[i].id%>">
+              <td><%=prizes[i].userType%></td>
+              <td><%=prizes[i].prizeType%></td>
+              <td><%=prizes[i].description%></td>
+              <td><%- linkTo("<i class='glyphicon glyphicon-edit'></i>", "#", {onclick: "editRow('" + prizes[i].id + "')", _escapeContent: false}); %>
+              <%- linkTo("<i class='glyphicon glyphicon-trash'></i>", "#", {onclick: "deleteRow('" + prizes[i].id + "')", _escapeContent: false}); %></td>
+            </tr>
+        <%}%>
+      <%} else { %>
+          <tr class="warning"><td colspan="4">No Prizes defined</td></tr>
+    <% } %>
+          <tbody>
+        </table>
+      </div>
+  </div>
+  </div>
+  <div class="col-sm-0 col-md-1"></div>
+</div>
+<script>
+  params = {id: "", userType: "", prizeType: "", description: ""};
+  properties = [{name: "userType", type: "select", maxLength: 100}, 
+                {name: "prizeType", type: "text", maxLength: 100},
+                {name: "description", type: "text", maxLength: 200}];
+  url = "/prizes";
+
+
+  $(document).ready(function(){
+    loadUserTypes();
+  });
+  
+  function loadUserTypes() {
+    var userTypeUrl = '/user_types.json';
+    $.ajax({url: userTypeUrl,
+        contentType: "application/json", 
+        type: "GET",
+        dataType: "json"})
+        .done(function(resdata){getOptions(resdata);})
+        .fail(function(){});
+  } 
+  
+  function getOptions(userTypes) {
+    for(var i in userTypes) {
+       optionsForSelect[optionsForSelect.length] = {text: userTypes[i].name, value: userTypes[i].id};
+    }
+  }
+</script>
