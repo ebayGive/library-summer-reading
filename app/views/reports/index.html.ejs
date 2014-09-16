@@ -1,0 +1,212 @@
+<h3>Reports</h3>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Role Summary </h3>
+      <div class="row">
+		  <div class="col-sm-0 col-md-1"></div>
+		  <div class="col-sm-12 col-md-10">
+          <table id='role' class='sorttable'>
+            <tr class="no-sort">
+              <th class="col-md-2">Accounts</th>
+              <th class="col-md-2">Admins</th>
+              <th class="col-md-2">Volunteers</th>
+              <th class="col-md-2">Readers</th>
+            </tr>
+              <tr>
+                <td><%=result.totalAccounts%></td>
+                <td><%=result.totalRAdmins%></td>
+                <td><%=result.totalRVolunteers%></td>
+                <td><%=result.totalRReaders%></td>
+              </tr>
+          </table>
+        </div>
+       </div>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UserType Summary </h3>
+      <div class="row">
+		  <div class="col-sm-0 col-md-1"></div>
+		  <div class="col-sm-12 col-md-10">
+          <table id='usertype' class='sorttable'>
+            <tr class="no-sort">
+              <th class="col-md-1">Accounts</th>
+              <th class="col-md-1">Users</th>
+              <th class="col-md-1">Readers</th>
+              <th class="col-md-1">PreReaders</th>
+              <th class="col-md-1">Teens</th>
+              <th class="col-md-1">Adults</th>
+              <th class="col-md-1">Parents</th>
+              <th class="col-md-1">Staffs</th>
+            </tr>
+              <tr>
+                <td><%=result.totalAccounts%></td>
+                <td><%=result.totalUsers%></td>
+                <td><%=result.totalReaders%></td>
+                <td><%=result.totalPreReaders%></td>
+                <td><%=result.totalTeen%></td>
+                <td><%=result.totalAdult%></td>
+                <td><%=result.totalParents%></td>
+                <td><%=result.totalStaff%></td>
+              </tr>
+          </table>
+        </div>
+       </div>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Branchwise Summary </h3>
+      <div class="row">
+		  <div class="col-sm-0 col-md-1"></div>
+		  <div class="col-sm-12 col-md-10">
+          <table id='branch' class='sorttable'>
+            <tr class="no-sort">
+              <th class="col-md-1">Branch</th>
+              <th class="col-md-1">Accounts</th>
+              <th class="col-md-1">Users</th>
+              <th class="col-md-1">Readers</th>
+              <th class="col-md-1">PreReaders</th>
+              <th class="col-md-1">Teens</th>
+              <th class="col-md-1">Adults</th>
+              <th class="col-md-1">Parents</th>
+              <th class="col-md-1">Staffs</th>
+            </tr>
+            <%
+              for(var ibranch in result.branchreports) {
+                branchReport = result.branchreports[ibranch];
+                %>
+              <tr>
+                <td><%=branchReport.name%></td>
+                <td><%=branchReport.totalAccounts%></td>
+                <td><%=branchReport.totalUsers%></td>
+                <td><%=branchReport.totalReaders%></td>
+                <td><%=branchReport.totalPreReaders%></td>
+                <td><%=branchReport.totalTeen%></td>
+                <td><%=branchReport.totalAdult%></td>
+                <td><%=branchReport.totalParents%></td>
+                <td><%=branchReport.totalStaff%></td>
+              </tr>
+            <%}%>
+          </table>
+        </div>
+       </div>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Age Summary </h3>
+      <div class="row">
+		  <div class="col-sm-0 col-md-1"></div>
+		  <div class="col-sm-12 col-md-10">
+          <table id='age' class='sorttable'>
+            <tr class="no-sort">
+              <th class="col-md-1">Age</th>
+              <th class="col-md-1">Users</th>
+              <th class="col-md-1">Readers</th>
+              <th class="col-md-1">PreReaders</th>
+              <th class="col-md-1">Teens</th>
+              <th class="col-md-1">Adults</th>
+              <th class="col-md-1">Staffs</th>
+            </tr>
+            <%
+              for(var iage in result.agereports) {
+                ageReport = result.agereports[iage];
+                if(ageReport.totalUsers != 0) {
+	                if(ageReport.name == '<= 0') 
+	                	ageReport.name = 'Not in file'
+	                else if(ageReport.name == '<= 5') 
+	                	ageReport.name = '0 - 5'
+	                else if(ageReport.name == '<= 12') 
+	                	ageReport.name = '6 - 12'
+	                else if(ageReport.name == '<= 18') 
+	                	ageReport.name = '13- 18'
+	                else if(ageReport.name == '<= 30') 
+	                	ageReport.name = '19- 30'
+	                else if(ageReport.name == '<= 49') 
+	                	ageReport.name = '31- 49'
+	                else if(ageReport.name == '<= 59') 
+	                	ageReport.name = '41- 59'
+	                else 
+	                	ageReport.name = '60 +'
+                %>
+              <tr>
+                <td><%=ageReport.name%></td>
+                <td><%=ageReport.totalUsers%></td>
+                <td><%=ageReport.totalReaders%></td>
+                <td><%=ageReport.totalPreReaders%></td>
+                <td><%=ageReport.totalTeen%></td>
+                <td><%=ageReport.totalAdult%></td>
+                <td><%=ageReport.totalStaff%></td>
+              </tr>
+	            <%}%>
+            <%}%>
+          </table>
+        </div>
+       </div>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Branchwise Age Summary </h3>
+      <div class="row">
+		  <div class="col-sm-0 col-md-1"></div>
+		  <div class="col-sm-12 col-md-10">
+          <table id='branchage' class='sorttable'>
+            <tr class="no-sort">
+              <th class="col-md-1">Branch</th>
+              <th class="col-md-1">Age</th>
+              <th class="col-md-1">Users</th>
+              <th class="col-md-1">Readers</th>
+              <th class="col-md-1">PreReaders</th>
+              <th class="col-md-1">Teens</th>
+              <th class="col-md-1">Adults</th>
+              <th class="col-md-1">Staffs</th>
+            </tr>
+            <%
+              for(var ibranch in result.branchreports) 
+              {
+                  branchReport = result.branchreports[ibranch];
+	              for(var iage in branchReport.agereports) 
+	              {
+		                ageReport = branchReport.agereports[iage];
+		                if(ageReport.totalUsers != 0) 
+		                {
+			                if(ageReport.name == '<= 0') 
+			                	ageReport.name = 'Not in file'
+			                else if(ageReport.name == '<= 5') 
+			                	ageReport.name = '0 - 5'
+			                else if(ageReport.name == '<= 12') 
+			                	ageReport.name = '6 - 12'
+			                else if(ageReport.name == '<= 18') 
+			                	ageReport.name = '13- 18'
+			                else if(ageReport.name == '<= 30') 
+			                	ageReport.name = '19- 30'
+			                else if(ageReport.name == '<= 49') 
+			                	ageReport.name = '31- 49'
+			                else if(ageReport.name == '<= 59') 
+			                	ageReport.name = '41- 59'
+			                else 
+			                	ageReport.name = '60 +'
+		                %>
+              <tr>
+                <td><%=branchReport.name%></td>
+                <td><%=ageReport.name%></td>
+                <td><%=ageReport.totalUsers%></td>
+                <td><%=ageReport.totalReaders%></td>
+                <td><%=ageReport.totalPreReaders%></td>
+                <td><%=ageReport.totalTeen%></td>
+                <td><%=ageReport.totalAdult%></td>
+                <td><%=ageReport.totalStaff%></td>
+              </tr>
+            			<%}%>
+            	<%}%>
+            <%}%>
+          </table>
+        </div>
+       </div>
+<script>
+  params = {result: result};
+  url = "/reports";
+
+  $(document).ready(function(){
+  });
+</script>
+<script>
+var r = document.getElementById('role');
+var u = document.getElementById('usertype');
+var b = document.getElementById('branch');
+var a = document.getElementById('age');
+var ba = document.getElementById('branchage');
+var refresh = new Tablesort(r);
+var refresh = new Tablesort(u);
+var refresh = new Tablesort(b);
+var refresh = new Tablesort(a);
+var refresh = new Tablesort(ba);
+</script>
+
+
+

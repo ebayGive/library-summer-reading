@@ -2,14 +2,15 @@ var Prize = function () {
 
   this.defineProperties({
     userType: {type: 'string', required: true}, 
-    prizeType: {type: 'string', required: true},
-    description: {type: 'string', required: false}
+    prize1: {type: 'string', required: false},
+    prize2: {type: 'string', required: false},
+    prize3: {type: 'string', required: false},
+    prize4: {type: 'string', required: false},
+    prize5: {type: 'string', required: false},
+    prize6: {type: 'string', required: false}
   });
-
+  /* prize6 for prize for reading battery */
   this.validatesPresent('userType', {message: 'User Type is required'})
-  this.validatesPresent('prizeType', {message: 'Prize Type is required'})
-  this.validatesLength('userType', {max: 100, message: 'User Type exceeds length'});
-  this.validatesLength('prizeType', {max: 100, message: 'Prize Type exceeds length'});
 };
 
 Prize = geddy.model.register('Prize', Prize);

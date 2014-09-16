@@ -1,23 +1,49 @@
 <%= partial('layout_header'); %>
+<%
+	function getLogoUrl(session) {
+		if(typeof session === 'undefined' || typeof session.get('account_info') === 'undefined' || session.get('account_info') == null) {
+			return "/";
+		}
+		else if(session.get('account_info').role && (session.get('account_info').role == 'ADMIN' || session.get('account_info').role == 'VOLUNTEER')) {
+			return "/accounts";
+		}
+		else {
+			return "/accounts/" + session.get('account_info').id +"/edit_users"
+		}
+	}
+%>
   <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 	  <div class="container">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
-		  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar-collapse">
 			<span class="sr-only">Toggle navigation</span>
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		  </button>
-		  <a class="navbar-brand" href="/">SuRF</a>
+		  <a class="navbar-brand" href="<%-getLogoUrl(session);%>"><img src='/img/SRC14_Banner.png' class='applogo'/></a>
 		</div>
 	
 		<!-- Collect the nav links, forms, and other content for toggling -->
-		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		<div class="collapse navbar-collapse" id="main-navbar-collapse">
 		  <ul class="nav navbar-nav navbar-right">	
+		  		<li>
+					  <div id="google_translate_element"></div>
+					  <script>
+							function googleTranslateElementInit() {
+							  new google.translate.TranslateElement({
+								pageLanguage: 'en',
+								includedLanguages: 'zh-CN,zh-TW,en,es,th,vi,hi,it,ja,fr,de'
+							  }, 'google_translate_element');
+							}
+					</script>
+					<script src="http://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+					<style type="text/css">#goog-gt-tt { display:none; } </style>
+				</li>
 			<% if(session.get('account_info')) { %>
-				<% if(session.get('account_info').role && (session.get('account_info').role == "ADMIN" || session.get('account_info').role == "VOLUNTEER")) { %>
+				<% if(isAdmin(session)) { %>
 					<li class="dropdown">
 					  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> Accounts <b class="caret"></b></a>
 					  <ul class="dropdown-menu">
@@ -28,34 +54,47 @@
 					<li class="dropdown">
 					  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-stats"></i> Reports <b class="caret"></b></a>
 					  <ul class="dropdown-menu">
-						<li><a href="#">Registered Users</a></li>
-						<li><a href="#">Reading Progress</a></li>
-						<li><a href="#">Prizes</a></li>
+						<li><%- linkTo("Registered Users", '/reports');%></li>
+						<li><%- linkTo("Prize Report", '/reports/prize');%></li>
 					  </ul>
 					</li>
 					<li class="dropdown">
 					  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-cog"></i> Config <b class="caret"></b></a>
 					  <ul class="dropdown-menu">
-						<li><%- linkTo("Branches", branchPath(''));%></li>
+						<li><%- linkTo("Libraries", branchPath(''));%></li>
 						<li><%- linkTo("User Type", userTypePath(''));%></li>
-						<li><%- linkTo("Prizes", prizePath(''));%></li>
+						<li><%- linkTo("Grid Icons", gridIconPath(''));%></li>
 						<li><%- linkTo("Grids", gridPath(''));%></li>
 					  </ul>
 					</li>
-				<% } %>
 					<li class="dropdown">
 						  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> User <b class="caret"></b></a>
 						  <ul class="dropdown-menu">
 							<li><a href='/accounts/signout'><i class="glyphicon glyphicon-log-out"></i> Sign&nbsp;Out</a></li>
 						  </ul>
 					</li>
-			<% } 
-			else { %>
+				<% } else if(isVolunteer(session)) { %>
 					<li class="dropdown">
-						<span class="navbar-text">
-							<a class="menu-link" href='/accounts/signin'><i class="glyphicon glyphicon-log-in"></i> Sign&nbsp;In</a>
-						</span>
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-cog"></i></a>
+						  <ul class="dropdown-menu">
+							<li><%- linkTo("<i class='glyphicon glyphicon-search'></i> Find", accountPath(''), {_escapeContent: false});%></li>
+							<li><%- linkTo("<i class='glyphicon glyphicon-plus'></i> Add", accountPath('add'), {_escapeContent: false});%></li>
+							<li><%- linkTo("<i class='glyphicon glyphicon-stats'></i> Registered Users", '/reports', {_escapeContent: false});%></li>
+							<li><%- linkTo("<i class='glyphicon glyphicon-question-sign'></i> Help", "/helps/help", {_escapeContent: false});%></li>
+							<li><%- linkTo("<i class='glyphicon glyphicon-log-out'></i> Sign&nbsp;Out", "/accounts/signout", {_escapeContent: false});%></li>
+						  </ul>
 					</li>
+				<% } else if(isReader(session)) { %>
+					<li class="dropdown">
+						  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-cog"></i></a>
+						  <ul class="dropdown-menu">
+							<li><%- linkTo("<i class='glyphicon glyphicon-pencil'></i> Reading Challenge", "/accounts/" + session.get('account_info').id +"/edit_users", {_escapeContent: false});%></li>
+							<li><%- linkTo("<i class='glyphicon glyphicon-edit'></i> Edit Account", "/accounts/" + session.get('account_info').id +"/edit", {_escapeContent: false});%></li>
+							<li><%- linkTo("<i class='glyphicon glyphicon-question-sign'></i> Help", "/helps/help", {_escapeContent: false});%></li>
+							<li><%- linkTo("<i class='glyphicon glyphicon-log-out'></i> Sign&nbsp;Out", "/accounts/signout", {_escapeContent: false});%></li>
+						  </ul>
+					</li>
+				<% } %>
 			<% } %>
 		  </ul>
 		</div><!-- /.navbar-collapse -->
@@ -63,7 +102,14 @@
 	</nav>
 	<div class="container">
       <%- render(); %>
+	  <br/><br/><br/>
     </div>
+	
+	<nav class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
+	  <div class="container">
+		<div class='col-md-12 text-center'><a href='http://www.sjpl.org/'><img src='/img/Home-Footer-01.png' class='liblogo'/></a><a href='http://www.sjpl.org/summer'><img src='/img/SR14_Web.png' class='liblogo'/></a></div>
+	  </div>
+	</nav>	
   </body>
 <%= partial('layout_footer'); %>
 

@@ -1,32 +1,34 @@
+var AuthenticationHelper = require('../helpers/authentication_helper');
+var AuthorizationHelper = require('../helpers/authorization_helper');
+
 var Accounts = function () {
   this.respondsWith = ['html', 'json'];
   
-  this.before(function(){
-     var self = this;
-     if(!self.session.get('account_info') || !self.session.get('account_info').access_token) {
-        self.flash.error('Authentication required')
-        self.redirect({controller: 'accounts', action: 'signin'})
-     }
-  }, {except: ['signin', 'authenticate', 'signout']});
-
   this.index = function (req, resp, params) {
     var self = this;
     
     var criteria = getCriteria(params);
     if(hasFilters(criteria)) {
-        geddy.model.Account.all(criteria, function(err, accounts) {
+        addAdditionalFilterIfNeeded(self, criteria);
+        geddy.model.Account.all(criteria, {sort: 'accountName', skip: 0, limit: 20}, function(err, accounts) {
           if (err) {
-            throw err;
+            self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
           }
           self.respondTo({
             html: function() {
-                geddy.model.Branch.all(function(err, branches) {
-                if (err) {
-                  throw err;
+                if(accounts.length >= 20) {
+                  self.flash.alert('There could be more than 20 accounts matching your criteria. Add more search critera.');
+                }else if(accounts.length == 0) {
+                  self.flash.info('No Accounts found for given criteria.');
                 }
-                geddy.model.UserType.all(function(err, userTypes) {
+                self.flash.discard();
+                geddy.model.Branch.all({},{sort: 'name'},function(err, branches) {
+                if (err) {
+                  self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+                }
+                geddy.model.UserType.all({},{sort: 'minAge'},function(err, userTypes) {
                   if (err) {
-                      throw err;
+                      self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
                   }
                   self.respond({accounts: accounts, branches: branches, userTypes: userTypes, roles: getRoles()});
                 });
@@ -41,13 +43,13 @@ var Accounts = function () {
     else {
       self.respondTo({
         html: function() {
-            geddy.model.Branch.all(function(err, branches) {
+            geddy.model.Branch.all({},{sort: 'name'},function(err, branches) {
               if (err) {
-                throw err;
+                self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
               }
               geddy.model.UserType.all(function(err, userTypes) {
               if (err) {
-                  throw err;
+                  self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
               }
               self.respond({accounts: [], branches: branches, userTypes: userTypes, roles: getRoles()});
             });
@@ -62,13 +64,28 @@ var Accounts = function () {
 
   this.add = function (req, resp, params) {
     var self = this;
-      geddy.model.Branch.all(function(err, branches) {
+      geddy.model.Branch.all({},{sort: 'name'}, function(err, branches) {
       if (err) {
-        throw err;
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
       }
-      geddy.model.UserType.all(function(err, userTypes) {
+      geddy.model.UserType.all({},{sort: 'minAge'}, function(err, userTypes) {
         if (err) {
-            throw err;
+          self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+        }
+        self.respond({params: params, branches: branches, userTypes: userTypes, roles: getRoles()});
+      });
+    });
+  };
+
+  this.register = function (req, resp, params) {
+    var self = this;
+      geddy.model.Branch.all({},{sort: 'name'}, function(err, branches) {
+      if (err) {
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+      }
+      geddy.model.UserType.all({},{sort: 'minAge'}, function(err, userTypes) {
+        if (err) {
+          self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
         }
         self.respond({params: params, branches: branches, userTypes: userTypes, roles: getRoles()});
       });
@@ -80,15 +97,35 @@ var Accounts = function () {
       , account = geddy.model.Account.create(params);
 
     if (!account.isValid()) {
-      this.respondWith(account);
+      self.respondWith(account);
     }
     else {
       account.save(function(err, data) {
         if (err) {
-          throw err;
+          self.respondWith(getUserFriendlyErrorMessage( err, self ) );
         }
-        account.add
-        self.respondWith(account, {status: err});
+        if(self.session.get('account_info') && self.session.get('account_info').role != 'READER') {
+          self.respondWith(account);
+        }
+        else {
+          self.authenticateAccount(params, function(err, account1, authToken){
+          if(err) {
+            self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+          }
+          if(!account) {
+            self.respondWith(new geddy.errors.NotFoundError());
+          }else {
+              self.respondTo({
+                html: function(){
+                  self.respond({authToken: authToken, account: account});
+                },
+                json: function() {
+                  self.respond({authToken: authToken, account: account});
+                }
+              });
+          }
+          });
+        }
       });
     }
   };
@@ -98,21 +135,21 @@ var Accounts = function () {
 
     geddy.model.Account.first(params.id, function(err, account) {
       if (err) {
-        throw err;
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
       }
       if (!account) {
-        self.respondWith(geddy.errors.NotFoundError());
+        self.respondWith(new geddy.errors.NotFoundError());
       }
       else {
           self.respondTo({
             html: function() {
                 geddy.model.Branch.all(function(err, branches) {
                     if (err) {
-                      throw err;
+                      self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
                     }
                     geddy.model.UserType.all(function(err, userTypes) {
                     if (err) {
-                      throw err;
+                      self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
                     }
                     self.respond({account: account, branches: branches, userTypes: userTypes, roles: getRoles()});
                  });
@@ -131,21 +168,21 @@ var Accounts = function () {
 
     geddy.model.Account.first(params.id, function(err, account) {
       if (err) {
-        throw err;
+         self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
       }
       if (!account) {
-        throw new geddy.errors.BadRequestError();
+        self.respondWith(new geddy.errors.BadRequestError());
       }
       else {
           self.respondTo({
             html: function() {
-                geddy.model.Branch.all(function(err, branches) {
+                geddy.model.Branch.all({},{sort: 'name'}, function(err, branches) {
                     if (err) {
-                      throw err;
+                      self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
                     }
-                    geddy.model.UserType.all(function(err, userTypes) {
+                    geddy.model.UserType.all({},{sort: 'minAge'}, function(err, userTypes) {
                     if (err) {
-                      throw err;
+                        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
                     }
                     self.respond({account: account, branches: branches, userTypes: userTypes, roles: getRoles()});
                  });
@@ -158,13 +195,13 @@ var Accounts = function () {
       }
     });
   };
-
+  
   this.update = function (req, resp, params) {
     var self = this;
 
     geddy.model.Account.first(params.id, function(err, account) {
       if (err) {
-        throw err;
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
       }
       account.updateProperties(params);
 
@@ -172,12 +209,11 @@ var Accounts = function () {
         self.respondWith(account);
       }
       else {
-        // Handle with before Update
         account.save(function(err, data) {
           if (err) {
-            throw err;
+            self.respondWith( getUserFriendlyErrorMessage( err, self ) );
           }
-          self.respondWith(account, {status: err});
+          self.respondWith(account);
         });
       }
     });
@@ -188,19 +224,353 @@ var Accounts = function () {
 
     geddy.model.Account.first(params.id, function(err, account) {
       if (err) {
-        throw err;
+          self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
       }
       if (!account) {
-        throw new geddy.errors.BadRequestError();
+        self.respondWith(new geddy.errors.BadRequestError());
       }
       else {
         geddy.model.Account.remove(params.id, function(err) {
           if (err) {
-            throw err;
+            self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
           }
           self.respondWith(account);
+          logUserForAction(self.session, self.params);
         });
       }
+    });
+  };
+
+  this.editUsers = function(req, resp, params) {
+    var self = this;
+    
+    geddy.model.Account.first(params.id, function(err, account){
+      if(err) {
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+      }
+      if(!account) {
+        self.respondWith(new geddy.errors.BadRequestError());
+      }
+      else {
+        self.respondTo({
+          html: function(){
+                geddy.model.Branch.all(function(err, branches) {
+                    if (err) {
+                      self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+                    }
+                    geddy.model.UserType.all(function(err, userTypes) {
+                    if (err) {
+                      self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+                    }
+                    self.respond({account: account, branches: branches, userTypes: userTypes, roles: getRoles()});
+                 });
+              });
+          },
+          json: function() {
+               self.respondWith(account);
+          }
+        })
+      }
+    });
+  }
+
+  this.showUser = function(req, resp, params) {
+    var self = this;
+    
+    geddy.model.Account.first(params.id, function(err, account){
+      if(err) {
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+      }
+      if(!account) {
+        self.respondWith(new geddy.errors.BadRequestError());
+      }
+      else {
+          var user = account.getUser(params['userId']);
+          if(!user){
+            self.respondWith(new geddy.errors.BadRequestError());
+          }
+          else {
+              geddy.model.Grid.first({userType: user.userType}, function(err, grid) {
+                  if (err) {
+                    self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+                  }
+                  geddy.model.Prize.first({userType: user.userType}, function(err, prize) {
+                  if (err) {
+                    self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+                  }
+                  self.respondTo({
+                    html: function(){
+                         self.respond({user: user, grid: grid, prize: prize});
+                    },
+                    json: function() {
+                         self.respond({user: user, grid: grid, prize: prize});
+                    }
+                  });
+               });
+            });
+          }
+      }
+    });
+  }
+
+  this.addUser = function(req, resp, params) {
+    var self = this;
+    
+    geddy.model.Account.first(params.id, function(err, account){
+      if(err) {
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+      }
+      if(!account) {
+        self.respondWith(new geddy.errors.BadRequestError());
+      }
+      else {
+          account.addUser(params);
+    
+          if (!account.isValid()) {
+            self.respondWith(account);
+          }
+          else {
+            account.save(function(err, data) {
+              if (err) {
+                self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+              }
+              self.respondTo({
+                html: function(){
+                     self.respond({user: account.users[account.users.length-1]});
+                },
+                json: function() {
+                     self.respond({user: account.users[account.users.length-1]});
+                }
+              });
+            });
+          }
+      }
+    });
+  }
+
+  this.updateUser = function(req, resp, params) {
+    var self = this;
+    
+    geddy.model.Account.first(params.id, function(err, account){
+      if(err) {
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+      }
+      if(!account) {
+        self.respondWith(new geddy.errors.BadRequestError());
+      }
+      else {
+          account.updateUser(params);
+    
+          if (!account.isValid()) {
+            self.respondWith(account);
+          }
+          else {
+            account.save(function(err, data) {
+              if (err) {
+                self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+              }
+              self.respondTo({
+                html: function(){
+                     self.respond({user: account.getUser(params['userId'])});
+                },
+                json: function() {
+                     self.respond({user: account.getUser(params['userId'])});
+                }
+              });
+            });
+          }
+      }
+    });
+  }
+  
+  this.showUserActivityGridCell = function(req, resp, params) {
+    var self = this;
+    
+    geddy.model.Account.first(params.id, function(err, account){
+      if(err) {
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+      }
+      if(!account) {
+        self.respondWith(new geddy.errors.BadRequestError());
+      }
+      else {
+          var cell = account.getUserActivityGridCell(params['userId'], params['cellIndex']);
+          if(!cell){
+            self.respondWith(new geddy.errors.BadRequestError());
+          }
+          else {
+            self.respondTo({
+              html: function(){
+                   self.respond({id: params.id, userId: params['userId'], cellIndex: params['cellIndex'], activityGridCell: cell});
+              },
+              json: function() {
+                   self.respond({id: params.id, userId: params['userId'], cellIndex: params['cellIndex'], activityGridCell: cell});
+              }
+            });
+          }
+        }
+    });
+  }
+
+  this.updateUserActivityGridCell = function(req, resp, params) {
+    var self = this;
+    
+    geddy.model.Account.first(params.id, function(err, account){
+      if(err) {
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+      }
+      if(!account) {
+        self.respondWith(new geddy.errors.BadRequestError());
+      }
+      else {
+          account.updateUserActivityGridCell(params);
+    
+          if (!account.isValid()) {
+            self.respondWith(account);
+          }
+          else {
+            account.save(function(err, data) {
+              if (err) {
+                self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+              }
+              self.respondTo({
+                html: function(){
+                   self.respond({id: params.id, userId: params['userId'], cellIndex: params['cellIndex'], 
+                   activityGridCell: account.getUserActivityGridCell(params['userId'], params['cellIndex']),
+				   prizes: account.getUser(params['userId']).prizes});
+                },
+                json: function() {
+                   self.respond({id: params.id, userId: params['userId'], cellIndex: params['cellIndex'], 
+                   activityGridCell: account.getUserActivityGridCell(params['userId'], params['cellIndex']),
+				   prizes: account.getUser(params['userId']).prizes});
+                }
+              });
+            });
+          }
+        }
+    });
+  };
+
+  this.showUserPrize = function(req, resp, params) {
+    var self = this;
+    
+    geddy.model.Account.first(params.id, function(err, account){
+      if(err) {
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+      }
+      if(!account) {
+        self.respondWith(new geddy.errors.BadRequestError());
+      }
+      else {
+          var prize = account.getUserPrize(params['userId'], params['prizeIndex']);
+          if(!prize){
+            self.respondWith(new geddy.errors.BadRequestError());
+          }
+          else {
+            self.respondTo({
+              html: function(){
+                   self.respond({id: params.id, userId: params['userId'], prizeIndex: params['prizeIndex'], prize: prize});
+              },
+              json: function() {
+                   self.respond({id: params.id, userId: params['userId'], prizeIndex: params['prizeIndex'], prize: prize});
+              }
+            });
+          }
+        }
+    });
+  }
+
+  this.updateUserPrize = function(req, resp, params) {
+    var self = this;
+    
+    geddy.model.Account.first(params.id, function(err, account){
+      if(err) {
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+      }
+      if(!account) {
+        self.respondWith(new geddy.errors.BadRequestError());
+      }
+      else {
+          account.updateUserPrize(params);
+    
+          if (!account.isValid()) {
+            self.respondWith(account);
+          }
+          else {
+            account.save(function(err, data) {
+              if (err) {
+                self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+              }
+              self.respondTo({
+                html: function(){
+                   self.respond({id: params.id, userId: params['userId'], cellIndex: params['prizeIndex'], activityGridCell: account.getUserPrize(params['userId'], params['prizeIndex'])});
+                },
+                json: function() {
+                   self.respond({id: params.id, userId: params['userId'], cellIndex: params['prizeIndex'], activityGridCell: account.getUserPrize(params['userId'], params['prizeIndex'])});
+                }
+              });
+            });
+          }
+        }
+    });
+  };
+  
+  this.showUserReadingLog = function(req, resp, params) {
+    var self = this;
+    
+    geddy.model.Account.first(params.id, function(err, account){
+      if(err) {
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+      }
+      if(!account) {
+        self.respondWith(new geddy.errors.BadRequestError());
+      }
+      else {
+          var readingLog = account.getUserReadingLog(params['userId']);
+          self.respondTo({
+            html: function(){
+                 self.respond({id: params.id, userId: params['userId'], readingLog: readingLog});
+            },
+            json: function() {
+                 self.respond({id: params.id, userId: params['userId'], readingLog: readingLog});
+            }
+          });
+        }
+    });
+  }
+
+  this.updateUserReadingLog = function(req, resp, params) {
+    var self = this;
+    
+    geddy.model.Account.first(params.id, function(err, account){
+      if(err) {
+        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+      }
+      if(!account) {
+        self.respondWith(new geddy.errors.BadRequestError());
+      }
+      else {
+          account.updateUserReadingLog(params);
+    
+          if (!account.isValid()) {
+            self.respondWith(account);
+          }
+          else {
+            account.save(function(err, data) {
+              if (err) {
+                  self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+              }
+              self.respondTo({
+                html: function(){
+                   self.respond({id: params.id, userId: params['userId'], readingLog: account.getUserReadingLog(params['userId'])});
+                },
+                json: function() {
+                   self.respond({id: params.id, userId: params['userId'], readingLog: account.getUserReadingLog(params['userId'])});
+                }
+              });
+            });
+          }
+        }
     });
   };
   
@@ -209,52 +579,45 @@ var Accounts = function () {
      self.respond({params: params});
   };
 
-  this.authenticate = function(req, resp, params) {
+  this.authenticateAccount = function(params, callbackFn) {
     var self = this;
-    
-    if(!self.validateAuthParams()) {
-      self.flash.error('Account Name and Passcode are required')
-      self.transfer('signin');
+    var authParams = {accountName: params['accountName'], passcode: params['passcode'], applicationId: '12112'};
+    var authnHelper = new AuthenticationHelper();
+    authnHelper.authenticate(authParams, function(err, account, authToken){
+      if(!err && account){
+         self.session.set('account_info', {authToken: authToken, id: account.id, role: account.role});
+      }
+      callbackFn(err, account, authToken);
       return;
-    }
-    geddy.model.Account.first({accountName: params['accountName']}, function(err, account) {
-      if (err) {
-        throw err;
-      }
-      if (!account) {
-        self.flash.error('Account Name or Passcode not valid')
-        self.transfer('signin');
-        return;
-      }
-      else {
-          self.respondTo({
-            html: function() {
-              self.session.set('account_info', {access_token: account.id, role: account.role});
-              if(account.role == "READER") {
-                self.redirect({controller: 'accounts', action: 'show', id: account.id});
-              }
-              else {
-                self.redirect({controller: 'accounts', action: 'index'});
-              }
-            },
-            json: function() {
-              // TODO more work needed here
-               self.respondWith({access_token: account.id, role: account.role});
-            }
-          });
-      }
     });
   };
-
-  this.validateAuthParams = function() {
-    if(typeof this.params['accountName'] === "undefined" || this.params['accountName'].trim().length == 0) {
-      return false;
-    }
-    if(typeof this.params['passcode'] === "undefined" || this.params['passcode'].trim().length == 0) {
-      return false;
-    }
-    return true;
-  }
+  
+  this.authenticate = function(req, resp, params) {
+    var self = this;
+    var authParams = {accountName: params['accountName'], passcode: params['passcode'], applicationId: '12112'};
+    var authnHelper = new AuthenticationHelper();
+    authnHelper.authenticate(authParams, function(err, account, authToken){
+        if(err){
+            self.flash.error(err.message);
+            self.redirect('/');
+            return;
+        }
+        self.respondTo({
+          html: function() {
+            self.session.set('account_info', {authToken: authToken, id: account.id, role: account.role});
+            if(account.role == "READER") {
+              self.redirect(account.id + '/edit_users');
+            }
+            else {
+              self.redirect({controller: 'accounts', action: 'index'});
+            }
+          },
+          json: function() {
+             self.respond({authToken: authToken, account: account});
+          }
+        });
+    });
+  };
 
   this.signout = function(req, resp, params) {
     this.session.set('account_info', null);
@@ -273,6 +636,12 @@ var getCriteria = function(params) {
     if(typeof params['emailAddress'] != "undefined" && params['emailAddress'].trim().length > 0) {
       criteria['emailAddress'] = params['emailAddress'].trim();
     }
+    if(typeof params['firstName'] != "undefined" && params['firstName'].trim().length > 0) {
+      criteria['users'] = {$elemMatch: {firstName: new RegExp(params['firstName'].trim(), 'i')}};
+    }
+    if(typeof params['lastName'] != "undefined" && params['lastName'].trim().length > 0) {
+      criteria['users'] = {$elemMatch: {lastName: new RegExp(params['lastName'].trim(), 'i')}};
+    }
     if(typeof params['branchId'] != "undefined" && params['branchId'].trim().length > 0) {
       criteria['branchId'] = params['branchId'].trim();
     }
@@ -286,4 +655,10 @@ var hasFilters = function(criteria) {
       }
     }
     return false;
+}
+
+var addAdditionalFilterIfNeeded = function(self, criteria) {
+  if(!isAdmin(self.session)) {
+    criteria['role'] = {$ne: 'ADMIN'} 
+  }
 }

@@ -1,8 +1,10 @@
 <h3>Grid</h3>
+      <%- partial('/partial/message', {flash: flash}) %>
 <div class="row">
   <div class="col-sm-5 col-md-3" id="divUserTypes"></div>
   <div class="col-sm-5 col-md-3" id="divActions"></div>
 </div>
+<br/>
 <div class="row">
   <div class="col-sm-0 col-md-1"></div>
   <div class="col-sm-12 col-md-10" id="divGrid">
@@ -12,7 +14,10 @@
 <script>
   url = "/grids";
   var gridData = {};
-
+  var gridIconOptions = [];
+  <%for(var iCn in gridIcons){%>
+    gridIconOptions[<%=iCn%>] = {text: '<%=gridIcons[iCn].name%>', value: '<%=gridIcons[iCn].name%>'};
+  <%}%>
 
   $(document).ready(function(){
     loadUserTypes();
@@ -29,17 +34,17 @@
   } 
   
   function addSelectOptions(userTypes) {
-    var selectTag = '<div class="input-group">';
-    selectTag += '<select id="userTypes" class="form-control">';
-    selectTag += '<option value="">--Select User Type--</option>'
+    var selectUserTypeTag = '<div class="input-group">';
+    selectUserTypeTag += '<select id="userTypes" class="form-control">';
+    selectUserTypeTag += '<option value="">--Select User Type--</option>'
     for(var i in userTypes) {
-       selectTag += '<option value="' + userTypes[i].id + '">' + userTypes[i].name + '</option>';
+       selectUserTypeTag += '<option value="' + userTypes[i].id + '">' + userTypes[i].name + '</option>';
     }
-    selectTag += '</select>';
-    selectTag += '<span class="input-group-btn"><button class="btn btn-default" onclick="loadGrid()">Go</button></span>';
-    selectTag += '</div>';
+    selectUserTypeTag += '</select>';
+    selectUserTypeTag += '<span class="input-group-btn"><button class="btn btn-default" onclick="loadGrid()">Go</button></span>';
+    selectUserTypeTag += '</div>';
     
-    $('#divUserTypes').append($(selectTag));
+    $('#divUserTypes').append($(selectUserTypeTag));
   }
   
   function loadGrid() {
@@ -90,9 +95,10 @@
         gridHtml += '<div class="row">';
       }
       gridHtml += '<div class="grid-padding col-sm-2 col-md-2">';
-      gridHtml += '<div id="cell_' + gridData.cells[cell].index + '" class="grid-bordered">';
-      gridHtml += '<textarea id="desc_' + gridData.cells[cell].index + '" class="form-control grid-textarea" maxLength="50" rows="4">' + gridData.cells[cell].description + '</textarea></div>';
-      gridHtml += '</div>';
+      gridHtml += '<div id="cell_' + gridData.cells[cell].index + '" class="grid-with-icon-bordered">';
+      gridHtml += '<textarea id="desc_' + gridData.cells[cell].index + '" class="form-control grid-textarea" maxLength="300" rows="4">' + gridData.cells[cell].description + '</textarea>';
+      gridHtml += selectTag(gridIconOptions, gridData.cells[cell].gridIcon, {name: 'gridIcon_' + gridData.cells[cell].index, id: 'gridIcon_' +  gridData.cells[cell].index, class: 'form-control'});
+      gridHtml += '</div></div>';
     }
     if(gridHtml != '') {
        gridHtml += '</div>';
@@ -124,6 +130,7 @@
     $('textarea').each(function(){
       $(this).prop("readonly", "");
     });
+    $( "select[id*='gridIcon']" ).prop("disabled", false);
     drawGridActions(true);
   }
  
@@ -131,6 +138,7 @@
     $('textarea').each(function(){
       $(this).prop("readonly", "readonly");
     });
+    $( "select[id*='gridIcon']" ).prop("disabled", "disabled");
     drawGridActions(false);
   }
 
@@ -159,6 +167,7 @@
   function updateGridData() {
     for(var iCell=0, gridSize = gridData.cells.length; iCell<gridSize; iCell++) {
       gridData.cells[iCell].description = $('#desc_' + gridData.cells[iCell].index).val();
+      gridData.cells[iCell].gridIcon = $('#gridIcon_' + gridData.cells[iCell].index).val();
     }
     if(gridData.id == "-1") {
       gridData.id = null;

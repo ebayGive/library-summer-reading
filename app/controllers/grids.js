@@ -22,7 +22,9 @@ var Grids = function () {
           if (err) {
             throw err;
           }
-          self.respondWith(grids, {type:'Grid'});
+          geddy.model.GridIcon.all(function(err, gridIcons) {
+            self.respond({grids: grids, gridIcons: gridIcons});
+          });
         });
      }
   };
@@ -43,18 +45,6 @@ var Grids = function () {
         if (err) {
           throw err;
         }
-        /*for(var iCell = 0; iCell < params.cells.length; iCell++) {
-          geddy.log.error(JSON.stringify(geddy.model.Cell.create(params.cells[iCell])));
-          grid.addCell(geddy.model.Cell.create(params.cells[iCell]));
-        }
-        geddy.log.error('----------------' + JSON.stringify(grid));
-        grid.save(function(err, data) {
-          if (err) {
-            throw err;
-          }
-          geddy.log.error('----------saved------');
-          self.respondWith(grid, {status: err});
-        });*/
           self.respondWith(grid, {status: err});
       });
     }

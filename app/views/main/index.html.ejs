@@ -1,34 +1,56 @@
-<div class="jumbotron-sr">
-        <p>Welcome to San Jose public library Summer Reading program!</p>
-</div>
 <div class="row">
-  <div class="col-sm-6 col-md-4">
-    <div class="thumbnail">
-      <img data-src="holder.js/300x200" alt="...">
-      <div class="caption">
-        <h3>About this program..</h3>
-        <p>...</p>
-      </div>
-    </div>
+  <div class="col-md-3  hidden-sm hidden-xs">
+    <img src="/img/SR_Bot_Side.png" class="home-bot">
+  </div>
+  <div class="col-sm-6 col-md-4 hidden-xs">
+  <br/><br/>
+    <h4>Accept the Challenge!</h4>
+    <p>The San José Public Library challenges people of all ages to spend time reading, learning, exploring, and energizing during the summer.</p>
+    <p>Play games! Earn great prizes! Attend free events! And prevent yourself (or your children) from slipping down the summer slide!</p>
+    <h4>Prevent the Summer Slide</h4>
+    <p>During summer break, students who do not spend time reading and learning can find their school year skills slipping backwards. Teachers and literacy experts agree that reading for <strong>20 minutes per day</strong> during the summer helps students retain their skills and return to school ready to learn.</p>
+ 
+    <h4>Read as a Family</h4>
+    <p>The Library also challenges you to share the joy of reading as a family. Everyone from the baby to great-grandpa can get involved! Reading for pleasure is one of the building blocks needed for young people to grow into healthy, productive adults.</p>
+
   </div>
 
-  <div class="col-sm-6 col-md-4">
-    <div class="thumbnail">
-      <img data-src="holder.js/300x200" alt="...">
-      <div class="caption">
-        <h3>Annoucement..</h3>
-        <p>...</p>
+  <div class="col-xs-12 col-sm-6 col-md-5">
+    <div class="row">
+      <div class="col-md-12 col-sm-12">
+          <div class="panel panel-sr margin-10">
+              <div class="panel-heading">
+                <h3 class="panel-title">Sign In</h3>
+              </div>
+              <div class="panel-body">
+                <form role="form" method="post" action="/accounts/signin">
+                  <% if(typeof flash.error() != 'undefined') { %>
+                    <div class="row">
+                        <span class="text text-danger">&nbsp;&nbsp; <%=flash.error()%></span>
+                    </div>
+                  <% } %>
+                  <div class="form-group">
+                      <label for="accountName">User Name / Phone</label>
+                      <%- contentTag('input', params['accountName'], {name: 'accountName', id: 'accountName', class: 'form-control', placeholder: 'User Name or Phone'});%>
+                  </div>
+                  <div class="form-group">
+                      <label for="accountName">PIN (4 digits)</label>
+                      <%- contentTag('input', params['passcode'], {name: 'passcode', id: 'passcode', type: 'password', class: 'form-control', placeholder: '4 digit pin'});%>
+                  </div>
+                  <div class="form-group">
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-primary">Sign&nbsp;In</button>
+                        <a href="/accounts/register" class="btn btn-default" alt="First time users, Click here to register">Register</a>
+                     </div>
+                  </div>
+                </form>
+              </div>
+          </div>
       </div>
     </div>
-  </div>
-
-  <div class="col-sm-6 col-md-4">
-    <div class="thumbnail">
-      <img data-src="holder.js/300x200" alt="...">
-      <div class="caption">
-        <h3>Testimony..</h3>
-        <p>...</p>
-      </div>
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12 margin-10">
+        <iframe width="425" height="239" src="//www.youtube.com/embed/fjcnAy3oXtI" frameborder="0" allowfullscreen></iframe>      </div>
     </div>
   </div>
 </div

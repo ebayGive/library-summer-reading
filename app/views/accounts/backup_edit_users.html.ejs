@@ -1,0 +1,431 @@
+<h3>Update Reading Progress</h3>
+<br/>
+<form class="form-inline" role="form">
+<%- contentTag('input', account.id, {name: 'id', id: 'id', type: 'hidden'}); %>
+  <div class="form-group col-md-3">
+    <dl class="dl-horizontal">
+      <dt>Account&nbsp;Name</dt>
+      <dd><%=account.accountName%></dd>
+    </dl>
+  </div>
+  <div class="form-group col-md-3">
+    <dl class="dl-horizontal">
+      <dt>Email&nbsp;Address</dt>
+      <dd><%=account.emailAddress%></dd>
+    </dl>
+  </div>
+</form>
+<div class="row">
+  <div class="col-md-1"></div>
+</div>
+
+<%if(account.users && account.users.length > 0) {%>
+<div class="panel-group" id="users">
+    <%for(var iUr in account.users) {%>          
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a href="#<%=account.users[iUr].id%>" data-toggle="collapse" data-parent="#users">
+             <%=account.users[iUr].firstName + ' ' + account.users[iUr].lastName%>
+            </a>
+          </h4>
+        </div>
+        <div id="<%=account.users[iUr].id%>" class="panel-collapse collapse">
+          <div class="panel-body" id="pnlbdy_<%=account.users[iUr].id%>">
+          </div>
+        </div>
+      </div>
+    <%}%>
+</div>
+<%}%>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="activityModal" tabindex="-1" role="dialog" aria-labelledby="activityModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="activityModal">Activity</h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    $(document).ready(function(){
+      <%if( account.users && account.users.length > 0 ) {
+          for(var iUr in account.users) {%> 
+             $('#<%=account.users[iUr].id%>').on('hide.bs.collapse', function () {
+               hideUserPanel(this);
+              });
+             $('#<%=account.users[iUr].id%>').on('show.bs.collapse', function () {
+               showUserPanel(this);
+              })
+          
+       <%}
+         if(account.users && account.users.length ==1 ) {%>
+           $('#' + account.users[0].id).collapse('show');
+         <%}
+       }%>
+    });
+    
+    var NO_BATTERY_CELLS = 45;
+    var showUserPanel = function(obj) {
+      var userPanel = '';
+      userPanel += '<ul class="nav nav-tabs">'
+          + '<li class="active"><a href="#activity" data-toggle="tab">Activity</a></li>'
+          + '<li><a href="#battery" data-toggle="tab">Battery</a></li>'
+          + '</ul>'
+          + '<div class="tab-content">'
+          + '<div class="tab-pane active" id="activity">'
+          + '<div class="row"><div class="col-md-1"></div><div class="col-md-10">'
+          + '<div id="divGrid"></div><div id="divPrize"></div>'
+          + '</div>'
+          + '<div class="col-md-1"></div>'
+          + '</div>'
+          + '</div>'
+          + '<div class="tab-pane" id="battery">'
+          + '<div class="row"><div class="col-md-1"></div><div class="col-md-10">'
+          + '<div id="divBattery"></div>'
+          + '</div>'
+          + '<div class="col-md-1"></div>'
+          + '</div>'
+          + '</div>'
+          + '</div>';
+
+      $("#pnlbdy_" + $(obj).prop('id')).empty().append(userPanel);
+      loadUser($(obj).prop('id'));
+    }
+    
+    var hideUserPanel = function(obj) {
+      $("#pnlbdy_" + $(obj).prop('id')).empty();
+    }
+
+    var loadUser = function(userId) {
+        //userId = $('#userId').val();
+        if(!userId) {
+            alert("No valid user");
+            return;
+        }
+        
+        var userUrl = '/accounts/' + $('#id').val() + '/users/' + userId + '.json';
+
+          $.ajax({url: userUrl,
+            contentType: "application/json", 
+            type: "GET",
+            dataType: "json",
+            async: false
+           })
+            .done(function(resdata){renderUser(resdata);})
+            .fail(function( jqXHR) {handleUserError(jqXHR)});
+    }
+    var user;
+    var gridForUserType;
+    var renderUser = function(data) {
+        user = '';
+        gridForUserType = '';
+        user = data.user;
+        if(!user) {
+            alert('User not found');
+            return;
+        }
+        loadUserGrid(user.userType);
+    }
+    
+    var handleUserError = function(jqXHR) {
+        
+    }
+    
+    var getUser = function(data, userId) {
+        if(!data || !data.users || data.users.length == 0) {
+            alert('User not found')
+        }
+        
+        for(var iUr in data.users) {
+            if(data.users[iUr].id == userId) {
+                return data.users[iUr];
+            }
+        }
+        //returns undefined
+    }
+
+  function loadUserGrid(userType) {
+      var gridUrl = '/grids.json';
+      gridUrl += '?userType=' + userType;
+      $.ajax({url: gridUrl,
+        contentType: "application/json", 
+        type: "GET",
+        dataType: "json",
+        async: false
+       })
+        .done(function(resdata){getUserGrid(resdata);})
+        .fail(function( jqXHR) {handleUserError(jqXHR)});
+  }
+  
+  function getUserGrid(data) {
+      gridForUserType = data;
+      drawUserGrid();
+      drawUserPrizes();
+      drawUserReadingLog();
+  }
+  
+  function drawUserGrid() {
+    var noCols = 5;
+    var gridHtml = '';
+    
+    for (var cell in gridForUserType.cells) {
+      if(cell % noCols == 0) {
+        if(gridHtml != '') {
+          gridHtml += '</div>';
+        }
+        gridHtml += '<div class="row">';
+      }
+      gridHtml += '<div class="grid-padding">';
+      gridHtml += '<a href="#" onclick="showActivityModal(' + cell + ');return false;" data-target="#ativityModal"><div id="cell_' + cell + '" class="grid-bordered';
+      if(isActivityCompleted(cell)) {
+          gridHtml += ' grid-selected';
+      }
+      gridHtml += '">';
+      gridHtml += '<span>' + gridForUserType.cells[cell].description + '</span></div></a>';
+      gridHtml += '</div>';
+      
+    }
+    if(gridHtml != '') {
+       gridHtml += '</div>';
+    }
+    $('#divGrid').empty().append(gridHtml);
+  }
+  
+  function drawUserPrizes() {
+    var prizeHtml = '<div class="row">';
+    
+    for(var iPrz=0; iPrz < 5; iPrz++) {
+      prizeHtml += '<div class="prize ';
+      switch(getPrizeState(iPrz)){
+        case 0:
+                prizeHtml += 'prize-not-charged';
+                break;
+        case 1:
+                prizeHtml += 'prize-ready-to-claim';
+                break;
+        case 2:
+                prizeHtml += 'prize-claimed';
+                break;
+      }
+      prizeHtml += '"></div>';
+    }
+    prizeHtml += '</div>';
+    $('#divPrize').empty().append(prizeHtml);
+  }
+  
+  function getPrizeState(prizeIndex) {
+    if(typeof user.prizes === 'undefined' || user.prizes.length <= prizeIndex || typeof user.prizes[prizeIndex].state === 'undefined') {
+      return 0;
+    }
+    else {
+      return user.prizes[prizeIndex].state;
+    }
+  }
+  
+  function drawUserReadingLog() {
+    batteryHtml = "<table class='batt'>";
+    var cellIndex = 0;
+    var iCell=2;
+    for(var iLog=NO_BATTERY_CELLS; iLog>0; iLog--, iCell-=2) {
+        if(iLog % 3 == 0) {
+          if(iLog < NO_BATTERY_CELLS){
+            batteryHtml += "</tr>"
+          }
+          batteryHtml += "<tr>";
+          iCell = 2;
+        }
+        cellIndex = iLog - iCell;
+        batteryHtml += getBatteryCell(cellIndex);
+        batteryHtml += getBatteryCellMessage(cellIndex);
+    }
+    batteryHtml += "</tr></table>";
+    $('#divBattery').empty().append(batteryHtml);
+    showReadingLog(user.readingLog);
+  }
+  
+  function getBatteryCell(iLog, readingLog) {
+      var cellHtml = "<td id='battCell_" + iLog + "' ";
+      
+      cellHtml += " onclick='updateReadingLog(" + iLog + ");' ";
+      if(iLog > 30) {
+        cellHtml += "class='batt-green'";
+      }
+      else if(iLog > 15) {
+        cellHtml += "class='batt-yellow'";
+      }
+      else {
+        cellHtml += "class='batt-red'";
+      }
+      cellHtml += ">20 minutes</td>";
+      return cellHtml;
+  }
+  
+  function getBatteryCellMessage(iLog){
+    var cellMsgHtml = '';
+      if((iLog) % 15 == 0) {
+        cellMsgHtml += "<td rowspan='5' class='batt-message'>";
+        if((iLog) / 15 == 2) {
+          cellMsgHtml += getMessage15Hr();
+        }
+        else if((iLog) / 15 == 1) {
+          cellMsgHtml += getMessage10Hr();
+        }
+        else {
+          cellMsgHtml += getMessage5Hr();
+        }
+        cellMsgHtml += "&nbsp;</td>";
+      }
+      return cellMsgHtml;
+  }
+  
+  function updateReadingLog(cellIndex) {
+    if(cellIndex) {
+      user.readingLog = cellIndex * 20;
+      showReadingLog(user.readingLog);
+      saveUserActivity();
+    }
+  }
+  
+  function showReadingLog(readingLog) {
+    if(typeof readingLog === 'undefined') {
+      return;
+    }
+    var cellLogged = readingLog / 20;
+    for(var iCell=1; iCell<=NO_BATTERY_CELLS; iCell++) {
+      if(iCell <= cellLogged) {
+        $('#battCell_' + iCell).addClass('batt-selected');
+      }
+      else {
+        $('#battCell_' + iCell).removeClass('batt-selected');
+      }
+    }
+  }
+  
+  function getMessage5Hr() {
+    var messageHtml = '<h3>You have read 5 hours!</h3><p><strong>Getting Started!</strong></p>';
+    return messageHtml;
+  }
+
+  function getMessage10Hr() {
+    var messageHtml = '<h3>You have read 10 hours!</h3><p><strong>Almost there!</strong></p>';
+    return messageHtml;
+  }
+
+  function getMessage15Hr() {
+    var messageHtml = '<h3>You have read 15 hours!</h3><p><strong>Challenge Complete!</strong></p>';
+    return messageHtml;
+  }
+  
+  function showActivityModal(cellIndex) {
+    var modalBody = '';
+    modalBody += '<dl class="dl-horizontal">';
+    modalBody += '<dt>Action</dt>';
+    modalBody += '<dd>' + gridForUserType.cells[cellIndex].description + '</dd>';
+    modalBody += '</dl>';
+    modalBody += '<dl class="dl-horizontal">';
+    modalBody += '<dt>&nbsp;</dt>';
+    modalBody += '<dd>';
+    modalBody += '<div class="checkbox">';
+    modalBody += '<label><input type="checkbox" id="activityDone" ';
+    if(isActivityCompleted(cellIndex)) {
+      modalBody += ' checked';
+    }
+    modalBody += '>Completed</label>';
+    modalBody += '</div>';
+    modalBody += '</dd>';
+    modalBody += '</dl>';
+    modalBody += '<dl class="dl-horizontal">'
+    modalBody += '<dt>Notes</dt>';
+    modalBody += '<dd><textarea class="form-control" rows="3" id="activityNotes">';
+    modalBody += getActivityNotes(cellIndex);
+    modalBody += '</textarea></dd></dl>';
+      
+    $('.modal-body').empty().append(modalBody);
+    
+    var modalFooter = '<button type="button" class="btn btn-default" onclick="closeActivityModel(' + cellIndex + ')">Close</button>';
+    $('.modal-footer').empty().append(modalFooter);
+    
+    $('#activityModal').modal('show');
+  }
+  
+  function isActivityCompleted(cellIndex) {
+    if(user.activityGrid && user.activityGrid.length > cellIndex && user.activityGrid[cellIndex].activity == 1) {
+      return true;
+    }    
+    return false;
+  }
+  
+  function getActivityNotes(cellIndex) {
+    if(user.activityGrid && user.activityGrid.length > cellIndex && user.activityGrid[cellIndex].notes) {
+      return user.activityGrid[cellIndex].notes;
+    }    
+    return '';
+  }
+  
+  function closeActivityModel(cellIndex) {
+    $('#activityModal').modal('hide');
+    updateUserActivity(cellIndex);
+  }
+  
+  function updateUserActivity(cellIndex) {
+    if(user && user.activityGrid && user.activityGrid.length > cellIndex && user.activityGrid[cellIndex]) {
+      var dirty = false;
+      var activityCompleted = ($('#activityDone').prop('checked')? 1 : 0);
+      var activityNotes = $('#activityNotes').prop('value');
+      if(typeof user.activityGrid[cellIndex].activity === 'undefined' || (activityCompleted != user.activityGrid[cellIndex].activity)) {
+        user.activityGrid[cellIndex].activity = activityCompleted;
+        setActivityGridCellClass(cellIndex, activityCompleted);
+        dirty = true;
+      }
+      if(typeof user.activityGrid[cellIndex].notes === 'undefined' || (activityNotes != user.activityGrid[cellIndex].notes)) {
+        user.activityGrid[cellIndex].notes = activityNotes;
+        dirty = true;
+      }
+      if(dirty) {
+        user.activityGrid[cellIndex].updatedAt = new Date();
+        /*------------------------ Persist the User Activity --------------------*/
+        saveUserActivity();
+      }
+    }
+  }
+  
+  function setActivityGridCellClass(cellIndex, activityCompleted) {
+    if(activityCompleted == 1) {
+      $('#cell_' + cellIndex).addClass('grid-selected');
+    }
+    else {
+      $('#cell_' + cellIndex).removeClass('grid-selected');
+    }
+  }
+
+  function saveUserActivity() {
+    var type = "PUT";
+    var saveUrl = '/accounts/' + $('#id').val() + '/users/' + user.id + '.json';
+    $.ajax({url: saveUrl,
+        data: JSON.stringify({user: user}), 
+        contentType: "application/json", 
+        type: "PUT",
+        dataType: "json"})
+        .done(function(resdata){saveUserActivitySuccess(resdata);})
+        .fail(function( jqXHR) {saveFailed(jqXHR)});
+  }
+  
+  function saveUserActivitySuccess(data) {
+  }
+
+  function saveUserActivityFailed(jqXHR) {
+    //TODO if the user activity is already modified from different device, then refresh activity grid
+  }
+
+</script>

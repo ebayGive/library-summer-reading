@@ -4,7 +4,7 @@ var UserTypes = function () {
   this.index = function (req, resp, params) {
     var self = this;
 
-    geddy.model.UserType.all(function(err, userTypes) {
+    geddy.model.UserType.all({},{sort: 'minAge'},function(err, userTypes) {
       if (err) {
         throw err;
       }

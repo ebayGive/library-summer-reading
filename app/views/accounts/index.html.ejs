@@ -1,3 +1,5 @@
+<h3>Find Accounts</h3>
+      <%- partial('/partial/message', {flash: flash}) %>
 <%
     function getValue(data, propertyName) {
         if(typeof data != 'undefined' && typeof data[propertyName] != 'undefined') {
@@ -6,22 +8,23 @@
         return "";
     }
 %>
-  <form class="form-inline" role="form" action="<%=urlFor({controller: 'accounts', action: 'index'})%>" method="get">
+  <form class="form-horizontal" role="form" action="<%=urlFor({controller: 'accounts', action: 'index'})%>" method="get">
     <div class="form-group">
-      <label class="sr-only" for="accountName">Account Name</label>
-      <%- contentTag('input', params['accountName'], {name: "accountName", id: "accountName", placeholder: "Account Name", class: 'form-control'});%>
-    </div>
-    <div class="form-group">
-      <label class="sr-only" for="emailAddress">Account Name</label>
-      <%- contentTag('input', params['emailAddress'], {name: "emailAddress", id: "emailAddress", placeholder: "Email Address", class: 'form-control'});%>
-    </div>
-    <div class="form-group">
-      <label class="sr-only" for="branchId">Branch</label>
+      <label for="accountName" class="col-md-2 control-label">User&nbsp;Name&nbsp;/&nbsp;Phone</label>
       <div class="col-md-3">
+        <%- contentTag('input', params['accountName'], {name: "accountName", id: "accountName", placeholder: "User Name or Phone", class: 'form-control'});%>
+      </div>
+      <label for="emailAddress" class="col-md-1 control-label">Email</label>
+      <div class="col-md-3">
+        <%- contentTag('input', params['emailAddress'], {name: "emailAddress", id: "emailAddress", placeholder: "Email", class: 'form-control'});%>
+      </div>
+      <label for="branchId" class="col-md-1 control-label">Library</label>
+      <div class="col-md-2">
       <%
         var branchOptions = [];
         var branchLookup = {};
         var userTypeLookup = {};
+        var rolePanelClass = {ADMIN: 'panel-danger', VOLUNTEER: 'panel-info', READER: 'panel-success' };
         branchOptions[branchOptions.length] = {text: '---- Branch ----', value: ' '};
         for(var iBr in branches) {
           branchOptions[branchOptions.length] = {text: branches[iBr].name, value: branches[iBr].id}
@@ -30,11 +33,24 @@
         for(var iUT in userTypes) {
           userTypeLookup[userTypes[iUT].id] = userTypes[iUT].name;
         }
+        
        %>
        <%- selectTag(branchOptions, params['branchId'], {id: 'branchId', name: 'branchId', class: 'form-control'});%>
       </div>
     </div>
-    <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"> Search</i></button>
+    <div class="form-group">
+      <label for="firstName" class="col-md-2 control-label">First&nbsp;Name</label>
+      <div class="col-md-3">
+        <%- contentTag('input', params['firstName'], {name: "firstName", id: "firstName", placeholder: "First Name", class: 'form-control'});%>
+       </div>
+      <label class="col-md-1 control-label" for="lastName">Last&nbsp;Name</label>
+      <div class="col-md-3">
+        <%- contentTag('input', params['lastName'], {name: "lastName", id: "lastName", placeholder: "Last Name", class: 'form-control'});%>
+       </div>
+      <div class="col-md-3 text-right">
+        <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"> Search</i></button>
+      </div>
+    </div>
   </form>
   <br/><br/>
   <%if(typeof params['accountName'] != 'undefined') {%>
@@ -42,37 +58,21 @@
       <div class='col-md-1 col-sm-1'>
       </div>
       <div class='col-md-10 col-sm-10'>
-        <table class="table table-primary">
-          <tbody>
-            <tr>
-              <th class='col-md-2'>Account&nbsp;Name</th>
-              <th class='col-md-3'>Email&nbsp;Address</th>
-              <th class='col-md-4'>Branch</th>
-              <th class='col-md-2'>Role</th>
-              <th class='col-md-1'></th>
-            </tr>
+      
             <% if(typeof accounts != 'undefined' && accounts.length > 0) {
                 for(var iAct in accounts) {%>
-                  <tr>
-                    <td><%=accounts[iAct].accountName%></td>
-                    <td><%=accounts[iAct].emailAddress%></td>
-                    <td><%=getValue(branchLookup, accounts[iAct].branchId)%></td>
-                    <td><%=accounts[iAct].role%></td>
-                    <td>
-                          <a href="#" onclick="editAccount('<%=accounts[iAct].id%>');return false;"><i class="glyphicon glyphicon-edit"></i></a>
-                          <a href="#" onclick="showAcccount('<%=accounts[iAct].id%>');return false;"><i class="glyphicon glyphicon-list"></i></a>
-
-                    <%if(typeof accounts[iAct].users === 'undefined' || accounts[iAct].users.length == 0) {%>
-                        </td>
-                     <tr>
-                     <tr id="users_<%=accounts[iAct].id%>" class="user-hide">
-                    <%}
-                    else{%>
-                          <a href="#" onclick="toggleDisplay('<%=accounts[iAct].id%>');return false;"><i id="chevron_<%=accounts[iAct].id%>" class="glyphicon glyphicon-chevron-down"></i></a>
-                        </td>
-                      </tr>
-                      <tr id="users_<%=accounts[iAct].id%>" class="user-hide">
-                        <td colspan="5" class="further-detail">
+                  <div class="panel <%=getValue(rolePanelClass, accounts[iAct].role)%>">
+                    <div class="panel-heading">
+                      <div class="row">
+                        <div class="col-md-10"><h3 class="panel-title"><%=accounts[iAct].accountName%> | <%=getValue(branchLookup, accounts[iAct].branchId)%></h3></div>
+                        <div class="col-md-2 text-right"><a href="#" onclick="editAccount('<%=accounts[iAct].id%>');return false;" title="Edit Account"><i class="glyphicon glyphicon-edit"></i></a>
+                    <%if(typeof accounts[iAct].users != 'undefined' && accounts[iAct].users.length > 0) {%>
+                          <a href="#" onclick="editActivityLog('<%=accounts[iAct].id%>');return false;" title="Manage activity log"><i class="glyphicon glyphicon-pencil"></i></a>
+                        <!--  <a href="#" onclick="toggleDisplay('<%=accounts[iAct].id%>');return false;" title="Show users"><i id="chevron_<%=accounts[iAct].id%>" class="glyphicon glyphicon-chevron-down"></i></a> -->
+                        </div>
+                      </div>
+                   </div>
+                   <div class="panel-body" id="users_<%=accounts[iAct].id%>">
                                 <table class="table table-detail">
                                   <tr>
                                     <th>First&nbsp;Name</th>
@@ -87,16 +87,13 @@
                                     </tr>
                                   <%}%>
                                 </table>
-                         </td>
+                    </div>
+                    <%} else {%>
+                      </div></div></div>
                     <%}%>
-                </tr>
+                  </div>
             <%  }
-              }
-              else {%>
-              <tr><td colspan="5">No Accounts found</td></tr>
-            <%}%>
-          </tbody>
-        </table>
+              }%>
       </div>
       <div class='col-md-1 col-sm-1'>
       </div>
@@ -117,6 +114,10 @@
   
   var showAcccount = function(id) {
       $(document).attr("location", "/accounts/" + id);
+  }
+
+  var editActivityLog = function(id) {
+      $(document).attr("location", "/accounts/" + id + "/edit_users");
   }
 
 </script>

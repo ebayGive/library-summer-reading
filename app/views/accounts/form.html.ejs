@@ -6,22 +6,20 @@
         return "";
     }
 %>
-<form class="form-horizontal" role="role">
+<form class="form-horizontal" role="role" name="accountForm">
     <%- contentTag('input', getInputValue(account, 'id'), {type: 'hidden', id: 'id', name: 'id'});%>
     <div class="form-group">
-        <div class="col-md-1"></div>
-        <label for="accountName" class="col-md-2 control-label">Account&nbsp;Name</label>
+        <label for="accountName" class="col-md-3 control-label">User&nbsp;Name&nbsp;/&nbsp;Phone&nbsp;<span class="mandatory">*</span></label>
         <div class="col-md-3">
-          <%- contentTag('input', getInputValue(account, 'accountName'), {class: 'form-control', id: 'accountName', name: 'accountName', placeholder: 'Account Name'});%>
+          <%- contentTag('input', getInputValue(account, 'accountName'), {class: 'form-control', id: 'accountName', name: 'accountName', placeholder: 'User Name / Phone'});%>
         </div>    
-        <label for="emailAddress" class="col-md-2 control-label">Email&nbsp;Address</label>
+        <label for="emailAddress" class="col-md-3 control-label">Email&nbsp;Address</label>
         <div class="col-md-3">
           <%- contentTag('input', getInputValue(account, 'emailAddress'), {type: 'email', class: 'form-control', id: 'emailAddress', name: 'emailAddress', placeholder: 'Email Address'});%>
         </div>    
      </div>
     <div class="form-group">
-        <div class="col-md-1"></div>
-        <label for="branchId" class="col-md-2 control-label">Branch&nbsp;Id</label>
+        <label for="branchId" class="col-md-3 control-label">Library&nbsp;<span class="mandatory">*</span></label>
         <div class="col-md-3">
           <%
             var branchOptions = [];
@@ -32,49 +30,61 @@
            %>
            <%- selectTag(branchOptions, getInputValue(account, 'branchId'), {id: 'branchId', name: 'branchId', class: 'form-control'});%>
         </div>
-        <label for="role" class="col-md-2 control-label">Account&nbsp;Role</label>
-        <div class="col-md-3">
-          <%
-            var roleOptions = [];
-            roleOptions[roleOptions.length] = {text: '---- Role ----', value: '-1'};
-            for(var iRl in roles) {
-              roleOptions[roleOptions.length] = {text: roles[iRl].name, value: roles[iRl].id}
-            }
-           %>
-           <%- selectTag(roleOptions, getInputValue(account, 'role'), {id: 'role', name: 'role', class: 'form-control'});%>
-        </div>
-     </div>
-     <div class="form-group">
-        <div class="col-md-1"></div>
-        <label for="passcode" class="col-md-2 control-label">Passcode</label>
+        <label for="passcode" class="col-md-3 control-label">PIN&nbsp;(4&nbsp;digits)&nbsp;<span class="mandatory">*</span></label>
         <% if(getInputValue(account, 'passcode').length == 0) {%>
           <div class="col-md-3">
-            <%- contentTag('input', getInputValue(account, 'passcode'), {class: 'form-control', id: 'passcode', name: 'passcode', type: 'password', placeholder: 'Passcode'});%>
+            <%- contentTag('input', getInputValue(account, 'passcode'), {class: 'form-control', id: 'passcode', name: 'passcode', type: 'password', placeholder: '4 digit pin', maxlength: '4'});%>
           </div>    
          <% } else {%>  
           <div class="col-md-2" id="divPasscode">
-            <%- contentTag('span', '********', {class: 'form-control', id: 'passcode', name: 'passcode'});%>
+            <%- contentTag('span', '****', {class: 'form-control', id: 'passcode', name: 'passcode'});%>
            </div>
           <div class="col-md-1" id="divPasscodeLink">
               <a href="#" onclick="javascript:makePasscodeEditable();return false;"><i class="glyphicon glyphicon-edit"></i></a>
            </div>
           <% } %>  
      </div>
-     <%
+    <%if(session.get('account_info') && session.get('account_info').role == 'ADMIN') {%>
+       <div class="form-group">
+          <label for="role" class="col-md-3 control-label">Account&nbsp;Role</label>
+          <div class="col-md-3">
+            <%
+              var roleOptions = [];
+              roleOptions[roleOptions.length] = {text: '---- Role ----', value: '-1'};
+              for(var iRl in roles) {
+                roleOptions[roleOptions.length] = {text: roles[iRl].name, value: roles[iRl].id}
+              }
+             %>
+             <%- selectTag(roleOptions, getInputValue(account, 'role'), {id: 'role', name: 'role', class: 'form-control'});%>
+          </div>
+       </div>
+     <%}%>
+        <script>
+        var userTypes = [];
+        <%
             var userTypeOptions = [];
+            var userTypeStaff = '';
             for(var iUt in userTypes) {
-              userTypeOptions[userTypeOptions.length] = {text: userTypes[iUt].name, value: userTypes[iUt].id}
-            }
-     %>
+              if(userTypes[iUt].name == 'STAFF SJPL') {
+                userTypeStaff = userTypes[iUt].id;
+              }
+              if(userTypes[iUt].name != 'STAFF SJPL' || (session.get('account_info') && session.get('account_info').role != 'READER')) {
+                userTypeOptions[userTypeOptions.length] = {text: userTypes[iUt].name + ' &lt; Age ' + userTypes[iUt].minAge + ' - ' + userTypes[iUt].maxAge + '&gt;', value: userTypes[iUt].id}
+              %>
+              userTypes[<%=iUt%>] = {id: "<%=userTypes[iUt].id%>", name: "<%=userTypes[iUt].name%>", minAge: <%=userTypes[iUt].minAge%>, maxAge: <%=userTypes[iUt].maxAge%>};
+          <%}
+         }%>
+     </script>
      <div class="row">
         <div class="col-md-1"></div>
         <div class="col-sm-12 col-md-10">
             <table class="table table-primary" id="dataTable">
                 <tbody>
                     <tr>
-                        <th class="col-md-4">First&nbsp;Name</th>
-                        <th class="col-md-4">Last&nbsp;Name</th>
-                        <th class="col-md-4">User&nbsp;Type</th>
+                        <th class="col-sm-3 col-md-3">First&nbsp;Name&nbsp;<span class="mandatory">*</span></th>
+                        <th class="col-sm-3 col-md-3">Last&nbsp;Name&nbsp;<span class="mandatory">*</span></th>
+                        <th class="col-sm-2 col-md-2">Age</th>
+                        <th class="col-sm-4 col-md-4">User&nbsp;Type&nbsp;<span class="mandatory">*</span></th>
                         <th><a href="#" onclick="javascript:addUserRow();return false;"><i class="glyphicon glyphicon-plus"></i></a></th>
                     </tr>
                     <% if(account != null && typeof account.users === "object" && account.users.length > 0) {
@@ -82,17 +92,28 @@
                         <tr id="row_<%=account.users[iUser].id%>">
                           <td><%- contentTag('input', account.users[iUser].firstName, {id: 'firstName_' + account.users[iUser].id, name: 'firstName_' + account.users[iUser].id, class: 'form-control'}); %></td>
                           <td><%- contentTag('input', account.users[iUser].lastName, {id: 'lastName_' + account.users[iUser].id, name: 'lastName_' + account.users[iUser].id, class: 'form-control'}); %></td>
-                          <td><%- selectTag(userTypeOptions, account.users[iUser].userType, {id: 'userType_' + account.users[iUser].id, name: 'userType_' + account.users[iUser].id, class: 'form-control'});%></td>
-                          <td><a href="#" onclick="javascript:deleteUserRow('<%=account.users[iUser].id%>');return false;"><i class="glyphicon glyphicon-remove"></i></a></td>
+                          <td><%- contentTag('input', account.users[iUser].age, {id: 'age_' + account.users[iUser].id, name: 'age_' + account.users[iUser].id, class: 'form-control', onkeydown: 'allowNumeric(event)', maxlength: '2', type: 'number', min: 1, max: 99}); %></td>
+                          <%if(session.get('account_info') && session.get('account_info').role == 'READER' && account.users[iUser].userType == userTypeStaff) {%>
+                            <td>STAFF&nbsp;SJPL
+                            <%- contentTag('input', account.users[iUser].userType, {id: 'userType_' + account.users[iUser].id, name: 'userType_' + account.users[iUser].id, type: 'hidden'}); %>
+                            </td>
+                            <td><a href="#" onclick="javascript:deleteUserRow('<%=account.users[iUser].id%>');return false;"><i class="glyphicon glyphicon-remove"></i></a></td>
+                          <%}else{%>
+                            <td><%- selectTag(userTypeOptions, account.users[iUser].userType, {id: 'userType_' + account.users[iUser].id, name: 'userType_' + account.users[iUser].id, class: 'form-control'});%></td>
+                            <td><a href="#" onclick="javascript:deleteUserRow('<%=account.users[iUser].id%>');return false;"><i class="glyphicon glyphicon-remove"></i></a></td>                          
+                          <%}%>
                         </tr>
                     <% }
                      } else {%>
                         <tr>
-                            <td colspan="4" class='info'>Add Users</td>
+                            <td colspan="5" class='info'>Add Users</td>
                         </tr>
                     <%}%>
                 </tbody>
             </table>
+            <br/>
+            <a href="#" onclick="javascript:addUserRow();return false;" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i>&nbsp;Add a family member</a>
+            <h4><span class="mandatory">*</span>&nbsp;<small>Required Fields</small></h4>
         </div>
      </div>
 </form>
@@ -102,10 +123,22 @@
     var userIds = [];
     var deletedUsers = [];
     accountParams = {id: "", accountName: "", emailAddress: "", branchId: "", role: "", passcode: ""};
-    userParams = {id: "", firstName: "", lastName: "", userType: ""};
-    userProperties = [{name: "firstName", type: "text", maxLength: 100}, {name: "lastName", type: "text", maxLength: 100}, {name: "userType", type: "select", maxLength: 100}];
+    userParams = {id: "", firstName: "", lastName: "", age: "", userType: ""};
+    userProperties = [{name: "firstName", type: "text", maxLength: 100}, {name: "lastName", type: "text", maxLength: 100}, {name: "age", type: "number", maxLength: 2, min: 1, max: 99, onkeydown: "allowNumeric(event)"}, {name: "userType", type: "select", maxLength: 100}];
    
-    var saveAccount = function() {
+    var deleteAccount = function() {
+      if(confirm('This action will delete the account permanently. Are you sure you want to delete?')) {
+        var type = "DELETE";
+        var deleteUrl = '/accounts/' + $('#id').val() + '.json';
+        $.ajax({url: deleteUrl,
+            contentType: "application/json", 
+            type: "DELETE"})
+            .done(function(resdata){deleteAccountSuccess();})
+            .fail(function( jqXHR) {saveFailed(jqXHR)});
+      }
+    }
+    
+    var saveAccount = function(callBackOnsaveSuccess) {
         var type = "POST";
         var saveUrl = '/accounts';
         if($('#id').val() != "") {
@@ -118,22 +151,43 @@
             contentType: "application/json", 
             type: type,
             dataType: "json"})
-            .done(function(resdata){saveAccountSuccess(resdata);})
+            .done(function(resdata){callBackOnsaveSuccess(resdata);})
             .fail(function( jqXHR) {saveFailed(jqXHR)});
     }
     
-    var saveAccountSuccess = function(account) {
+    var saveAccountSuccessOnCreate = function(account) {
         document.location.href = "/accounts/" + account.id + "/edit";
+    }
+    
+    var saveAccountSuccessOnUpdate = function(account) {
+        showSuccess('Account changes saved successfully.');
+    }
+
+    var deleteAccountSuccess = function() {
+        document.location.href = "/accounts/";
+    }
+
+    var saveAccountSuccessOnRegister = function(account) {
+        document.accountForm.action = "/accounts/signin";
+        document.accountForm.method = "POST";
+        document.accountForm.submit();
     }
     
     var getAccount = function() {
         var account = {};
         $.each(accountParams, function(key){
-             account[key] = $('#' + key).val();
+            if(key == 'passcode') {
+              if($('#' + key).prop('tagName').toUpperCase() == 'INPUT') {
+                account[key] = $('#' + key).val();
+              }
+            }
+            else {
+              account[key] = $('#' + key).val();
+            }
         });
         var users = [];
-        userIds = userIds.concat(newUsers);
-        $.each(userIds, function(index, userId){
+        var allUsersIds = userIds.concat(newUsers);
+        $.each(allUsersIds, function(index, userId){
             var userIndex = users.length;
             users[userIndex] = {};
             $.each(userParams,function(prop) {
@@ -160,7 +214,20 @@
       var rowElem = $("<tr id='row_" + newUsers[newUsers.length-1] + "'></tr>");
       for(var i = 0; i < userProperties.length; i++) {
         if(userProperties[i].type != "select") {
-            rowElem.append('<td><input type="' + userProperties[i].type + '" id="' + userProperties[i].name + '_' + newUsers[newUsers.length-1] + '" class="form-control" maxLength="' + userProperties[i].maxLength + '"/></td>');
+           var inputField = '<td><input type="' + userProperties[i].type + '" id="' + userProperties[i].name + '_' + newUsers[newUsers.length-1] + '" class="form-control" maxLength="' + userProperties[i].maxLength + '"';
+           if(userProperties[i].type == "number") {
+             if(userProperties[i].min) {
+               inputField += ' min="' + userProperties[i].min + '"';
+             }
+             if(userProperties[i].max) {
+               inputField += ' max="' + userProperties[i].max + '"';
+             }
+             if(userProperties[i].onkeydown) {
+               inputField += ' onkeydown="' + userProperties[i].onkeydown + '"';
+             }
+           }
+           inputField += '/></td>';
+           rowElem.append(inputField);
         }else{
             rowElem.append('<td>' + selectTag(optionsForSelect, "", {name: userProperties[i].name + '_' + newUsers[newUsers.length-1]}) + '</td>');
         }
@@ -184,8 +251,9 @@
     }
     
     var makePasscodeEditable = function() {
-        $("#divPasscode").empty().append("<input type='password' class='form-control' id='passcode' name='passcode'>");
+        $("#divPasscode").empty().append("<input type='password' class='form-control' id='passcode' name='passcode' maxlength='4'>");
         $("#divPasscodeLink").empty().append("<a href='#' onclick='makePasscodeNoneditable(); return false;'><i class='glyphicon glyphicon-remove'></i></a>");
+        $("#passcode").keydown(allowNumeric);
     }
 
     var makePasscodeNoneditable = function() {
@@ -194,23 +262,19 @@
     }
     
   $(document).ready(function(){
-    loadUserTypes();
+    setUserTypeOptions(userTypes);
     $("[name^='" + userProperties[0].name + "']").each(function(){userIds[userIds.length] = getId($(this).attr('id'));});
+    <%if(params["action"] == 'register' || (session.get('account_info') && session.get('account_info').role != "ADMIN" && (params["action"] == 'add'))){%>
+      addUserRow();
+    <%}%>
+    $("#accountName").keydown(allowAlphaNumeric);
+    $("#passcode").keydown(allowNumeric);
   });
   
-  function loadUserTypes() {
-    var userTypeUrl = '/user_types.json';
-    $.ajax({url: userTypeUrl,
-        contentType: "application/json", 
-        type: "GET",
-        dataType: "json"})
-        .done(function(resdata){getOptions(resdata);})
-        .fail(function(){});
-  } 
   
-  function getOptions(userTypes) {
+  function setUserTypeOptions(userTypes) {
     for(var i in userTypes) {
-       optionsForSelect[optionsForSelect.length] = {text: userTypes[i].name, value: userTypes[i].id};
+       optionsForSelect[optionsForSelect.length] = {text: userTypes[i].name + ' < Age ' + userTypes[i].minAge + ' - ' + userTypes[i].maxAge + '>', value: userTypes[i].id};
     }
   }
 </script>

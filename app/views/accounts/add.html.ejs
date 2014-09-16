@@ -3,7 +3,9 @@
     <h3>Add Account</h3>
   </div>
   <div class="col-md-6">
-    <a href="#" onclick="saveAccount();return false;" class="btn btn-primary  pull-right">Save</a>
+    <a href="#" onclick="saveAccount(saveAccountSuccessOnCreate);return false;" class="btn btn-primary  pull-right">Save</a>
   </div>
 </div>
-      <%- partial('form', {params: params, account: null, userTypes: userTypes, branches: branches, roles: roles}) %>
+      <%- partial('/partial/message', {flash: flash}) %>
+
+      <%- partial('form', {params: params, session: session, account: null, userTypes: userTypes, branches: branches, roles: roles}) %>

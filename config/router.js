@@ -39,13 +39,32 @@ router.get('/').to('Main.index');
 //   this.get('/print(.:format)').to('Hemispheres.print');
 // });
 
+router.get('/accounts/signin').to('Accounts.signin');
+router.post('/accounts/signin(.:format)').to('Accounts.authenticate');
+router.get('/accounts/signout').to('Accounts.signout');
+router.get('/accounts/register').to('Accounts.register');
+router.get('/accounts/:id/users/:userId(.:format)').to('Accounts.showUser');
+router.post('/accounts/:id/users(.:format)').to('Accounts.addUser');
+router.put('/accounts/:id/users/:userId(.:format)').to('Accounts.updateUser');
+router.get('/accounts/:id/edit_users(.:format)').to('Accounts.editUsers');
+router.get('/accounts/:id/users/:userId/activity_grid/:cellIndex(.:format)').to('Accounts.showUserActivityGridCell');
+router.put('/accounts/:id/users/:userId/activity_grid/:cellIndex(.:format)').to('Accounts.updateUserActivityGridCell');
+router.get('/accounts/:id/users/:userId/prizes/:prizeIndex(.:format)').to('Accounts.showUserPrize');
+router.put('/accounts/:id/users/:userId/prizes/:prizeIndex(.:format)').to('Accounts.updateUserPrize');
+router.get('/accounts/:id/users/:userId/reading_log(.:format)').to('Accounts.showUserReadingLog');
+router.put('/accounts/:id/users/:userId/reading_log(.:format)').to('Accounts.updateUserReadingLog');
+router.get('/reports').to('Reports.index');
+router.get('/reports/prize').to('Reports.prize');
+
+router.resource('accounts');
+
 router.resource('grids');
 router.resource('prizes');
 router.resource('branches');
 router.resource('user_types');
-router.match('/accounts/signin', 'GET').to('Accounts.signin');
-router.match('/accounts/signin', 'POST').to('Accounts.authenticate');
-router.match('/accounts/signout', 'GET').to('Accounts.signout');
-router.resource('accounts');
+
+router.resource('grid_icons');
+
+router.get('/helps/help').to('Helps.applicationHelp');
 
 exports.router = router;

@@ -1,0 +1,195 @@
+<h3>Reports</h3>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Prize Summary </h3>
+<table id='branchprize' class='sorttable'>
+   <tr class="no-sort">
+      <th rowspan="2">Status</th>
+<%
+		for(tid in result.userTypes)
+		{
+			 if (typeof result.userTypes[tid] == 'undefined' || typeof result.userTypes[tid].name == 'undefined')
+			 {
+					continue;
+			 }
+%>
+      <th colspan="6"><%=result.userTypes[tid].name.toUpperCase()%></th>
+<%
+ 		}
+%>
+   </tr>
+   <tr class="no-sort">
+      <td>P0</td><td>P1</td><td>P2</td><td>P3</td><td>P4</td><td>RB</td>
+      <td>P0</td><td>P1</td><td>P2</td><td>P3</td><td>P4</td><td>RB</td>
+      <td>P0</td><td>P1</td><td>P2</td><td>P3</td><td>P4</td><td>RB</td>
+      <td>P0</td><td>P1</td><td>P2</td><td>P3</td><td>P4</td><td>RB</td>
+      <td>P0</td><td>P1</td><td>P2</td><td>P3</td><td>P4</td><td>RB</td>
+   </tr>
+	<%
+	try
+	{  	
+		for(var j = 0; j < 3 ; j++)
+		{
+	%>		
+		<tr>
+	<%
+			if (j == 2) { %> <td> Claimed </td> <%  } else if (j == 1) { %> <td> Earned </td> <% } else { %> <td> Started </td> <% }
+					
+			for(tid in result.userTypes)
+			{
+				 if (typeof result.userTypes[tid] == 'undefined' || typeof result.userTypes[tid].name == 'undefined')
+				 {
+						continue;
+				 }
+				 
+				 var CountsByUserType = result.summaryPrize.get(result.userTypes[tid].name.toUpperCase());
+				 
+					for(var k = 0; k < 6 ; k++)
+					{
+			%>
+		      			<td>
+		      				<%  if (typeof CountsByUserType == 'undefined' || typeof CountsByUserType.get(k) == 'undefined' || typeof CountsByUserType.get(k).get(j) == 'undefined')
+		      					{  
+		      				%> 
+		      					0 
+		      				<% 	}
+		      					else
+		      					{
+		      				%>
+		      					<%=CountsByUserType.get(k).get(j)%>
+		      				<%
+		      					}
+		      				%>
+	      				</td>
+			<%		
+					}
+			}
+			%>
+			</tr>
+			<%
+		}
+	}
+	catch(err)
+	{
+	%>
+		There is technical difficulties while generating the reports. Error: <%=err%>
+	<%
+	}
+	%>
+ </table>
+<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Branchwise Prize Report </h3>
+<table id='branchprize' class='sorttable'>
+   <tr class="no-sort">
+      <th rowspan="2">Branch</th>
+      <th rowspan="2">Status</th>
+<%
+		for(tid in result.userTypes)
+		{
+			 if (typeof result.userTypes[tid] == 'undefined' || typeof result.userTypes[tid].name == 'undefined')
+			 {
+					continue;
+			 }
+%>
+      <th colspan="6"><%=result.userTypes[tid].name.toUpperCase()%></th>
+<%
+ 		}
+%>
+   </tr>
+   <tr class="no-sort">
+      <td>P0</td><td>P1</td><td>P2</td><td>P3</td><td>P4</td><td>RB</td>
+      <td>P0</td><td>P1</td><td>P2</td><td>P3</td><td>P4</td><td>RB</td>
+      <td>P0</td><td>P1</td><td>P2</td><td>P3</td><td>P4</td><td>RB</td>
+      <td>P0</td><td>P1</td><td>P2</td><td>P3</td><td>P4</td><td>RB</td>
+      <td>P0</td><td>P1</td><td>P2</td><td>P3</td><td>P4</td><td>RB</td>
+   </tr>
+	<%
+	try
+	{  	
+		var keys = result.prize.keys() ; 
+		
+		for(var i = 0; i < result.prize.count(); i++)
+		{
+			var branch =  result.prize.get(keys[i]);
+			
+			if(typeof branch == 'undefined')
+			{
+				continue;
+			}
+			
+			for(var j = 0; j < 3 ; j++)
+			{
+				if(j == 0)
+				{
+		%>		
+			<tr>
+			  <td rowspan="3"><%=keys[i]%></td>
+			  
+		<%
+				}
+				else
+				{
+		%>		
+			<tr>
+		<%
+				}
+				
+				if (j == 2) { %> <td> Claimed </td> <%  } else if (j == 1) { %> <td> Earned </td> <% } else { %> <td> Started </td> <% }
+						
+				for(tid in result.userTypes)
+				{
+					 if (typeof result.userTypes[tid] == 'undefined' || typeof result.userTypes[tid].name == 'undefined')
+					 {
+							continue;
+					 }
+					 
+					 var CountsByUserType = branch.get(result.userTypes[tid].name.toUpperCase());
+					 
+						for(var k = 0; k < 6 ; k++)
+						{
+				%>
+			      			<td>
+			      				<%  if (typeof CountsByUserType == 'undefined' || typeof CountsByUserType.get(k) == 'undefined' || typeof CountsByUserType.get(k).get(j) == 'undefined')
+			      					{  
+			      				%> 
+			      					0 
+			      				<% 	}
+			      					else
+			      					{
+			      				%>
+			      					<%=CountsByUserType.get(k).get(j)%>
+			      				<%
+			      					}
+			      				%>
+		      				</td>
+				<%		
+						}
+				}
+				%>
+		</tr>
+				<%
+			}
+		}
+	}
+	catch(err)
+	{
+	%>
+		There is technical difficulties while generating the reports. Error: <%=err%>
+	<%
+	}
+	%>
+ </table>
+
+<script> 
+  params = {result: result};
+  url = "/reports";
+
+  $(document).ready(function(){
+  });
+</script>
+<script>
+var p = document.getElementById('prize');
+var bp = document.getElementById('branchprize');
+var refresh = new Tablesort(p);
+var refresh = new Tablesort(bp);
+</script>
+
+
+

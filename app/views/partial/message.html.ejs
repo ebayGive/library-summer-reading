@@ -1,0 +1,111 @@
+<%
+    function hasAlert(flash) {
+        if(typeof flash === 'undefined') {
+            return false;
+        }
+        if(typeof flash.alert() === 'undefined' || flash.alert() == null || flash.alert().length == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    function hasError(flash) {
+        if(typeof flash === 'undefined') {
+            return false;
+        }
+        if(typeof flash.error() === 'undefined' || flash.error() == null || flash.error().length == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    function hasSuccess(flash) {
+        if(typeof flash === 'undefined') {
+            return false;
+        }
+        if(typeof flash.success() === 'undefined' || flash.success() == null || flash.success().length == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    function hasInfo(flash) {
+        if(typeof flash === 'undefined') {
+            return false;
+        }
+        if(typeof flash.info() === 'undefined' || flash.info() == null || flash.info().length == 0) {
+            return false;
+        }
+        return true;
+    }
+    
+    function getAlertClass(flash) {
+        if(hasAlert(flash)) {
+            return 'alert-warning';
+        }
+        else if(hasInfo(flash)) {
+            return 'alert-info';
+        }
+        else if(hasError(flash)) {
+            return 'alert-danger';
+        }
+        else if(hasSuccess(flash)) {
+            return 'alert-success';
+        }
+        else {
+            return '';
+        }
+    }
+
+    function getAlertTitle(flash) {
+        if(hasAlert(flash)) {
+            return 'Warning!';
+        }
+        else if(hasInfo(flash)) {
+            return 'Info!';
+        }
+        else if(hasError(flash)) {
+            return 'Error!';
+        }
+        else if(hasSuccess(flash)) {
+            return 'Success!';
+        }
+        else {
+            return '';
+        }
+    }
+
+    function getAlertMessage(flash) {
+        if(hasAlert(flash)) {
+            return flash.alert();
+        }
+        else if(hasInfo(flash)) {
+            return flash.info();
+        }
+        else if(hasError(flash)) {
+            return flash.error();
+        }
+        else if(hasSuccess(flash)) {
+            return flash.success();
+        }
+        else {
+            return '';
+        }
+    }
+    
+    function hasFlash(flash) {
+        return hasInfo(flash) || hasAlert(flash) || hasError(flash) || hasSuccess(flash);
+    }
+%>
+<div class="row">
+<div class="col-md-1"></div>
+<div class="col-md-10" id='divMessage'>
+<%if(hasFlash(flash)){%>
+    <div class="alert <%=getAlertClass(flash)%> alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <strong><%=getAlertTitle(flash)%></strong> <span><%=getAlertMessage(flash)%></span>
+    </div>
+<%}%>
+</div>
+<div class="col-md-1"></div>
+</div>

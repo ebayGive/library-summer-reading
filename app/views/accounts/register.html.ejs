@@ -1,0 +1,22 @@
+<div class="row">
+  <div class="col-md-3 hidden-sm hidden-xs">
+    <img src="/img/SR_Bot_Side.png" class="home-bot">
+  </div>
+  <div class="col-md-9 col-sm-12 col-xs-12">
+      <div class="panel panel-sr margin-10">
+          <div class="panel-heading">
+            <h3 class="panel-title">Sign Up for the Challenge!</h3>
+          </div>
+          <div class="panel-body">
+            <%- partial('/partial/message', {flash: flash}) %>
+            <%- partial('form', {params: params, session: session, account: null, userTypes: userTypes, branches: branches, roles: roles}) %>
+          </div>
+          <div class="panel-footer">
+                <div class="text-right">
+                    <a href="#" onclick="saveAccount(saveAccountSuccessOnRegister);return false;" class="btn btn-primary text-right">Register</a>
+                    <a href="/" class="btn btn-default" alt="Cancel">Cancel</a>
+                 </div>
+          </div>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+<%
+    function getValue(data, propertyName) {
+        if(typeof data != 'undefined' && typeof data[propertyName] != 'undefined') {
+            return data[propertyName];
+        }
+        return "";
+    }
+    
+    var branchLookup = {};
+    var userTypeLookup = {};
+    
+    for(var iBr in branches) {
+      branchLookup[branches[iBr].id] = branches[iBr].name;
+    }
+    for(var iUT in userTypes) {
+      userTypeLookup[userTypes[iUT].id] = userTypes[iUT].name;
+    }
+
+    var panelColorLookup = {'pre-reader' : 'panel-pre-reader',
+                            'reader': 'panel-reader',
+                            'teen': 'panel-teen',
+                            'adult': 'panel-adult',
+                            'staff': 'panel-staff'};
+    function getPanelClass(userType) {
+      var panelClass = panelColorLookup[getValue(userTypeLookup, userType).toLowerCase()];
+      if(!panelClass) {
+        return "panel-default";
+      }
+      return panelClass;
+    }
+%>
+<br/>
+      <%- partial('/partial/message', {flash: flash}) %>
+
+<form class="form-inline" role="form">
+<%- contentTag('input', account.id, {name: 'id', id: 'id', type: 'hidden'}); %>
+  <div class="form-group col-md-6">
+      <div><strong><h4>Username / Phone Number</strong> : <%=account.accountName%></h4></div>
+  </div>
+</form>
+<div class="row">
+  <div class="col-md-12 text-info">&nbsp;&nbsp;&nbsp;&nbsp;Click on the + sign close to your name to play</div>
+</div>
+
+<%if(account.users && account.users.length > 0) {%>
+<div class="panel-group margin-10" id="users">
+    <%for(var iUr in account.users) {%>          
+      <div class="panel <%=getPanelClass(account.users[iUr].userType)%>">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a href="#<%=account.users[iUr].id%>" data-toggle="collapse" data-parent="#users">
+            <i id="ttl_<%=account.users[iUr].id%>" class="glyphicon glyphicon-plus"></i></a>&nbsp;
+             <%=account.users[iUr].firstName + ' ' + account.users[iUr].lastName%>&nbsp;|&nbsp;
+             <%=getValue(userTypeLookup, account.users[iUr].userType)%>
+          </h4>
+        </div>
+        <div id="<%=account.users[iUr].id%>" class="panel-collapse collapse">
+          <div class="panel-body" id="pnlbdy_<%=account.users[iUr].id%>">
+          </div>
+        </div>
+      </div>
+    <%}%>
+</div>
+<%}%>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="activityModal" tabindex="-1" role="dialog" aria-labelledby="activityModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="activityModal">Your Challenge:</h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="prizeModal" tabindex="-1" role="dialog" aria-labelledby="prizeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="activityModal">Prize Information:</h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    $(document).ready(function(){
+      <%if( account.users && account.users.length > 0 ) {
+          for(var iUr in account.users) {%> 
+             $('#<%=account.users[iUr].id%>').on('hide.bs.collapse', function () {
+               hideUserPanel(this);
+              });
+             $('#<%=account.users[iUr].id%>').on('show.bs.collapse', function () {
+                showUserPanel(this);
+              })
+          
+       <%}
+         if(account.users && account.users.length ==1 ) {%>
+           $('#<%=account.users[0].id%>').collapse('show');
+         <%}
+        <%
+       }%>
+    });
+    <%if(session.get('account_info') && session.get('account_info').role && (session.get('account_info').role == "ADMIN" || session.get('account_info').role == "VOLUNTEER")) { %>
+          prizeChangeAllowed = true;
+    <%}%>
+</script>

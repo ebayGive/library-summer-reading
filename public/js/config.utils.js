@@ -34,7 +34,20 @@
           continue;
         }
         if(properties[i].type != "select") {
-            rowElem.append('<td><input type="' + properties[i].type + '" id="' + properties[i].name + '" class="form-control" maxLength="' + properties[i].maxLength + '"/></td>');
+           var inputField = '<td><input type="' + properties[i].type + '" id="' + properties[i].name + '" class="form-control" maxLength="' + properties[i].maxLength + '"';
+           if(properties[i].type == "number") {
+             if(properties[i].min) {
+               inputField += ' min="' + properties[i].min + '"';
+             }
+             if(properties[i].max) {
+               inputField += ' max="' + properties[i].max + '"';
+             }
+             if(properties[i].onkeydown) {
+               inputField += ' onkeydown="' + properties[i].onkeydown + '"';
+             }
+           }
+           inputField += '/></td>';
+           rowElem.append(inputField);
         }else{
             rowElem.append('<td>' + selectTag(optionsForSelect, "", properties[i]) + '</td>');
         }
@@ -147,15 +160,11 @@
         contentType: "application/json", 
         type: type})
         .done(function(resdata){deleteSuccess(resdata);})
-        .fail(function(){deleteFailed()});
+        .fail(function(jqXHR){saveFailed(jqXHR)});
   } 
   
   function deleteSuccess(data) {
        $("#row_" + data.id).detach();
-  }
-  
-  function deleteFailed() {
-    alert("Delete Failed");
   }
   
   function makeRowNonEditable(data) {
@@ -183,15 +192,15 @@
           errMsg += jqXHR.responseJSON.errors[fld] + '\n';
         }
       }
-      alert(errMsg);
+      showError(errMsg);
     }
     else if(typeof jqXHR.responseJSON.message != "undefined") {
       console.log(jqXHR.responseJSON.message);
-      alert(jqXHR.responseJSON.message);
+      showError(jqXHR.responseJSON.message);
     }
     else {
       console.log(jqXHR.responseText);
-      alert('Internal Server Error');
+      showError('Internal Server Error');
     }
   }
   
@@ -199,3 +208,40 @@
       var idComp = elementId.split("_");
       return idComp[1];
     }
+    
+      function allowAlphaNumeric(e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+             // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) || 
+             // Allow: home, end, left, right
+            (e.keyCode >= 35 && e.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+        }
+        // Ensure that it is a number and stop the keypress
+        if((e.keyCode >= 48 && e.keyCode <= 57) || (!e.shiftKey &&  e.keyCode >= 96 && e.keyCode <= 105)) {
+          return;
+        }
+        if(e.keyCode >= 65 && e.keyCode <= 90) {
+          return;
+        }
+        e.preventDefault();
+  }
+
+  function allowNumeric(e) {
+        // Allow: backspace, delete, tab, escape, enter and .
+        if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+             // Allow: Ctrl+A
+            (e.keyCode == 65 && e.ctrlKey === true) || 
+             // Allow: home, end, left, right
+            (e.keyCode >= 35 && e.keyCode <= 39)) {
+                 // let it happen, don't do anything
+                 return;
+          }
+        // Ensure that it is a number and stop the keypress
+        if((e.keyCode >= 48 && e.keyCode <= 57) || (!e.shiftKey &&  e.keyCode >= 96 && e.keyCode <= 105)) {
+            return;
+        }
+        e.preventDefault();
+  }

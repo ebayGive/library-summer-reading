@@ -26,7 +26,7 @@ var config = {
   }
 , db: {
     mongo: {
-      dbname: 'surf_db'
+      dbname: 'surf_db_dev'
     , prefix: null
     , host: 'localhost'
     , port: 27017

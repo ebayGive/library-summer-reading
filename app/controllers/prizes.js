@@ -8,7 +8,12 @@ var Prizes = function () {
       if (err) {
         throw err;
       }
-      self.respondWith(prizes, {type:'Prize'});
+      geddy.model.UserType.all(function(err, userTypes) {
+      if (err) {
+          throw err;
+      }
+      self.respond({prizes: prizes, userTypes: userTypes});
+      });
     });
   };
 

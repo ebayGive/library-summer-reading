@@ -1,10 +1,11 @@
+var AuthorizationHelper = require('../helpers/authorization_helper');
 var Branches = function () {
   this.respondsWith = ['html', 'json'];
 
   this.index = function (req, resp, params) {
     var self = this;
 
-    geddy.model.Branch.all(function(err, branches) {
+    geddy.model.Branch.all({},{sort: 'name'},function(err, branches) {
       if (err) {
         throw err;
       }

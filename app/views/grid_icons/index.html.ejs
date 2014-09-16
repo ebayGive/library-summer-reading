@@ -1,0 +1,39 @@
+<h3>Grid Icon</h3>
+      <%- partial('/partial/message', {flash: flash}) %>
+<div class="row">
+  <div class="col-sm-0 col-md-1"></div>
+  <div class="col-sm-12 col-md-10">
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <table class="table table-primary" id="dataTable">
+          <tbody>
+            <tr>
+              <th class="col-md-11">Name</th>
+              <th class="col-md-1"><%- linkTo("<i class='glyphicon glyphicon-plus'></i>", "#", {id: "lnkAdd", _escapeContent: false, onclick: "addRow()"}); %></th>
+            </tr>
+    <% if (gridIcons && gridIcons.length > 0) { %>
+        <%for (var i=0, ii = gridIcons.length; i < ii; i++) { %>
+            <tr id="row_<%=gridIcons[i].id%>">
+              <td><%=gridIcons[i].name%></td>
+              <td><%- linkTo("<i class='glyphicon glyphicon-edit'></i>", "#", {onclick: "editRow('" + gridIcons[i].id + "')", _escapeContent: false}); %>
+              <%- linkTo("<i class='glyphicon glyphicon-trash'></i>", "#", {onclick: "deleteRow('" + gridIcons[i].id + "')", _escapeContent: false}); %></td>
+            </tr>
+        <%}%>
+      <%} else { %>
+          <tr class="warning"><td colspan="4">No Icons configured</td></tr>
+    <% } %>
+          <tbody>
+        </table>
+      </div>
+     </div>
+  </div>
+  <div class="col-sm-0 col-md-1"></div>
+</div>
+<script>
+  params = {id: "", name: ""};
+  properties = [{name: "name", type: "text", maxLength: 200}];
+  url = "/grid_icons";
+
+  $(document).ready(function(){
+  });
+</script>
