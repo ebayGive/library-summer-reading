@@ -10,14 +10,14 @@
 %>
   <form class="form-horizontal" role="form" action="<%=urlFor({controller: 'accounts', action: 'index'})%>" method="get">
     <div class="form-group">
-      <label for="accountName" class="col-md-2 control-label">User&nbsp;Name&nbsp;/&nbsp;Phone</label>
-      <div class="col-md-3">
-        <%- contentTag('input', params['accountName'], {name: "accountName", id: "accountName", placeholder: "User Name or Phone", class: 'form-control'});%>
+      <label for="accountName" class="col-md-1 control-label">User&nbsp;Name</label>
+      <div class="col-md-4">
+        <%- contentTag('input', params['accountName'], {name: "accountName", id: "accountName", placeholder: "User Name", class: 'form-control'});%>
       </div>
-      <label for="emailAddress" class="col-md-1 control-label">Email</label>
+      <label class="col-md-1 control-label" for="phone">Phone</label>
       <div class="col-md-3">
-        <%- contentTag('input', params['emailAddress'], {name: "emailAddress", id: "emailAddress", placeholder: "Email", class: 'form-control'});%>
-      </div>
+        <%- contentTag('input', params['phone'], {name: "phone", id: "phone", placeholder: "phone", class: 'form-control'});%>
+       </div>
       <label for="branchId" class="col-md-1 control-label">Library</label>
       <div class="col-md-2">
       <%
@@ -39,14 +39,17 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="firstName" class="col-md-2 control-label">First&nbsp;Name</label>
-      <div class="col-md-3">
+      <label for="firstName" class="col-md-1 control-label">Name</label>
+      <div class="col-md-2">
         <%- contentTag('input', params['firstName'], {name: "firstName", id: "firstName", placeholder: "First Name", class: 'form-control'});%>
        </div>
-      <label class="col-md-1 control-label" for="lastName">Last&nbsp;Name</label>
-      <div class="col-md-3">
+      <div class="col-md-2">
         <%- contentTag('input', params['lastName'], {name: "lastName", id: "lastName", placeholder: "Last Name", class: 'form-control'});%>
        </div>
+      <label for="emailAddress" class="col-md-1 control-label">Email</label>
+      <div class="col-md-3">
+        <%- contentTag('input', params['emailAddress'], {name: "emailAddress", id: "emailAddress", placeholder: "Email", class: 'form-control'});%>
+      </div>
       <div class="col-md-3 text-right">
         <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"> Search</i></button>
       </div>
@@ -65,10 +68,10 @@
                     <div class="panel-heading">
                       <div class="row">
                         <div class="col-md-10"><h3 class="panel-title"><%=accounts[iAct].accountName%> | <%=getValue(branchLookup, accounts[iAct].branchId)%></h3></div>
-                        <div class="col-md-2 text-right"><a href="#" onclick="editAccount('<%=accounts[iAct].id%>');return false;" title="Edit Account"><i class="glyphicon glyphicon-edit"></i></a>
+                        <div class="col-md-2 text-right"><a href="#" onclick="editAccount('<%=accounts[iAct].id%>');return false;" title="Edit Account"><i class="glyphicon glyphicon-edit fs-18"></i></a>
                     <%if(typeof accounts[iAct].users != 'undefined' && accounts[iAct].users.length > 0) {%>
-                          <a href="#" onclick="editActivityLog('<%=accounts[iAct].id%>');return false;" title="Manage activity log"><i class="glyphicon glyphicon-pencil"></i></a>
-                        <!--  <a href="#" onclick="toggleDisplay('<%=accounts[iAct].id%>');return false;" title="Show users"><i id="chevron_<%=accounts[iAct].id%>" class="glyphicon glyphicon-chevron-down"></i></a> -->
+                          <a href="#" onclick="editActivityLog('<%=accounts[iAct].id%>');return false;" title="Manage activity log"><i class="glyphicon glyphicon-pencil fs-18"></i></a>
+                        <!--  <a href="#" onclick="toggleDisplay('<%=accounts[iAct].id%>');return false;" title="Show users"><i id="chevron_<%=accounts[iAct].id%>" class="glyphicon glyphicon-chevron-down fs-18"></i></a> -->
                         </div>
                       </div>
                    </div>

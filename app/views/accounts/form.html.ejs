@@ -9,27 +9,10 @@
 <form class="form-horizontal" role="role" name="accountForm">
     <%- contentTag('input', getInputValue(account, 'id'), {type: 'hidden', id: 'id', name: 'id'});%>
     <div class="form-group">
-        <label for="accountName" class="col-md-3 control-label">User&nbsp;Name&nbsp;/&nbsp;Phone&nbsp;<span class="mandatory">*</span></label>
+        <label for="accountName" class="col-md-3 control-label">User&nbsp;Name&nbsp;<span class="mandatory">*</span></label>
         <div class="col-md-3">
-          <%- contentTag('input', getInputValue(account, 'accountName'), {class: 'form-control', id: 'accountName', name: 'accountName', placeholder: 'User Name / Phone'});%>
+          <%- contentTag('input', getInputValue(account, 'accountName'), {class: 'form-control', id: 'accountName', name: 'accountName', placeholder: 'User Name'});%>
         </div>    
-        <label for="emailAddress" class="col-md-3 control-label">Email&nbsp;Address</label>
-        <div class="col-md-3">
-          <%- contentTag('input', getInputValue(account, 'emailAddress'), {type: 'email', class: 'form-control', id: 'emailAddress', name: 'emailAddress', placeholder: 'Email Address'});%>
-        </div>    
-     </div>
-    <div class="form-group">
-        <label for="branchId" class="col-md-3 control-label">Library&nbsp;<span class="mandatory">*</span></label>
-        <div class="col-md-3">
-          <%
-            var branchOptions = [];
-            branchOptions[branchOptions.length] = {text: '---- Branch ----', value: '-1'};
-            for(var iBr in branches) {
-              branchOptions[branchOptions.length] = {text: branches[iBr].name, value: branches[iBr].id}
-            }
-           %>
-           <%- selectTag(branchOptions, getInputValue(account, 'branchId'), {id: 'branchId', name: 'branchId', class: 'form-control'});%>
-        </div>
         <label for="passcode" class="col-md-3 control-label">PIN&nbsp;(4&nbsp;digits)&nbsp;<span class="mandatory">*</span></label>
         <% if(getInputValue(account, 'passcode').length == 0) {%>
           <div class="col-md-3">
@@ -43,6 +26,40 @@
               <a href="#" onclick="javascript:makePasscodeEditable();return false;"><i class="glyphicon glyphicon-edit"></i></a>
            </div>
           <% } %>  
+     </div>
+    <div class="form-group">
+        <label for="branchId" class="col-md-3 control-label">Library&nbsp;<span class="mandatory">*</span></label>
+        <div class="col-md-3">
+          <%
+            var branchOptions = [];
+            branchOptions[branchOptions.length] = {text: '---- Branch ----', value: '-1'};
+            for(var iBr in branches) {
+              branchOptions[branchOptions.length] = {text: branches[iBr].name, value: branches[iBr].id}
+            }
+           %>
+           <%- selectTag(branchOptions, getInputValue(account, 'branchId'), {id: 'branchId', name: 'branchId', class: 'form-control'});%>
+        </div>
+        <label for="phone" class="col-md-3 control-label">Phone</label>
+        <div class="col-md-3">
+          <%- contentTag('input', getInputValue(account, 'phone'), {type: 'text', class: 'form-control', id: 'phone', name: 'phone', placeholder: 'Phone'});%>
+        </div>    
+     </div>
+    <div class="form-group">
+        <label for="emailAddress" class="col-md-3 control-label">Email&nbsp;Address</label>
+        <div class="col-md-3">
+          <%- contentTag('input', getInputValue(account, 'emailAddress'), {type: 'email', class: 'form-control', id: 'emailAddress', name: 'emailAddress', placeholder: 'Email Address'});%>
+        </div>    
+        <label for="languageSpoken" class="col-md-3 control-label">Language&nbsp;Spoken&nbsp;at&nbsp;home</span></label>
+        <div class="col-md-3">
+          <%
+            var languageOptions = [];
+            languageOptions[languageOptions.length] = {text: '---- Languages ----', value: ''};
+            for(var iLan in geddy.config.languages) {
+              languageOptions[languageOptions.length] = {text: geddy.config.languages[iLan], value: geddy.config.languages[iLan]}
+            }
+           %>
+           <%- selectTag(languageOptions, getInputValue(account, 'languageSpoken'), {id: 'languageSpoken', name: 'languageSpoken', class: 'form-control'});%>
+        </div>
      </div>
     <%if(session.get('account_info') && session.get('account_info').role == 'ADMIN') {%>
        <div class="form-group">
@@ -122,7 +139,7 @@
     var newUsers = [];
     var userIds = [];
     var deletedUsers = [];
-    accountParams = {id: "", accountName: "", emailAddress: "", branchId: "", role: "", passcode: ""};
+    accountParams = {id: "", accountName: "", emailAddress: "", branchId: "", role: "", passcode: "", phone: "", languageSpoken: ""};
     userParams = {id: "", firstName: "", lastName: "", age: "", userType: ""};
     userProperties = [{name: "firstName", type: "text", maxLength: 100}, {name: "lastName", type: "text", maxLength: 100}, {name: "age", type: "number", maxLength: 2, min: 1, max: 99, onkeydown: "allowNumeric(event)"}, {name: "userType", type: "select", maxLength: 100}];
    

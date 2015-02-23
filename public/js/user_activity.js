@@ -1,45 +1,46 @@
-    var NO_BATTERY_CELLS = 45;
+    var NO_BATTERY_CELLS = 30;
     var prizeChangeAllowed;
     
     var activityIconClassMap = {'DISCOVER': 'grid-discover', 'EXPLORE': 'grid-discover', 'ENERGIZE': 'grid-energize', 'READ': 'grid-read', 'LEARN': 'grid-learn', 'ROBOT': 'grid-robot'};
     
-    jQuery.ajaxSetup({ cache: false });
+    jQuery.ajaxSetup({ cache: false }); 
     
     var showUserPanel = function(obj) {
       var userPanel = '';
       userPanel += '<ul class="nav nav-tabs">'
-          + '<li class="active"><a href="#activity" data-toggle="tab"><strong>Game Grid</strong></a></li>'
-          + '<li><a href="#battery" data-toggle="tab"><strong>Reading Battery</strong></a></li>'
+          + '<li class="active"><a href="#battery" data-toggle="tab"><strong>Read</strong></a></li>'
+          + '<li><a href="#activity" data-toggle="tab"><strong>Play</strong></a></li>'
+          + '<li><a href="#prize" data-toggle="tab"><strong>Win</strong></a></li>'
           + '</ul>'
           + '<div class="tab-content">'
-          + '<div class="tab-pane active" id="activity">';
+          + '<div class="tab-pane active" id="battery">';
+        /*if(!isPrizeChangeAllowed()){
+          userPanel += '<div class="row"><br/><div class="col-md-10">'
+          + '<div class="alert alert-info"><strong>Challenge yourself to read at least 20 minutes a day.  See if you can charge your Reading Battery by July 31 to win bonus prizes!</strong></div>'
+          + '</div>'
+          + '<div class="col-md-2"><button id="chargeMe" type="button" class="btn btn-danger" onclick="updateReadingLog();">I read for<br/>20 minutes</button></div>'
+          + '</div>';
+        }*/
+        userPanel += '<div class="row"><div class="col-md-1"></div><div class="col-md-8"><br/>'
+          + '<div id="divBattery"></div>'
+          + '</div>';
+        userPanel += '</div>'
+          + '</div>'
+          + '<div class="tab-pane" id="activity">';
           
         if(!isPrizeChangeAllowed()){
           userPanel += '<div class="row"><div class="col-md-12">'
-          + '<br/><div class="alert alert-info"><strong>Complete any 5 squares in a row (vertical, horizontal, or diagonal) to win prizes.<br/>Visit your local San José Public Library once your prize is ready to claim!</strong></div>'
+          + '<br/><div class="alert alert-info"><strong>Complete any 4 squares in a row (vertical, horizontal, or diagonal) to win prizes.<br/>Visit your local San José Public Library once your prize is ready to claim!</strong></div>'
           + '</div></div>';
         }
         userPanel += '<div class="row"><div class="col-xs-1 col-sm-1  col-md-2"></div><div class="col-xs-11 col-sm-11 col-md-10">'
           + '<div id="divGrid"></div>'
           + '</div>'
           + '</div>'
-          + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-2"></div><div class="col-xs-11 col-sm-11 col-md-10"><div id="divPrize"></div></div></div>'
-          + '</div>'
-          + '<div class="tab-pane" id="battery">';
-        if(!isPrizeChangeAllowed()){
-          userPanel += '<div class="row"><br/><div class="col-md-10">'
-          + '<div class="alert alert-info"><strong>Challenge yourself to read at least 20 minutes a day.  See if you can charge your Reading Battery by July 31 to win bonus prizes!</strong></div>'
-          + '</div>'
-          + '<div class="col-md-2"><button id="chargeMe" type="button" class="btn btn-danger" onclick="updateReadingLog();">I read for<br/>20 minutes</button></div>'
           + '</div>';
-        }
-        userPanel += '<div class="row"><div class="col-md-1"></div><div class="col-md-8">'
-          + '<div id="divBattery"></div>'
-          + '</div>';
-        if(isPrizeChangeAllowed()) {
-          userPanel += '<div class="col-md-3" id="divBatteryPrize"></div>';
-        }
-        userPanel += '</div>'
+          
+          userPanel += '<div class="tab-pane" id="prize">'
+          + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divPrize"></div></div></div>'
           + '</div>'
           + '</div>';
 
@@ -89,6 +90,7 @@
     var user;
     var gridForUserType;
     var prize;
+
     var renderUser = function(data) {
         user = data.user;
         gridForUserType = data.grid;
@@ -98,9 +100,9 @@
             showError('User not found');
             return;
         }
-        drawUserGrid();
-        drawUserPrizes();
         drawUserReadingLog();
+        drawUserGrid();
+        drawWinTab();
     }
     
     var handleUserError = function(jqXHR) {
@@ -108,7 +110,7 @@
     }
   
   function drawUserGrid() {
-    var noCols = 5;
+    var noCols = 4;
     var gridHtml = '';
     
     for (var cell in gridForUserType.cells) {
@@ -179,158 +181,71 @@
   function activateReadingBattery() {
     $('a[href="#battery"]').tab('show');
   }
-  
-  function drawUserPrizes() {
-    var prizeHtml = '<div class="row"><div class="col-md-12"><br/><h3>My Prizes</h3></div><div class="row">';
-    
-    for(var iPrz=0; iPrz < 5; iPrz++) {
-      prizeHtml += getUserPrizeTag(iPrz);
-    }
-    prizeHtml += '</div>';
-    $('#divPrize').empty().append(prizeHtml);
-    
-    prizeHtml = getUserPrizeTag(5);
-    $('#divBatteryPrize').empty().append(prizeHtml);
-  }
-  
-  function getUserPrizeTag(prizeIndex) {
-      var prizeHtml = '<a href="#" title="Prize: Click here to see further details" onclick="showPrizeModal(' + prizeIndex + ');return false;" data-target="#prizeModal">';
-      prizeHtml += '<div class="';
-      switch(getPrizeState(prizeIndex)){
-        case 0:
-                prizeHtml += 'prize prize-not-charged-' + (prizeIndex+1);
-                break;
-        case 1:
-                prizeHtml += 'prize prize-ready-to-claim-' + (prizeIndex+1);
-                break;
-        case 2:
-                prizeHtml += 'prize prize-claimed-' + (prizeIndex+1);
-                break;
-      }
-      prizeHtml += '">&nbsp;</div>';
-      prizeHtml += '</a>';
-      return prizeHtml;
-  }
-  
-  function getPrize(prizeIndex) {
-    if(!prize) {
-        return '';
-    }
-    var prizeDesc = '';
-    switch(prizeIndex) {
-        case 0:
-            prizeDesc = prize.prize1;
-            break;
-        case 1:
-            prizeDesc = prize.prize2;
-            break;
-        case 2:
-            prizeDesc = prize.prize3;
-            break;
-        case 3:
-            prizeDesc = prize.prize4;
-            break;
-        case 4:
-            prizeDesc = prize.prize5;
-            break;
-        case 5:
-            prizeDesc = prize.prize6;
-            break;
-    }
-    if(typeof prizeDesc === 'undefined') {
-        return '';
-    }
-    return prizeDesc;
-  }
 
-  function showPrizeModal(prizeIndex) {
-    if(!user || !user.prizes) {
-      return;
-    }
-    var modalBody = '';
-    var modalFooter = '';
-    if(isPrizeChangeAllowed()) {
-      modalBody = '<dl class="dl-horizontal">';
-      modalBody += '<dt>Prize ' + (prizeIndex +1) + '</dt>';
-      modalBody += '<dd>' + getPrize(prizeIndex) + '</dd>';
-      modalBody += '</dl>';
-      modalBody += '<dl class="dl-horizontal">'
-      modalBody += '<dt>Notes</dt>';
-      modalBody += '<dd><textarea class="form-control" rows="3" id="prizeNotes">';
-      modalBody += getPrizeNotes(prizeIndex);
-      modalBody += '</textarea></dd></dl>';
-
-      modalFooter = '<button type="button" class="btn btn-default" ';
-      if(getPrizeState(prizeIndex) == 2) {
-        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 1);">Prize Not Claimed</button>';
-      }
-      else {
-        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 2);">Prize Claimed</button>';
-      }
-      modalFooter += '<button type="button" class="btn btn-default" onclick="closePrizeModal(' + prizeIndex + ', ' + getPrizeState(prizeIndex) + ')">Close</button>';
-    }
-    else {
-      modalBody = '<p>';
-      if(getPrizeState(prizeIndex) == 0) {
-        if(prizeIndex < 4) {
-          modalBody += 'Complete 5 squares in a row (vertical, horizontal, or diagonal) to win ';
-        }
-        else {
-          modalBody += 'Complete all the squares in your Game Grid to win ';
-        }
-      }
-      else if(getPrizeState(prizeIndex) == 1) {
-        modalBody += 'Congratulations! You have won ';
-      }
-      if(getPrizeState(prizeIndex) == 2) {
-        modalBody += 'Congratulations! You have collected <strong>' + getPrize(prizeIndex) + '</strong>.';
-      }
-      else {
-        modalBody += '<strong>' + getPrize(prizeIndex) + '</strong>. Visit your local San José Public Library  to pick up prizes from June 2 to July 31.';
-      }
-      modalBody += '</p>';
-      modalFooter += '<button type="button" class="btn btn-default" onclick="closePrizeModal()">Close</button>';
-    }
-    
-    $('#prizeModal').find('.modal-body').empty().append(modalBody);
-    $('#prizeModal').find('.modal-footer').empty().append(modalFooter);
-    
-    $('#prizeModal').modal('show');
+  function activateActivityGrid() {
+    $('a[href="#activity"]').tab('show');
   }
   
-  function getPrizeState(prizeIndex) {
-    if(typeof user.prizes === 'undefined' || user.prizes.length <= prizeIndex || typeof user.prizes[prizeIndex].state === 'undefined') {
-      return 0;
-    }
-    else {
-      return user.prizes[prizeIndex].state;
-    }
-  }
   
   function drawUserReadingLog() {
-    batteryHtml = "<br/><table class='batt'>";
+    var batteryHtml = '';
+    batteryHtml += '<div class="batt-action">'
+       + '<div class="batt-action-icon"> </div>'
+       + '<div class="batt-action-text"><div class="text-align">Button artwork, robot reading</div></div>'
+       + '<div class="batt-action-btn-plus" onclick="updateReadingLog(20);"><div class="text-align">+20</div></div>'
+       + '</div>';
+
+    batteryHtml += "<br/><table id='batt'>";
+    batteryHtml += "</table>";
+    batteryHtml += '<br/><div class="batt-action">'
+       + '<div class="batt-badge-desc"><div class="text-align">What is behind above grid?</div></div>'
+       + '<div class="batt-action-btn-minus-text"><div class="text-align">Opps!</div></div>'
+       + '<div class="batt-action-btn-minus" onclick="updateReadingLog(-20);"><div class="text-align">-20</div></div>'
+       + '</div>';
+    $('#divBattery').empty().append(batteryHtml);
+    if(parseInt(user.readingLog) == 0 || parseInt(user.readingLog) % 600 > 0) {
+      drawBattery();
+    }
+    else {
+      drawBadge();
+    }
+    showReadingLog(user.readingLog);
+  }
+
+  function drawBattery() {
     var cellIndex = 0;
-    var iCell=2;
+    var iCell=4;
+    var batteryHtml = '<tbody>';
     for(var iLog=NO_BATTERY_CELLS; iLog>0; iLog--, iCell-=2) {
-        if(iLog % 3 == 0) {
+        if(iLog % 5 == 0) {
           if(iLog < NO_BATTERY_CELLS){
             batteryHtml += "</tr>"
           }
           batteryHtml += "<tr>";
-          iCell = 2;
+          iCell = 4;
         }
         cellIndex = iLog - iCell;
         batteryHtml += getBatteryCell(cellIndex);
-        batteryHtml += getBatteryCellMessage(cellIndex);
+        //batteryHtml += getBatteryCellMessage(cellIndex);
     }
-    batteryHtml += "</tr></table>";
-    $('#divBattery').empty().append(batteryHtml);
-    showReadingLog(user.readingLog);
+    batteryHtml += "</tr></tbody>";
+    $('#batt').empty().append(batteryHtml);
+    $('#batt').removeClass('badge').addClass('batt');
+    $('div.batt-badge-desc').empty().append('<div class="text-align">What is behind above grid?</div>');
+  }
+
+  function drawBadge() {
+    var badgeHtml = "<tbody><tr>"
+    badgeHtml += "<td><img src='../../img/" + badges[Math.floor(parseInt(user.readingLog) / 600) -1].imageSrc + "' class='badge-img'></td>"
+    badgeHtml += "</tr></tbody>";
+    $('#batt').empty().append(badgeHtml);
+    $('#batt').removeClass('batt').addClass('badge');
+    $('div.batt-badge-desc').empty().append('<div class="text-align">' + badges[Math.floor(parseInt(user.readingLog) / 600) -1].desc + '</div>');
   }
   
   function getBatteryCell(iLog, readingLog) {
       var cellHtml = "<td id='battCell_" + iLog + "' ";
-      cellHtml += "class='cell-off-" + iLog + "'> </td>";
+      cellHtml += "class='cell-off'> </td>";
       return cellHtml;
   }
   
@@ -358,15 +273,18 @@
       return cellMsgHtml;
   }
   
-  function updateReadingLog() {
-    if(user.readingLog < 900) {
-      user.readingLog = parseInt(user.readingLog) + 20;
-      if(user.readingLog >= 900) {
-        user.activityGrid[12].activity = 1;
-        updatePrizeState(5, 1);
-        setActivityGridCellClass(12, 1);
+  function updateReadingLog(inc) {
+    if(user.readingLog < 18000 && user.readingLog >= 20 ) {
+      user.readingLog = parseInt(user.readingLog) + inc;
+      if(user.readingLog % 600 == 0 && user.readingLog > 0) {
+        drawBadge();
       }
-      showReadingLog(user.readingLog);
+      else {
+        if($('#batt').attr('class') != 'batt') {
+          drawBattery();
+        }
+        showReadingLog(user.readingLog);
+      }
       saveUserActivity();
     }
   }
@@ -375,16 +293,16 @@
     if(typeof readingLog === 'undefined') {
       return;
     }
-    var cellLogged = readingLog / 20;
+    var cellLogged = (readingLog % 600) / 20;
     for(var iCell=1; iCell<=NO_BATTERY_CELLS; iCell++) {
       if(iCell <= cellLogged) {
-        $('#battCell_' + iCell).removeClass('cell-off-' + iCell).addClass('cell-activated-' + iCell);
+        $('#battCell_' + iCell).removeClass('cell-off').addClass('cell-activated');
       }
       else {
-        $('#battCell_' + iCell).removeClass('cell-activated-' + iCell).addClass('cell-off-' + iCell);
+        $('#battCell_' + iCell).removeClass('cell-activated').addClass('cell-off');
       }
     }
-    showBatteryMessage(cellLogged);    
+    //showBatteryMessage(cellLogged);    
   }
   
   function showBatteryMessage(cellIndex) {
@@ -411,23 +329,21 @@
   }
   
   function showActivityModal(cellIndex) {
+    $('#activityModalHeader').empty().append('<strong>Your Challenge: ' + gridForUserType.cells[cellIndex].description + '</strong>');
     var modalBody = '';
-    modalBody += '<dl class="dl">';
-    modalBody += '<dd><strong>' + gridForUserType.cells[cellIndex].description + '</strong></dd>';
-    modalBody += '</dl>';
     modalBody += '<dl class="dl">'
-    modalBody += '<dt>What I Did: (Optional)</dt>';
+    modalBody += '<dt>' + gridForUserType.cells[cellIndex].whatDidIDo + ': (Optional)</dt>';
     modalBody += '<dd><textarea class="form-control" rows="4" id="activityNotes">';
     modalBody += getActivityNotes(cellIndex);
     modalBody += '</textarea></dd></dl>';
-    modalBody += '<div class="text-right"><label><input id="activityCompleted" type="checkbox"' + (isActivityCompleted(cellIndex)?'checked':'') + '> I did it!</label></div>';
+    modalBody += '<div class="text-right"><label> I did it!<input id="activityCompleted" type="checkbox"' + (isActivityCompleted(cellIndex)?'checked':'') + ' data-on-text="Yes" data-off-text="No"></label></div>';
     
     $('#activityModal').find('.modal-body').empty().append(modalBody);
     
     var modalFooter = '<button type="button" class="btn btn-default" onclick="closeActivityModal()">Do it Later</button>';
     modalFooter += '<button type="button" class="btn btn-primary" onclick="closeActivityModal(' + cellIndex + ')">Save</button>';
     $('#activityModal').find('.modal-footer').empty().append(modalFooter);
-    
+    $("#activityCompleted").bootstrapSwitch()
     $('#activityModal').modal('show');
   }
   
@@ -500,7 +416,7 @@
       }
       if(typeof user.prizes[prizeIndex].state === 'undefined' || (state != user.prizes[prizeIndex].state)) {
         user.prizes[prizeIndex].state = state;
-        drawUserPrizes();
+        drawWinTab();
         dirty = true;
       }
       if($('#prizeNotes').length) {
@@ -538,8 +454,8 @@
       if(data.user && data.user.activityGrid && data.user.prizes) {
           if(isPrizeStateChanged(data.user)) {
               user = data.user;
-              drawUserPrizes();      
           }
+          drawWinTab();      
       }
   }
   
@@ -555,3 +471,258 @@
   function saveUserActivityFailed(jqXHR) {
     showError('Save reading log failed')
   }
+
+
+//---------------------- Win Tab (Prizes)-------------
+
+  function drawWinTab() {
+    var winHtml = '<div id="winReadingStatus"></div>';
+    winHtml += '<div id="winPrize"></div>'
+    winHtml += '<div id="winReadingBadges"></div>'
+    
+    $('#divPrize').empty().append(winHtml);
+    showReadingStatus();
+    showPrize();
+    showReadingBadges();
+  }
+
+  function showReadingStatus() {
+    $('#winReadingStatus').empty().append(getReadingstatusHtml());
+  }
+
+  function showPrize() {
+    $('#winPrize').empty().append(getPrizeHtml());
+  }
+  function showReadingBadges() {
+    $('#winReadingBadges').empty().append(getReadingBadgesHtml());
+  }
+
+  function getReadingstatusHtml() {
+    var readStatusHtml = '<div class="row"><div class="col-md-11 col-sm-11 col-xs-11 reading-status-title">You have read:</div></div>';
+    readStatusHtml += '<div class="row reading-status-pane">';
+    readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 label reading-status reading-status-bg">' + getReadingLogHourPart() + '</div></div><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 reading-status">Hours!</div></div></div>';
+    readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 label reading-status reading-status-bg">' + getReadingLogMinutePart() + '</div></div><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 reading-status">Minutes</div></div></div>';
+    readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><button class="btn btn-danger"><br/>Print your<br/>Reading<br/>certificate!<br/><br/></button></div>';
+    readStatusHtml += '</div>';
+    return readStatusHtml;
+  }
+
+  function getPrizeHtml() {
+    var prizeHtml = '<div class="row"><div class="col-md-11 col-sm-11 col-xs-11 reading-status-title">Prizes" - Instructions</div></div>';
+    prizeHtml += '<div class="row reading-status-pane">';
+    prizeHtml += '<div class="col-xm-3 col-sm-3 col-md-3">' + getPrizeBingoHtml() + '</div>';
+    prizeHtml += '<div class="col-xm-1 col-sm-1 col-md-1"></div>';
+    prizeHtml += '<div class="col-xm-3 col-sm-3 col-md-3">' + getPrizeBlackoutHtml() + '</div>';
+    prizeHtml += '<div class="col-xm-1 col-sm-1 col-md-1"></div>';
+    prizeHtml += '<div class="col-xm-3 col-sm-3 col-md-3">' + getPrizeReadingHtml() + '</div>';
+    prizeHtml += '</div>'
+    return prizeHtml;
+  }
+
+  function getPrizeBingoHtml() {
+    var prizeHtml = '<div class="prize-title prize-title-bingo">Bingo</div>'
+    prizeHtml += getUserPrizeTag(0);
+    prizeHtml += getUserPrizeFooter(0);
+    return prizeHtml;
+  }
+
+  function getPrizeBlackoutHtml() {
+    var prizeHtml = '<div class="prize-title prize-title-blackout">Black&nbsp;out</div>'
+    prizeHtml += getUserPrizeTag(1);
+    prizeHtml += getUserPrizeFooter(1);
+    return prizeHtml;
+  }
+
+  function getPrizeReadingHtml() {
+    var prizeHtml = '<div class="prize-title prize-title-reading">Reading</div>'
+    prizeHtml += getUserPrizeTag(2);
+    prizeHtml += getUserPrizeFooter(2);
+    return prizeHtml;
+  }
+  
+  function getUserPrizeTag(prizeIndex) {
+      var prizeHtml = '<a href="#" title="Click to Play!" onclick="';
+      if(prizeIndex < 2)
+        prizeHtml += 'activateActivityGrid()';
+      else
+       prizeHtml += 'activateReadingBattery()';
+
+      prizeHtml += ';return false;" data-target="#prizeModal">';
+      prizeHtml += '<div class="prize">';
+      switch(getPrizeState(prizeIndex)){
+        case 0:
+                prizeHtml += '!';
+                break;
+        case 1:
+                prizeHtml += '?';
+                break;
+        case 2:
+                prizeHtml += '$';
+                break;
+      }
+      prizeHtml += '</div>';
+      prizeHtml += '</a>';
+      return prizeHtml;
+  }
+
+  function getUserPrizeFooter(prizeIndex) {
+      var prizeHtml = '<div class="prize-footer">';
+      switch(getPrizeState(prizeIndex)){
+        case 0:
+                prizeHtml += 'Click to Play!';
+                break;
+        case 1:
+                prizeHtml += 'Ready to Receive';
+                break;
+        case 2:
+                prizeHtml += 'Collected!';
+                break;
+      }
+      prizeHtml += '</div>';
+      return prizeHtml;
+  }
+  
+  function getPrize(prizeIndex) {
+    if(!prize) {
+        return '';
+    }
+    var prizeDesc = '';
+    switch(prizeIndex) {
+        case 0:
+            prizeDesc = prize.prize1;
+            break;
+        case 1:
+            prizeDesc = prize.prize2;
+            break;
+        case 2:
+            prizeDesc = prize.prize3;
+            break;
+      /*  case 3:
+            prizeDesc = prize.prize4;
+            break;
+        case 4:
+            prizeDesc = prize.prize5;
+            break;
+        case 5:
+            prizeDesc = prize.prize6;
+            break;*/
+    }
+    if(typeof prizeDesc === 'undefined') {
+        return '';
+    }
+    return prizeDesc;
+  }
+
+  function showPrizeModal(prizeIndex) {
+    if(!user || !user.prizes) {
+      return;
+    }
+    var modalBody = '';
+    var modalFooter = '';
+    if(isPrizeChangeAllowed()) {
+      modalBody = '<dl class="dl-horizontal">';
+      modalBody += '<dt>Prize ' + (prizeIndex +1) + '</dt>';
+      modalBody += '<dd>' + getPrize(prizeIndex) + '</dd>';
+      modalBody += '</dl>';
+      modalBody += '<dl class="dl-horizontal">'
+      modalBody += '<dt>Notes</dt>';
+      modalBody += '<dd><textarea class="form-control" rows="3" id="prizeNotes">';
+      modalBody += getPrizeNotes(prizeIndex);
+      modalBody += '</textarea></dd></dl>';
+
+      modalFooter = '<button type="button" class="btn btn-default" ';
+      if(getPrizeState(prizeIndex) == 2) {
+        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 1);">Prize Not Claimed</button>';
+      }
+      else {
+        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 2);">Prize Claimed</button>';
+      }
+      modalFooter += '<button type="button" class="btn btn-default" onclick="closePrizeModal(' + prizeIndex + ', ' + getPrizeState(prizeIndex) + ')">Close</button>';
+    }
+    else {
+      modalBody = '<p>';
+      if(getPrizeState(prizeIndex) == 0) {
+        if(prizeIndex < 4) {
+          modalBody += 'Complete 5 squares in a row (vertical, horizontal, or diagonal) to win ';
+        }
+        else {
+          modalBody += 'Complete all the squares in your Game Grid to win ';
+        }
+      }
+      else if(getPrizeState(prizeIndex) == 1) {
+        modalBody += 'Congratulations! You have won ';
+      }
+      if(getPrizeState(prizeIndex) == 2) {
+        modalBody += 'Congratulations! You have collected <strong>' + getPrize(prizeIndex) + '</strong>.';
+      }
+      else {
+        modalBody += '<strong>' + getPrize(prizeIndex) + '</strong>. Visit your local San José Public Library  to pick up prizes from June 2 to July 31.';
+      }
+      modalBody += '</p>';
+      modalFooter += '<button type="button" class="btn btn-default" onclick="closePrizeModal()">Close</button>';
+    }
+    
+    $('#prizeModal').find('.modal-body').empty().append(modalBody);
+    $('#prizeModal').find('.modal-footer').empty().append(modalFooter);
+    
+    $('#prizeModal').modal('show');
+  }
+  
+  function getPrizeState(prizeIndex) {
+    if(typeof user.prizes === 'undefined' || user.prizes.length <= prizeIndex || typeof user.prizes[prizeIndex].state === 'undefined') {
+      return 0;
+    }
+    else {
+      return user.prizes[prizeIndex].state;
+    }
+  }
+
+  function getReadingLogHourPart() {
+    var hour = 0;
+    if(typeof user.readingLog != "undefined") {
+      hour = Math.floor(parseInt(user.readingLog) / 60);
+    }
+    return formatTime(hour);
+  }
+
+  function getReadingLogMinutePart() {
+    var minute = 0;
+    if(typeof user.readingLog != "undefined") {
+      minute = parseInt(user.readingLog) % 60;
+    }
+    return formatTime(minute);
+  }
+
+  function formatTime(num) {
+    var str = String(num);
+    if(str.length == 1) {
+      str = '0' + str;
+    }
+    return str;
+  }
+
+  function getReadingBadgesHtml() {
+    var prizeHtml = '<div class="row"><div class="col-md-11 col-sm-11 col-xs-11 reading-status-title">Reading "Badges" Collected / Collect / Unlock them all! </div></div>';
+    prizeHtml += '<div class="row reading-status-pane">';
+    for(var iBdg=0; iBdg<30; iBdg++) {
+      prizeHtml += getReadingBadge(iBdg);
+      if(((iBdg+1)%6 == 0) && parseInt(user.readingLog) < (600 * iBdg)){
+        break;
+      }
+    }
+    prizeHtml += '</div>';
+    return prizeHtml;
+  }
+
+  function getReadingBadge(badgeIndex) {
+    var badgeHtml = '<div class="col-xm-2 col-sm-2 col-md-2">';
+    if(parseInt(user.readingLog) / 600 >= (badgeIndex+1)) {
+       badgeHtml += '<div class="read-badge read-badge-collected"><img  src="../../img/badges/' + badges[badgeIndex].imageSrc + '" width="100%"/></div>'; 
+    }
+    else {
+      badgeHtml += '<div class="read-badge read-badge-locked"><br/>?</div>'; 
+    }
+    badgeHtml += '</div>';
+    return badgeHtml;
+  }
+

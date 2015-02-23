@@ -54,16 +54,16 @@ router.put('/accounts/:id/users/:userId/prizes/:prizeIndex(.:format)').to('Accou
 router.get('/accounts/:id/users/:userId/reading_log(.:format)').to('Accounts.showUserReadingLog');
 router.put('/accounts/:id/users/:userId/reading_log(.:format)').to('Accounts.updateUserReadingLog');
 router.get('/reports').to('Reports.index');
-router.get('/reports/prize').to('Reports.prize');
+router.post('/badges/update_file(.:format)').to('Badges.updateFile');
+
 
 router.resource('accounts');
-
 router.resource('grids');
 router.resource('prizes');
 router.resource('branches');
 router.resource('user_types');
-
 router.resource('grid_icons');
+router.resource('badges');
 
 router.get('/helps/help').to('Helps.applicationHelp');
 

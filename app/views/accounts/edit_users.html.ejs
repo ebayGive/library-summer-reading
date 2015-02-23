@@ -29,13 +29,19 @@
       return panelClass;
     }
 %>
+<script>
+  var badges = [];
+  <%for(var iBdg=0, bdgLength=badges.length; iBdg < bdgLength; iBdg++){%>
+    badges[<%=iBdg%>] = {desc: "<%=badges[iBdg].desc%>", imageSrc: "<%=badges[iBdg].imageSrc%>"};
+  <%}%>
+</script>
 <br/>
       <%- partial('/partial/message', {flash: flash}) %>
 
 <form class="form-inline" role="form">
 <%- contentTag('input', account.id, {name: 'id', id: 'id', type: 'hidden'}); %>
   <div class="form-group col-md-6">
-      <div><strong><h4>Username / Phone Number</strong> : <%=account.accountName%></h4></div>
+      <div><strong><h4>User&nbsp;Name</strong> : <%=account.accountName%></h4></div>
   </div>
 </form>
 <div class="row">
@@ -67,12 +73,12 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="activityModal" tabindex="-1" role="dialog" aria-labelledby="activityModalLabel" aria-hidden="true">
+<div class="modal" id="activityModal" tabindex="-1" role="dialog" aria-labelledby="activityModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="activityModal">Your Challenge:</h4>
+        <h4 class="modal-title" id="activityModalHeader">Your Challenge:</h4>
       </div>
       <div class="modal-body">
       </div>
@@ -81,12 +87,12 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="prizeModal" tabindex="-1" role="dialog" aria-labelledby="prizeModalLabel" aria-hidden="true">
+<div class="modal" id="prizeModal" tabindex="-1" role="dialog" aria-labelledby="prizeModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="activityModal">Prize Information:</h4>
+        <h4 class="modal-title" id="prizeModalHeader">Prize Information:</h4>
       </div>
       <div class="modal-body">
       </div>

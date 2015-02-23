@@ -15,6 +15,8 @@
   url = "/grids";
   var gridData = {};
   var gridIconOptions = [];
+  var NUMBER_OF_GRID_CELLS = 16;
+  var NUMBER_OF_CELLS_PER_ROW = 4;
   <%for(var iCn in gridIcons){%>
     gridIconOptions[<%=iCn%>] = {text: '<%=gridIcons[iCn].name%>', value: '<%=gridIcons[iCn].name%>'};
   <%}%>
@@ -75,14 +77,14 @@
     gridTemplate = {};
     gridTemplate.userType = $('#userTypes').val();
     gridTemplate.cells = [];
-    for(var i=0; i < 25; i++ ) {
-      gridTemplate.cells[gridTemplate.cells.length] = {index: i, description: '', imgSrc: ''};
+    for(var i=0; i < NUMBER_OF_GRID_CELLS; i++ ) {
+      gridTemplate.cells[gridTemplate.cells.length] = {index: i, description: '', imgSrc: '', whatDidIDo: 'What did I do?'};
     }
     return gridTemplate;
   }
   
   function drawGrid(data) {
-    var noCols = 5;
+    var noCols = NUMBER_OF_CELLS_PER_ROW;
     var gridHtml = '';
     
     gridData = data;
@@ -94,9 +96,10 @@
         }
         gridHtml += '<div class="row">';
       }
-      gridHtml += '<div class="grid-padding col-sm-2 col-md-2">';
+      gridHtml += '<div class="grid-padding col-sm-3 col-md-3">';
       gridHtml += '<div id="cell_' + gridData.cells[cell].index + '" class="grid-with-icon-bordered">';
       gridHtml += '<textarea id="desc_' + gridData.cells[cell].index + '" class="form-control grid-textarea" maxLength="300" rows="4">' + gridData.cells[cell].description + '</textarea>';
+      gridHtml += '<input id="whatDidIDo_' + gridData.cells[cell].index + '" class="form-control" type="text" maxLength="100" value="' + gridData.cells[cell].whatDidIDo + '"/>';
       gridHtml += selectTag(gridIconOptions, gridData.cells[cell].gridIcon, {name: 'gridIcon_' + gridData.cells[cell].index, id: 'gridIcon_' +  gridData.cells[cell].index, class: 'form-control'});
       gridHtml += '</div></div>';
     }
@@ -130,12 +133,18 @@
     $('textarea').each(function(){
       $(this).prop("readonly", "");
     });
+    $('input[type="text"]').each(function(){
+      $(this).prop("readonly", "");
+    });
     $( "select[id*='gridIcon']" ).prop("disabled", false);
     drawGridActions(true);
   }
  
   function makeGridNonEditable() {
     $('textarea').each(function(){
+      $(this).prop("readonly", "readonly");
+    });
+    $('input[type="text"]').each(function(){
       $(this).prop("readonly", "readonly");
     });
     $( "select[id*='gridIcon']" ).prop("disabled", "disabled");
@@ -165,9 +174,17 @@
   }
 
   function updateGridData() {
-    for(var iCell=0, gridSize = gridData.cells.length; iCell<gridSize; iCell++) {
+    for(var iCell=0; iCell<NUMBER_OF_GRID_CELLS; iCell++) {
       gridData.cells[iCell].description = $('#desc_' + gridData.cells[iCell].index).val();
       gridData.cells[iCell].gridIcon = $('#gridIcon_' + gridData.cells[iCell].index).val();
+      gridData.cells[iCell].whatDidIDo = $('#whatDidIDo_' + gridData.cells[iCell].index).val();
+    }
+    if(gridData.cells.length > NUMBER_OF_GRID_CELLS) {
+      var newCells = [];
+      for(var iCell=0; iCell<NUMBER_OF_GRID_CELLS; iCell++) {
+        newCells[iCell] = gridData.cells[iCell];
+      }
+      gridData.cells = newCells;
     }
     if(gridData.id == "-1") {
       gridData.id = null;
@@ -201,6 +218,7 @@
   function resetGridCells() {
     for(var iCell=0, gridSize = gridData.cells.length; iCell<gridSize; iCell++) {
       $('#desc_' + gridData.cells[iCell].index).val(gridData.cells[iCell].description);
+      $('#whatDidIDo_' + gridData.cells[iCell].index).val(gridData.cells[iCell].whatDidIDo);
     }
   }
 </script>

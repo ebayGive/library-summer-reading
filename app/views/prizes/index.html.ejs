@@ -25,9 +25,6 @@
               <th class="col-md-2">Prize 1</th>
               <th class="col-md-2">Prize 2</th>
               <th class="col-md-2">Prize 3</th>
-              <th class="col-md-2">Prize 4</th>
-              <th class="col-md-2">Prize 5</th>
-              <th class="col-md-1">Battery</th>
               <th><%- linkTo("<i class='glyphicon glyphicon-plus'></i>", "#", {id: "lnkAdd", _escapeContent: false, onclick: "addRow()"}); %></th>
             </tr>
     <% if (prizes && prizes.length > 0) { %>
@@ -37,9 +34,6 @@
               <td><%=prizes[i].prize1%></td>
               <td><%=prizes[i].prize2%></td>
               <td><%=prizes[i].prize3%></td>
-              <td><%=prizes[i].prize4%></td>
-              <td><%=prizes[i].prize5%></td>
-              <td><%=prizes[i].prize6%></td>
               <td><%- linkTo("<i class='glyphicon glyphicon-edit'></i>", "#", {onclick: "editRow('" + prizes[i].id + "')", _escapeContent: false}); %>
               <%- linkTo("<i class='glyphicon glyphicon-trash'></i>", "#", {onclick: "deleteRow('" + prizes[i].id + "')", _escapeContent: false}); %></td>
             </tr>
@@ -55,14 +49,11 @@
   <div class="col-sm-0 col-md-1"></div>
 </div>
 <script>
-  params = {id: "", userType: "", prize1: "", prize2: "", prize3: "", prize4: "", prize5: "", prize6: ""};
+  params = {id: "", userType: "", prize1: "", prize2: "", prize3: ""};
   properties = [{name: "userType", type: "select", maxLength: 100}, 
                 {name: "prize1", type: "text", maxLength: 100},
                 {name: "prize2", type: "text", maxLength: 100},
-                {name: "prize3", type: "text", maxLength: 100},
-                {name: "prize4", type: "text", maxLength: 100},
-                {name: "prize5", type: "text", maxLength: 100},
-                {name: "prize6", type: "text", maxLength: 100}];
+                {name: "prize3", type: "text", maxLength: 100}];
                 
   url = "/prizes";
 

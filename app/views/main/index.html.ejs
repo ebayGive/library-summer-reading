@@ -30,17 +30,17 @@
                     </div>
                   <% } %>
                   <div class="form-group">
-                      <label for="accountName">User Name / Phone</label>
-                      <%- contentTag('input', params['accountName'], {name: 'accountName', id: 'accountName', class: 'form-control', placeholder: 'User Name or Phone'});%>
+                      <label for="accountName">User&nbsp;Name</label>
+                      <%- contentTag('input', params['accountName'], {name: 'accountName', id: 'accountName', class: 'form-control', placeholder: 'User Name', tabindex: '1'});%>
                   </div>
                   <div class="form-group">
                       <label for="accountName">PIN (4 digits)</label>
-                      <%- contentTag('input', params['passcode'], {name: 'passcode', id: 'passcode', type: 'password', class: 'form-control', placeholder: '4 digit pin'});%>
+                      <%- contentTag('input', params['passcode'], {name: 'passcode', id: 'passcode', type: 'password', class: 'form-control', placeholder: '4 digit pin', tabindex: '2'});%>
                   </div>
                   <div class="form-group">
                     <div class="text-right">
-                        <button type="submit" class="btn btn-primary">Sign&nbsp;In</button>
-                        <a href="/accounts/register" class="btn btn-default" alt="First time users, Click here to register">Register</a>
+                        <a href="/accounts/register" class="btn btn-default" alt="First time users, Click here to register" tabindex="4">Create&nbsp;New&nbsp;Account</a>
+                        <button type="submit" class="btn btn-primary" tabindex="3">Sign&nbsp;In</button>
                      </div>
                   </div>
                 </form>

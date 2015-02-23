@@ -15,7 +15,22 @@ body {
   padding-bottom: 40px;
   background-color: #FFFFFF;
   top: 0px !important; 
-  background-color:#FFFFFF;
+}
+
+.volunteer_bg {
+  background-color: #EEEEEE;
+}
+
+.fs-12{
+  font-size: 12px;
+}
+
+.fs-15{
+  font-size: 15px;
+}
+
+.fs-18{
+  font-size: 18px;
 }
 
 code {

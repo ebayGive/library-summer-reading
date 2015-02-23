@@ -31,7 +31,6 @@
               <th class="col-md-1">PreReaders</th>
               <th class="col-md-1">Teens</th>
               <th class="col-md-1">Adults</th>
-              <th class="col-md-1">Parents</th>
               <th class="col-md-1">Staffs</th>
             </tr>
               <tr>
@@ -41,7 +40,6 @@
                 <td><%=result.totalPreReaders%></td>
                 <td><%=result.totalTeen%></td>
                 <td><%=result.totalAdult%></td>
-                <td><%=result.totalParents%></td>
                 <td><%=result.totalStaff%></td>
               </tr>
           </table>
@@ -60,7 +58,6 @@
               <th class="col-md-1">PreReaders</th>
               <th class="col-md-1">Teens</th>
               <th class="col-md-1">Adults</th>
-              <th class="col-md-1">Parents</th>
               <th class="col-md-1">Staffs</th>
             </tr>
             <%
@@ -75,7 +72,6 @@
                 <td><%=branchReport.totalPreReaders%></td>
                 <td><%=branchReport.totalTeen%></td>
                 <td><%=branchReport.totalAdult%></td>
-                <td><%=branchReport.totalParents%></td>
                 <td><%=branchReport.totalStaff%></td>
               </tr>
             <%}%>
@@ -100,22 +96,9 @@
               for(var iage in result.agereports) {
                 ageReport = result.agereports[iage];
                 if(ageReport.totalUsers != 0) {
-	                if(ageReport.name == '<= 0') 
-	                	ageReport.name = 'Not in file'
-	                else if(ageReport.name == '<= 5') 
-	                	ageReport.name = '0 - 5'
-	                else if(ageReport.name == '<= 12') 
-	                	ageReport.name = '6 - 12'
-	                else if(ageReport.name == '<= 18') 
-	                	ageReport.name = '13- 18'
-	                else if(ageReport.name == '<= 30') 
-	                	ageReport.name = '19- 30'
-	                else if(ageReport.name == '<= 49') 
-	                	ageReport.name = '31- 49'
-	                else if(ageReport.name == '<= 59') 
-	                	ageReport.name = '41- 59'
-	                else 
-	                	ageReport.name = '60 +'
+                if(ageReport.name == 0) {
+                	ageReport.name = 'Not in file'
+                }
                 %>
               <tr>
                 <td><%=ageReport.name%></td>
@@ -155,22 +138,10 @@
 		                ageReport = branchReport.agereports[iage];
 		                if(ageReport.totalUsers != 0) 
 		                {
-			                if(ageReport.name == '<= 0') 
+			                if(ageReport.name == 0) 
+			                {
 			                	ageReport.name = 'Not in file'
-			                else if(ageReport.name == '<= 5') 
-			                	ageReport.name = '0 - 5'
-			                else if(ageReport.name == '<= 12') 
-			                	ageReport.name = '6 - 12'
-			                else if(ageReport.name == '<= 18') 
-			                	ageReport.name = '13- 18'
-			                else if(ageReport.name == '<= 30') 
-			                	ageReport.name = '19- 30'
-			                else if(ageReport.name == '<= 49') 
-			                	ageReport.name = '31- 49'
-			                else if(ageReport.name == '<= 59') 
-			                	ageReport.name = '41- 59'
-			                else 
-			                	ageReport.name = '60 +'
+			                }
 		                %>
               <tr>
                 <td><%=branchReport.name%></td>

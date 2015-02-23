@@ -66,6 +66,7 @@ var Application = function () {
 
 exports.Application = Application;
 
+
 getRoles = function() {
     var roles = [];
     roles[roles.length] = {id: 'ADMIN', name: 'Admin'};

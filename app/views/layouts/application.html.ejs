@@ -1,5 +1,6 @@
 <%= partial('layout_header'); %>
 <%
+
 	function getLogoUrl(session) {
 		if(typeof session === 'undefined' || typeof session.get('account_info') === 'undefined' || session.get('account_info') == null) {
 			return "/";
@@ -11,6 +12,7 @@
 			return "/accounts/" + session.get('account_info').id +"/edit_users"
 		}
 	}
+
 %>
   <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -30,12 +32,13 @@
 		<div class="collapse navbar-collapse" id="main-navbar-collapse">
 		  <ul class="nav navbar-nav navbar-right">	
 		  		<li>
-					  <div id="google_translate_element"></div>
+					  <div id="google_translate_element"><span><a href='javascript:translateToSpanish();'>Español</a> | 中文 | Tiếng Việt &nbsp;</span></div>
 					  <script>
 							function googleTranslateElementInit() {
 							  new google.translate.TranslateElement({
 								pageLanguage: 'en',
-								includedLanguages: 'zh-CN,zh-TW,en,es,th,vi,hi,it,ja,fr,de'
+								includedLanguages: 'zh-CN,zh-TW,en,es,th,vi,hi,it,ja,fr,de', 
+								layout: google.translate.TranslateElement.InlineLayout.SIMPLE
 							  }, 'google_translate_element');
 							}
 					</script>
@@ -55,7 +58,6 @@
 					  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-stats"></i> Reports <b class="caret"></b></a>
 					  <ul class="dropdown-menu">
 						<li><%- linkTo("Registered Users", '/reports');%></li>
-						<li><%- linkTo("Prize Report", '/reports/prize');%></li>
 					  </ul>
 					</li>
 					<li class="dropdown">
@@ -63,8 +65,10 @@
 					  <ul class="dropdown-menu">
 						<li><%- linkTo("Libraries", branchPath(''));%></li>
 						<li><%- linkTo("User Type", userTypePath(''));%></li>
+						<li><%- linkTo("Prizes", prizePath(''));%></li>
 						<li><%- linkTo("Grid Icons", gridIconPath(''));%></li>
 						<li><%- linkTo("Grids", gridPath(''));%></li>
+						<li><%- linkTo("Badges", badgePath(''));%></li>
 					  </ul>
 					</li>
 					<li class="dropdown">
@@ -100,7 +104,11 @@
 		</div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
 	</nav>
-	<div class="container">
+	<%if(isVolunteer(session)) {%>
+	<div class="container volunteer_bg" >
+	<%}else{%>
+	<div class="container" >
+	<%}%>
       <%- render(); %>
 	  <br/><br/><br/>
     </div>

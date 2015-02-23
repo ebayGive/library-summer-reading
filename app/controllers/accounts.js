@@ -10,14 +10,14 @@ var Accounts = function () {
     var criteria = getCriteria(params);
     if(hasFilters(criteria)) {
         addAdditionalFilterIfNeeded(self, criteria);
-        geddy.model.Account.all(criteria, {sort: 'accountName', skip: 0, limit: 20}, function(err, accounts) {
+        geddy.model.Account.all(criteria, {sort: 'accountName', skip: 0, limit: 100}, function(err, accounts) {
           if (err) {
             self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
           }
           self.respondTo({
             html: function() {
-                if(accounts.length >= 20) {
-                  self.flash.alert('There could be more than 20 accounts matching your criteria. Add more search critera.');
+                if(accounts.length >= 100) {
+                  self.flash.alert('There could be more than 100 accounts matching your criteria. Add more search critera to filter your results.');
                 }else if(accounts.length == 0) {
                   self.flash.info('No Accounts found for given criteria.');
                 }
@@ -262,7 +262,12 @@ var Accounts = function () {
                     if (err) {
                       self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
                     }
-                    self.respond({account: account, branches: branches, userTypes: userTypes, roles: getRoles()});
+                    geddy.model.Badge.all({}, {sort: 'bdgId'}, function(err, badges){
+                      if (err) {
+                        self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+                      }
+                      self.respond({account: account, branches: branches, userTypes: userTypes, badges: badges, roles: getRoles()});
+                    });
                  });
               });
           },
@@ -631,7 +636,7 @@ exports.Accounts = Accounts;
 var getCriteria = function(params) {
     var criteria = {};
     if(typeof params['accountName'] != "undefined" && params['accountName'].trim().length > 0) {
-      criteria['accountName'] = params['accountName'].trim();
+      criteria['accountName'] = params['accountName'].trim().toLowerCase();
     }
     if(typeof params['emailAddress'] != "undefined" && params['emailAddress'].trim().length > 0) {
       criteria['emailAddress'] = params['emailAddress'].trim();
@@ -644,6 +649,9 @@ var getCriteria = function(params) {
     }
     if(typeof params['branchId'] != "undefined" && params['branchId'].trim().length > 0) {
       criteria['branchId'] = params['branchId'].trim();
+    }
+    if(typeof params['phone'] != "undefined" && params['phone'].trim().length > 0) {
+      criteria['phone'] = params['phone'].trim();
     }
     return criteria;
 }

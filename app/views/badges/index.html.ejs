@@ -1,0 +1,140 @@
+<h3>Badges</h3>
+      <%- partial('/partial/message', {flash: flash}) %>
+<div class="row">
+  <div class="col-sm-0 col-md-1"></div>
+  <div class="col-sm-12 col-md-10">
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <table class="table table-primary" id="dataTable">
+          <tbody>
+            <tr>
+              <th class="col-md-1">Id #</th>
+              <th class="col-md-9">Description</th>
+              <th class="col-md-1">Badge</th>
+              <th class="col-md-1">&nbsp;</th>
+            </tr>
+    <% if (badges && badges.length > 0) { %>
+        <%for (var i=0, ii = badges.length; i < ii; i++) { %>
+            <tr id="row_<%=badges[i]._id%>">
+              <td><%=badges[i].bdgId%></td>
+              <td><%=badges[i].desc%></td>
+              <td><img class="badge-thumpnail" src="../img/badges/<%=badges[i].imageSrc%>"/></td>
+              <td><%- linkTo("<i class='glyphicon glyphicon-edit'></i>", "#", {onclick: "showEditModal('" + badges[i]._id + "')", _escapeContent: false}); %>
+            </tr>
+        <%}%>
+      <%} else { %>
+          <tr class="warning"><td colspan="4">No Badges configured</td></tr>
+    <% } %>
+          <tbody>
+        </table>
+      </div>
+     </div>
+  </div>
+  <div class="col-sm-0 col-md-1"></div>
+</div>
+
+<!--<form action="/badges/update_file/1" method="post" enctype="multipart/form-data">
+    <div><input type="file" name="name" /></div>
+    <div><input type="submit" value="Upload" /></div>
+</form>-->
+<div class="modal" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="editModalHeader"></h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  params = {id: "", bdgId: "", desc: "", imageSrc: ""};
+  properties = [{name: "bdgId", type: "number", maxLength: 2}, {name: "desc", type: "text", maxLength: 200}, {name: "imageSrc", type: "text", maxLength: 100}];
+  url = "/badges";
+
+  $(document).ready(function(){
+  });
+
+   function showEditModal(rowId) {
+     var tdBdgId = $('#row_' + rowId).children().first();
+     var bdgId = tdBdgId.html();
+      $('#editModalHeader').empty().append('<strong>Badge ' + bdgId + '</strong>');
+      var modalBody = '';
+      modalBody += '<div class="row">';
+      modalBody += '<div class="col-md-2">Description</div>';
+      modalBody += '<div class="col-md-10">';
+      modalBody += '<input id="desc" name="desc" value="'  + tdBdgId.next().html() + '"  class="form-control"/>';
+      modalBody += '</div>';
+      modalBody += '</div><br/>';
+      modalBody += '<div class="row">';
+      modalBody += '<div class="col-md-2"></div>';
+      modalBody += '<div class="col-md-5"><input type="file" name="media" class="form-control" /></div>';
+      modalBody += '<div class="col-md-5"><input type="button" class="btn btn-default" value="Upload" onclick="uploadFile();" /></div>';
+      modalBody += '</div>';
+      var imgSrc = $('#row_' + rowId).children().first().next().next().children().first().prop('src');
+      var imgName = imgSrc.substring(imgSrc.lastIndexOf('/')+1);
+      modalBody += '<input type="hidden" name="bdgId" id="bdgId" value="' + bdgId + '"><input type="hidden" name="imageSrc" id="imageSrc" value="' + imgName + '">';
+
+      $('#editModal').find('.modal-body').empty().append(modalBody);
+      var modalFooter = '<button type="button" class="btn btn-default" onclick="closeEditModal()">Cancel</button>';
+      modalFooter += '<button type="button" class="btn btn-primary" onclick="saveAndCloseEditModal(\'' + rowId + '\')">Save</button>';
+      $('#editModal').find('.modal-footer').empty().append(modalFooter);
+      $('#editModal').modal('show');
+  }
+
+  function uploadFile() {
+    var data = new FormData($('input[name="media"]'));
+    var fileName = $('input[name="media"]').val();
+    if(!fileName) {
+      alert('Please select an Image file (JPG/PNG/GIF)');
+      return false;
+    }
+    else{
+      var ext = fileName.substring(fileName.lastIndexOf('.')+1).toLowerCase();
+      if(ext != 'jpg' && ext != 'gif' && ext != 'png') {
+        alert('Please select an Image file (JPG/PNG/GIF)');
+        return false;
+      }
+    }
+    jQuery.each($('input[name="media"]')[0].files, function(i, file) {
+        data.append(i, file);
+    });
+    $.ajax({
+        type: 'POST',
+        data: data,
+        url: '/badges/update_file.json',
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data){
+            $('#imageSrc').val(data);
+        }
+    }); 
+  }
+
+  function saveAndCloseEditModal(badgeId) {
+    saveIntoDB(badgeId);
+    updateBadge(badgeId);
+    closeEditModal();
+  }
+
+  function saveSuccess(data) {
+  }
+
+
+  function updateBadge(badgeId) {
+    $('#row_' + badgeId).children().first().next().html($('#desc').val());
+    $('#row_' + badgeId).children().first().next().next().empty().append('<img class="badge-thumpnail" src="../img/badges/' + $('#imageSrc').val() + '"/>');
+  }
+  
+  function closeEditModal() {
+    $('#editModal').modal('hide');
+  }
+
+
+</script>
+

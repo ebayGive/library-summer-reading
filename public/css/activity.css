@@ -24,6 +24,55 @@
   cursor: pointer;
 }
 
+.reading-status-pane {
+  margin: 10px;
+  padding:20px;
+  font-weight: bold;
+  font-size: 20px;
+  background-color: #DDDDDD;
+}
+
+.reading-status {
+  padding: 10px;
+  color: #009999;
+  font: bold 25px "Arial";
+  text-align: center;
+}
+
+.reading-status-bg {
+  background-color: #99CCFF;
+  font-size: 35px;
+}
+
+.reading-status-title {
+  color: #444444;
+  font-weight: bold;
+  font-style: Italic;
+  font-size: 20px;
+}
+
+.badge-thumpnail {
+  width: 50px;
+}
+
+.read-badge {
+  position: relative;
+  float: left;
+  width:90%;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.read-badge-collected {
+}
+
+.read-badge-locked {
+  font:bold 50px "Arial";
+  color: white;
+  text-align: center;
+  background-color: #808080;
+}
+
 @media (max-width: 767px) {
   .grid-bordered {
     height: 70px;
@@ -32,13 +81,17 @@
     font-size: 8px;
   }
   .grid-with-icon-bordered {
-    height: 65px;
+    height: 105px;
   }
   .grid-padding{
     width:70px;
     font-size: 8px;
   }
   .prize {
+    height:70px;
+  }
+
+  .read-badge {
     height:70px;
   }
 }
@@ -50,13 +103,16 @@
     font-size: 9px;
   }
   .grid-with-icon-bordered {
-    height: 80px;
+    height: 120px;
   }
   .grid-padding{
     width:90px;
     font-size: 9px;
   }
   .prize {
+    height:90px;
+  }
+  .read-badge {
     height:90px;
   }
 }
@@ -68,13 +124,16 @@
     font-size: 10px;
   }
   .grid-with-icon-bordered {
-    height: 110px;
+    height: 150px;
   }
   .grid-padding{
     width:120px;
     font-size: 10px;
   }
   .prize {
+    height:120px;
+  }
+  .read-badge {
     height:120px;
   }
 }
@@ -86,13 +145,16 @@
     font-size: 12px;
   }
   .grid-with-icon-bordered {
-    height: 128px;
+    height: 168px;
   }
   .grid-padding{
     width:140px;
     font-size: 12px;
   }
   .prize {
+    height:140px;
+  }
+  .read-badge {
     height:140px;
   }
 }
@@ -258,17 +320,46 @@
 }
 
 
-.prize {
-  padding-bottom: 0px;
-  padding-left: 10px;
-  padding-right: 0px;
+.prize-title {
+  padding: 10px;
   position: relative;
   float: left;
-  width:15%;
-  margin: 5px 5px 5px 5px;
-  font:bold 12px "Adobe Garamond Pro";
-  color: red;
+  width:80%;
+  font:bold 20px "Arial";
   text-align: center;
+  display: block;
+}
+
+.prize-title-bingo {
+  background-color: #FF9900;
+}
+
+.prize-title-blackout {
+  background-color: #808080;
+}
+
+.prize-title-reading {
+  background-color: #FFFFCC;
+}
+
+.prize-footer {
+  padding: 10px;
+  font:italic 15px "Arial";
+  color: #666666;
+  text-align: center;
+  display: block;
+  width:80%;
+}
+
+.prize {
+  position: relative;
+  float: left;
+  width:80%;
+  font:bold 80px "Adobe Garamond Pro";
+  color: white;
+  text-align: center;
+  background-color: #303030;
+  display: block;
 }
 
 .prize-not-charged-1 {
@@ -445,20 +536,52 @@
 }
 
 
-
-.batt {
-  width:545.66px;
-  border: 0px none;
+.badge {
+  width:250px;
+  height: 300px;
+  border: 3px solid #AAAAAA;
+  border-collapse: collapse;
   padding: 0px;
   margin: 0px;
+  background:#FFFFFF;
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100%;
+  background-origin: content-box;  
+}
+
+.badge > tbody > tr > td {
+  padding: 0px;
+  margin: 0px;
+  border: 0px none;
+  height:100%;
+  width:100%;
+}
+
+.badge-img {
+  width: 250px;
+}
+
+
+.batt {
+  width:250px;
+  border: 3px solid #AAAAAA;
+  border-collapse: collapse;
+  padding: 0px;
+  margin: 0px;
+  background:#FFFFFF url("/img/reading_log_bg.png");
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100%;
+  background-origin: content-box;  
 }
 
 .batt > tbody > tr > td {
   padding: 0px;
   margin: 0px;
-  border: 0px none;
-  height:38.5px;
+  height:75px;
   width:50px;
+  border: 1px solid #AAAAAA;
 }
 
 .batt > tbody > tr > td.batt-message {
@@ -472,1084 +595,126 @@
 }
 
 
-.cell-activated-1 {
-  background:#FFFFFF url("/img/battery/on/Battery On-43.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
+.cell-activated {
+  background:transparent url("/img/check-mark.png");
+  -moz-background-size: 50px 75px;
+  -webkit-background-size: 50px 75px;
+  background-size: 50px 75px;
   background-position: top center !important;
   background-repeat: no-repeat !important;
   margin: 0px;
   padding: 0px;
-  border: 0px;
+  border: 1px solid #AAAAAA;
 }
 
-.cell-activated-2 {
-  background:#FFFFFF url("/img/battery/on/Battery On-44.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
+.cell-off {
+  background:transparent url("/img/battery/off/Battery1.png");
+  -moz-background-size: 50px 75px;
+  -webkit-background-size: 50px 75px;
+  background-size: 50px 75px;
   background-position: top center !important;
   background-repeat: no-repeat !important;
   margin: 0px;
   padding: 0px;
-  border: 0px;
+  border: 1px solid #AAAAAA;
 }
 
-.cell-activated-3 {
-  background:#FFFFFF url("/img/battery/on/Battery On-45.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-4 {
-  background:#FFFFFF url("/img/battery/on/Battery On-40.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-5 {
-  background:#FFFFFF url("/img/battery/on/Battery On-41.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-6 {
-  background:#FFFFFF url("/img/battery/on/Battery On-42.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-7 {
-  background:#FFFFFF url("/img/battery/on/Battery On-37.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-8 {
-  background:#FFFFFF url("/img/battery/on/Battery On-38.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-9 {
-  background:#FFFFFF url("/img/battery/on/Battery On-39.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-10 {
-  background:#FFFFFF url("/img/battery/on/Battery On-34.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-11 {
-  background:#FFFFFF url("/img/battery/on/Battery On-35.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-12 {
-  background:#FFFFFF url("/img/battery/on/Battery On-36.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-13 {
-  background:#FFFFFF url("/img/battery/on/Battery On-31.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-14 {
-  background:#FFFFFF url("/img/battery/on/Battery On-32.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-15 {
-  background:#FFFFFF url("/img/battery/on/Battery On-33.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-16 {
-  background:#FFFFFF url("/img/battery/on/Battery On-28.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-17 {
-  background:#FFFFFF url("/img/battery/on/Battery On-29.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-18 {
-  background:#FFFFFF url("/img/battery/on/Battery On-30.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-19 {
-  background:#FFFFFF url("/img/battery/on/Battery On-25.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-20 {
-  background:#FFFFFF url("/img/battery/on/Battery On-26.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-21 {
-  background:#FFFFFF url("/img/battery/on/Battery On-27.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-22 {
-  background:#FFFFFF url("/img/battery/on/Battery On-22.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-23 {
-  background:#FFFFFF url("/img/battery/on/Battery On-23.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-24 {
-  background:#FFFFFF url("/img/battery/on/Battery On-24.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-25 {
-  background:#FFFFFF url("/img/battery/on/Battery On-19.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-26 {
-  background:#FFFFFF url("/img/battery/on/Battery On-20.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-27 {
-  background:#FFFFFF url("/img/battery/on/Battery On-21.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-28 {
-  background:#FFFFFF url("/img/battery/on/Battery On-16.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-29 {
-  background:#FFFFFF url("/img/battery/on/Battery On-17.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-30 {
-  background:#FFFFFF url("/img/battery/on/Battery On-18.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-31 {
-  background:#FFFFFF url("/img/battery/on/Battery On-13.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-32 {
-  background:#FFFFFF url("/img/battery/on/Battery On-14.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-33 {
-  background:#FFFFFF url("/img/battery/on/Battery On-15.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-34 {
-  background:#FFFFFF url("/img/battery/on/Battery On-10.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-35 {
-  background:#FFFFFF url("/img/battery/on/Battery On-11.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-36 {
-  background:#FFFFFF url("/img/battery/on/Battery On-12.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-37 {
-  background:#FFFFFF url("/img/battery/on/Battery On-07.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-38 {
-  background:#FFFFFF url("/img/battery/on/Battery On-08.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-39 {
-  background:#FFFFFF url("/img/battery/on/Battery On-09.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-40 {
-  background:#FFFFFF url("/img/battery/on/Battery On-04.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-41 {
-  background:#FFFFFF url("/img/battery/on/Battery On-05.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-42 {
-  background:#FFFFFF url("/img/battery/on/Battery On-06.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-43 {
-  background:#FFFFFF url("/img/battery/on/Battery On-01.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-44 {
-  background:#FFFFFF url("/img/battery/on/Battery On-02.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-activated-45 {
-  background:#FFFFFF url("/img/battery/on/Battery On-03.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-1 {
-  background:#FFFFFF url("/img/battery/off/Battery1-43.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-2 {
-  background:#FFFFFF url("/img/battery/off/Battery1-44.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-3 {
-  background:#FFFFFF url("/img/battery/off/Battery1-45.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-4 {
-  background:#FFFFFF url("/img/battery/off/Battery1-40.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-5 {
-  background:#FFFFFF url("/img/battery/off/Battery1-41.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-6 {
-  background:#FFFFFF url("/img/battery/off/Battery1-42.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-7 {
-  background:#FFFFFF url("/img/battery/off/Battery1-37.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-8 {
-  background:#FFFFFF url("/img/battery/off/Battery1-38.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-9 {
-  background:#FFFFFF url("/img/battery/off/Battery1-39.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-10 {
-  background:#FFFFFF url("/img/battery/off/Battery1-34.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-11 {
-  background:#FFFFFF url("/img/battery/off/Battery1-35.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-12 {
-  background:#FFFFFF url("/img/battery/off/Battery1-36.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-13 {
-  background:#FFFFFF url("/img/battery/off/Battery1-31.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-14 {
-  background:#FFFFFF url("/img/battery/off/Battery1-32.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-15 {
-  background:#FFFFFF url("/img/battery/off/Battery1-33.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-16 {
-  background:#FFFFFF url("/img/battery/off/Battery1-28.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-17 {
-  background:#FFFFFF url("/img/battery/off/Battery1-29.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-18 {
-  background:#FFFFFF url("/img/battery/off/Battery1-30.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-19 {
-  background:#FFFFFF url("/img/battery/off/Battery1-25.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-20 {
-  background:#FFFFFF url("/img/battery/off/Battery1-26.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-21 {
-  background:#FFFFFF url("/img/battery/off/Battery1-27.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-22 {
-  background:#FFFFFF url("/img/battery/off/Battery1-22.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-23 {
-  background:#FFFFFF url("/img/battery/off/Battery1-23.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-24 {
-  background:#FFFFFF url("/img/battery/off/Battery1-24.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-25 {
-  background:#FFFFFF url("/img/battery/off/Battery1-19.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-26 {
-  background:#FFFFFF url("/img/battery/off/Battery1-20.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-27 {
-  background:#FFFFFF url("/img/battery/off/Battery1-21.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-28 {
-  background:#FFFFFF url("/img/battery/off/Battery1-16.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-29 {
-  background:#FFFFFF url("/img/battery/off/Battery1-17.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-30 {
-  background:#FFFFFF url("/img/battery/off/Battery1-18.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-31 {
-  background:#FFFFFF url("/img/battery/off/Battery1-13.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-32 {
-  background:#FFFFFF url("/img/battery/off/Battery1-14.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-33 {
-  background:#FFFFFF url("/img/battery/off/Battery1-15.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-34 {
-  background:#FFFFFF url("/img/battery/off/Battery1-10.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-35 {
-  background:#FFFFFF url("/img/battery/off/Battery1-11.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-36 {
-  background:#FFFFFF url("/img/battery/off/Battery1-12.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-37 {
-  background:#FFFFFF url("/img/battery/off/Battery1-07.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-38 {
-  background:#FFFFFF url("/img/battery/off/Battery1-08.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
-.cell-off-39 {
-  background:#FFFFFF url("/img/battery/off/Battery1-09.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
+.batt-action {
+  width: 250px;
+  position: relative;
+  display: table;
+  height: 75px;
+  border: 1px solid #AAAAAA;
+  border-collapse: collapse;
   margin: 0px;
   padding: 0px;
-  border: 0px;
 }
 
-.cell-off-40 {
-  background:#FFFFFF url("/img/battery/off/Battery1-04.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
+.batt-action-icon{
+  background:transparent url("/img/read.png");
+  -moz-background-size: 50px 75px;
+  -webkit-background-size: 50px 75px;
+  background-size: 50px 75px;
   background-position: top center !important;
   background-repeat: no-repeat !important;
   margin: 0px;
   padding: 0px;
-  border: 0px;
+  width: 20%;
+  height: 73px;
+  float: left;
+  display: table-cell;
+  vertical-align: middle;
 }
 
-.cell-off-41 {
-  background:#FFFFFF url("/img/battery/off/Battery1-05.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
+.batt-action-text{
   margin: 0px;
   padding: 0px;
-  border: 0px;
+  background-color: #FFFFFF;
+  color: #444444;
+  font: italic 16px arial, sans-serif;
+  width: 50%;
+  float: left;
+  height: 73px;
+  display: table-cell;
+  vertical-align: middle;
 }
 
-.cell-off-42 {
-  background:#FFFFFF url("/img/battery/off/Battery1-06.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
+.text-align {
+  position: relative;
+  top: 20px;
+  text-align: center;
 }
 
-.cell-off-43 {
-  background:#FFFFFF url("/img/battery/off/Battery1-01.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
+.batt-action-btn-plus{
   margin: 0px;
   padding: 0px;
-  border: 0px;
+  background-color: #00CCCC;
+  color: #FFFFFF;
+  font: 30px arial, sans-serif;
+  border-left: 1px solid #AAAAAA;
+  float: left;
+  width: 30%;
+  height: 73px;
+  display: table-cell;
+  vertical-align: middle;
 }
 
-.cell-off-44 {
-  background:#FFFFFF url("/img/battery/off/Battery1-02.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
+.batt-action-btn-minus{
   margin: 0px;
   padding: 0px;
-  border: 0px;
+  background-color: #d9534f;
+  color: #FFFFFF;
+  font: 30px arial, sans-serif;
+  border-left: 1px solid #AAAAAA;
+  float: left;
+  width: 25%;
+  height: 73px;
 }
 
-.cell-off-45 {
-  background:#FFFFFF url("/img/battery/off/Battery1-03.png");
-  -moz-background-size: 50px 38.5px;
-  -webkit-background-size: 50px 38.5px;
-  background-size: 50px 38.5px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
+.batt-badge-desc{
   margin: 0px;
   padding: 0px;
-  border: 0px;
+  background-color: #FF9900;
+  color: #444444;
+  font: italic 16px arial, sans-serif;
+  width: 50%;
+  float: left;
+  height: 73px;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.batt-action-btn-minus-text{
+  margin: 0px;
+  padding: 0px;
+  background-color: #FFFFFF;
+  color:#444444 ;
+  font: italic 16px arial, sans-serif;
+  width: 25%;
+  float: left;
+  height: 73px;
+  display: table-cell;
+  vertical-align: middle;
 }
 
 .robot-on-5 {

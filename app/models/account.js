@@ -3,19 +3,22 @@ var crypto = require('crypto');
 
 var iterations = 1000;
 var keylen = 32; // bytes
+var FULL_BATTERY_MINUTES = 900;
 var Account = function () {
 
   this.defineProperties({
         accountName: {type:'string', required: true},
+        phone: {type:'string', required: false},
         emailAddress: {type: 'string', required: false},
         branchId: {type: 'string', required: true},
         role: {type: 'string', required: true},
         passcode: {type: 'string', required: true},
         salt: {type: 'string', required: false},
+        languageSpoken: {type: 'string', required: false},
         users: {type: 'object'},
   });
 
-  this.validatesPresent('accountName', {message: 'Account Name is required, preferably phone number'});
+  this.validatesPresent('accountName', {message: 'User Name is required'});
   this.validatesPresent('branchId', {message: 'Branch is required'});
   this.validatesPresent('role', {message: 'Role is required'});
   this.validatesPresent('passcode', {message: 'Passcode is required'});
@@ -33,6 +36,13 @@ var Account = function () {
     }
     return /(([a-zA-Z0-9\-?\.?]+)@(([a-zA-Z0-9\-_]+\.)+)([a-z]{2,3}))+$/.test(emailAddress);
   }, {message: 'Email Address is not valid'});
+
+  this.validatesWithFunction('phone', function (phone) {
+    if(typeof phone === 'undefined' || phone == "") {
+      return true;
+    }
+    return /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)?\d{4}$/.test(phone);
+  }, {message: 'Phone number is not valid'});
   
   // Validate Mandatory Fields
   this.validatesWithFunction('users', function (users) {
@@ -221,6 +231,9 @@ var Account = function () {
       for(var iUr in this.users) {
           if(this.users[iUr].id == userId) {
             this.users[iUr].readingLog = parseInt(readingLog);
+            if(this.users[iUr].readingLog >= FULL_BATTERY_MINUTES && !this.users[iUr].prizes[2].state) {
+              this.users[iUr].prizes[2].state = 1;
+            }
             break;
           }
         }
@@ -334,6 +347,7 @@ Account.on('beforeUpdateProperties', function(data, params){
   }
   
   var setDefaultUserData = function(data) {
+    data.accountName = data.accountName.toLowerCase();
       if(typeof data.users === 'undefined') {
         data.users = [];
         return;
@@ -343,13 +357,13 @@ Account.on('beforeUpdateProperties', function(data, params){
         user = data.users[iUser];
         if(typeof user.activityGrid === 'undefined') {
             user.activityGrid = [];
-            for(var iCell = 0; iCell < 25; iCell++) {
+            for(var iCell = 0; iCell < 16; iCell++) {
               user.activityGrid[iCell] = {activity: 0, notes: '', updatedAt: new Date()};  
             }
         }
         if(typeof user.prizes === 'undefined') {
             user.prizes = [];
-            for(var iPrz = 0; iPrz < 6; iPrz++) {
+            for(var iPrz = 0; iPrz < 3; iPrz++) {
               user.prizes[iPrz] = {state: 0, notes: '', updatedAt: new Date()};  
             }
         }
@@ -369,7 +383,7 @@ Account.on('beforeUpdateProperties', function(data, params){
   }
   
   var setPrizeStateForUser = function(user) {
-    if(user.prizes && user.prizes.length == 5 && user.prizes[4].state > 0) {//already done all cells
+    if(user.prizes && user.prizes.length >= 2 && user.prizes[1].state > 0) {//already done all cells
       return;
     }
     var iPrizeIndex = -1;
@@ -380,12 +394,12 @@ Account.on('beforeUpdateProperties', function(data, params){
     var diagonal2Done = true;
     var gridIndex = 0;
     // Check Rows
-    for(var iRow=0; iRow<5; iRow++) {
+    for(var iRow=0; iRow<4; iRow++) {
       rowDone = true;
       colDone = true;
-      for(var iCol=0; iCol<5; iCol++) {
+      for(var iCol=0; iCol<4; iCol++) {
         //row
-        gridIndex = iRow*5+iCol;
+        gridIndex = iRow*4+iCol;
         if(user.activityGrid.length > gridIndex) {
           if(!user.activityGrid[gridIndex].activity) {
             completedAll = false;
@@ -393,7 +407,7 @@ Account.on('beforeUpdateProperties', function(data, params){
           }
         }
         //col
-        gridIndex = iCol*5+iRow;
+        gridIndex = iCol*4+iRow;
         if(user.activityGrid.length > gridIndex) {
           if(!user.activityGrid[gridIndex].activity) {
             completedAll = false;
@@ -402,14 +416,14 @@ Account.on('beforeUpdateProperties', function(data, params){
         }
         if(iRow == iCol) {
           //diagonal1
-          gridIndex = iRow*5+iCol;
+          gridIndex = iRow*4+iCol;
           if(user.activityGrid.length > gridIndex) {
             if(!user.activityGrid[gridIndex].activity) {
               diagonal1Done = false;
             }
           }
           //diagonal2
-          gridIndex = iRow*5+(4-iCol);
+          gridIndex = iRow*4+(3-iCol);
           if(user.activityGrid.length > gridIndex) {
             if(!user.activityGrid[gridIndex].activity) {
               diagonal2Done = false;
@@ -430,7 +444,7 @@ Account.on('beforeUpdateProperties', function(data, params){
     if(diagonal2Done) {
       iPrizeIndex++;
     }
-    for(var iPrz=0; iPrz<4; iPrz++) {
+    /*for(var iPrz=0; iPrz<4; iPrz++) {
       if(iPrz > iPrizeIndex) {
         break;
       }
@@ -440,6 +454,16 @@ Account.on('beforeUpdateProperties', function(data, params){
     }
     if(iPrizeIndex >= 4 && completedAll && !user.prizes[iPrz].state) {
         user.prizes[4].state = 1;
+    }*/
+
+    if(iPrizeIndex > -1 && !user.prizes[0].state) {
+        user.prizes[0].state = 1;
+    }
+    if(iPrizeIndex > 0 && completedAll && !user.prizes[1].state) {
+        user.prizes[1].state = 1;
+    }
+    if(user.readingLog >= FULL_BATTERY_MINUTES && !user.prizes[2].state) {
+        user.prizes[2].state = 1;
     }
   };
   
