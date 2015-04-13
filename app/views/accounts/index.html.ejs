@@ -70,7 +70,7 @@
                         <div class="col-md-10"><h3 class="panel-title"><%=accounts[iAct].accountName%> | <%=getValue(branchLookup, accounts[iAct].branchId)%></h3></div>
                         <div class="col-md-2 text-right"><a href="#" onclick="editAccount('<%=accounts[iAct].id%>');return false;" title="Edit Account"><i class="glyphicon glyphicon-edit fs-18"></i></a>
                     <%if(typeof accounts[iAct].users != 'undefined' && accounts[iAct].users.length > 0) {%>
-                          <a href="#" onclick="editActivityLog('<%=accounts[iAct].id%>');return false;" title="Manage activity log"><i class="glyphicon glyphicon-pencil fs-18"></i></a>
+                          &nbsp;&nbsp;<a href="#" onclick="editActivityLog('<%=accounts[iAct].id%>');return false;" title="Manage activity log"><i class="glyphicon glyphicon-pencil fs-18"></i></a>
                         <!--  <a href="#" onclick="toggleDisplay('<%=accounts[iAct].id%>');return false;" title="Show users"><i id="chevron_<%=accounts[iAct].id%>" class="glyphicon glyphicon-chevron-down fs-18"></i></a> -->
                         </div>
                       </div>

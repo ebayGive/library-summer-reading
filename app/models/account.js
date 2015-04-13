@@ -3,7 +3,7 @@ var crypto = require('crypto');
 
 var iterations = 1000;
 var keylen = 32; // bytes
-var FULL_BATTERY_MINUTES = 900;
+var FULL_BATTERY_MINUTES = 600;
 var Account = function () {
 
   this.defineProperties({
@@ -18,31 +18,31 @@ var Account = function () {
         users: {type: 'object'},
   });
 
-  this.validatesPresent('accountName', {message: 'User Name is required'});
-  this.validatesPresent('branchId', {message: 'Branch is required'});
-  this.validatesPresent('role', {message: 'Role is required'});
-  this.validatesPresent('passcode', {message: 'Passcode is required'});
+  this.validatesPresent('accountName', {message: 'User Name is required.'});
+  this.validatesPresent('branchId', {message: 'Branch is required.'});
+  this.validatesPresent('role', {message: 'Role is required.'});
+  this.validatesPresent('passcode', {message: 'Passcode is required.'});
   this.validatesLength('accountName', {max: 20});
   this.validatesWithFunction('branchId', function (branchId) {
       return branchId != "-1";
-  }, {message: 'Branch is required'});
+  }, {message: 'Branch is required.'});
   this.validatesWithFunction('role', function (role) {
       return role != "-1";
-  }, {message: 'Role is required'});
+  }, {message: 'Role is required.'});
   
   this.validatesWithFunction('emailAddress', function (emailAddress) {
     if(typeof emailAddress === 'undefined' || emailAddress == "") {
       return true;
     }
     return /(([a-zA-Z0-9\-?\.?]+)@(([a-zA-Z0-9\-_]+\.)+)([a-z]{2,3}))+$/.test(emailAddress);
-  }, {message: 'Email Address is not valid'});
+  }, {message: 'Email Address is not valid.'});
 
   this.validatesWithFunction('phone', function (phone) {
     if(typeof phone === 'undefined' || phone == "") {
       return true;
     }
     return /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)?\d{4}$/.test(phone);
-  }, {message: 'Phone number is not valid'});
+  }, {message: 'Phone number must consist of 10 digits, including area code.'});
   
   // Validate Mandatory Fields
   this.validatesWithFunction('users', function (users) {
@@ -75,7 +75,7 @@ var Account = function () {
       }
     }
     return true;
-  }, {message: 'Something wrong with Family Member details'});
+  }, {message: 'Something wrong with Family Member details.'});
 
   this.addUser = function(params) {
     if(typeof this.users != 'undefined') {
@@ -320,7 +320,7 @@ Account.on('beforeUpdateProperties', function(data, params){
      data.passcode = hashedPasscodeBuff.toString('base64');
    }
  }
- 
+
  var updatePasscode = function(data, params) {
    if(typeof params['passcode'] === 'undefined' || params['passcode'] == '') {
      params['passcode'] = data.passcode;
@@ -348,6 +348,8 @@ Account.on('beforeUpdateProperties', function(data, params){
   
   var setDefaultUserData = function(data) {
     data.accountName = data.accountName.toLowerCase();
+    data.emailAddress = data.emailAddress.toLowerCase();
+    
       if(typeof data.users === 'undefined') {
         data.users = [];
         return;
@@ -383,7 +385,10 @@ Account.on('beforeUpdateProperties', function(data, params){
   }
   
   var setPrizeStateForUser = function(user) {
-    if(user.prizes && user.prizes.length >= 2 && user.prizes[1].state > 0) {//already done all cells
+    if(user.readingLog >= FULL_BATTERY_MINUTES && !user.prizes[2].state) {
+        user.prizes[2].state = 1;
+    }
+    if(user.prizes[1].state > 0) {//already done all cells
       return;
     }
     var iPrizeIndex = -1;
@@ -461,9 +466,6 @@ Account.on('beforeUpdateProperties', function(data, params){
     }
     if(iPrizeIndex > 0 && completedAll && !user.prizes[1].state) {
         user.prizes[1].state = 1;
-    }
-    if(user.readingLog >= FULL_BATTERY_MINUTES && !user.prizes[2].state) {
-        user.prizes[2].state = 1;
     }
   };
   

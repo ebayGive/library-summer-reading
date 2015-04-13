@@ -639,7 +639,7 @@ var getCriteria = function(params) {
       criteria['accountName'] = params['accountName'].trim().toLowerCase();
     }
     if(typeof params['emailAddress'] != "undefined" && params['emailAddress'].trim().length > 0) {
-      criteria['emailAddress'] = params['emailAddress'].trim();
+      criteria['emailAddress'] = params['emailAddress'].trim().toLowerCase();
     }
     if(typeof params['firstName'] != "undefined" && params['firstName'].trim().length > 0) {
       criteria['users'] = {$elemMatch: {firstName: new RegExp(params['firstName'].trim(), 'i')}};

@@ -34,6 +34,14 @@
   <%for(var iBdg=0, bdgLength=badges.length; iBdg < bdgLength; iBdg++){%>
     badges[<%=iBdg%>] = {desc: "<%=badges[iBdg].desc%>", imageSrc: "<%=badges[iBdg].imageSrc%>"};
   <%}%>
+
+  var contentMap = {};
+  contentMap["user.activity.message.readinglog.full.winPrize"] = "<%=i18n.t("user.activity.message.readinglog.full.winPrize")%>";
+  contentMap["user.activity.message.readinglog.full"] = "<%=i18n.t("user.activity.message.readinglog.full")%>";
+  contentMap["user.activity.message.activityGrid.instruction"] = "<%=i18n.t("user.activity.message.activityGrid.instruction")%>";
+  contentMap["user.activity.message.activityGrid.rowOrColumn.winPrize"] = "<%=i18n.t("user.activity.message.activityGrid.rowOrColumn.winPrize")%>";
+  contentMap["user.activity.message.activityGrid.blackout.winPrize"] = "<%=i18n.t("user.activity.message.activityGrid.blackout.winPrize")%>";
+
 </script>
 <br/>
       <%- partial('/partial/message', {flash: flash}) %>
@@ -45,7 +53,7 @@
   </div>
 </form>
 <div class="row">
-  <div class="col-md-12 text-info">&nbsp;&nbsp;&nbsp;&nbsp;Click on the + sign close to your name to play</div>
+  <div class="col-md-12 text-info">&nbsp;&nbsp;&nbsp;&nbsp;<%=i18n.t("user.activity.note.accessReader")%></div>
 </div>
 
 <%if(account.users && account.users.length > 0) {%>
@@ -87,6 +95,7 @@
     </div>
   </div>
 </div>
+
 <div class="modal" id="prizeModal" tabindex="-1" role="dialog" aria-labelledby="prizeModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -101,6 +110,22 @@
     </div>
   </div>
 </div>
+
+<div class="modal" id="msgModal" tabindex="-1" role="dialog" aria-labelledby="msgModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="msgModalHeader">Congratulations!</h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
     $(document).ready(function(){
       <%if( account.users && account.users.length > 0 ) {

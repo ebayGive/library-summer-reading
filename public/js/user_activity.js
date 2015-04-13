@@ -30,7 +30,7 @@
           
         if(!isPrizeChangeAllowed()){
           userPanel += '<div class="row"><div class="col-md-12">'
-          + '<br/><div class="alert alert-info"><strong>Complete any 4 squares in a row (vertical, horizontal, or diagonal) to win prizes.<br/>Visit your local San José Public Library once your prize is ready to claim!</strong></div>'
+          + '<br/><div class="alert alert-info"><strong>' + contentMap['user.activity.message.activityGrid.instruction'] + '</strong></div>'
           + '</div></div>';
         }
         userPanel += '<div class="row"><div class="col-xs-1 col-sm-1  col-md-2"></div><div class="col-xs-11 col-sm-11 col-md-10">'
@@ -241,6 +241,8 @@
     $('#batt').empty().append(badgeHtml);
     $('#batt').removeClass('batt').addClass('badge');
     $('div.batt-badge-desc').empty().append('<div class="text-align">' + badges[Math.floor(parseInt(user.readingLog) / 600) -1].desc + '</div>');
+
+    showMsgModal(1, 0);
   }
   
   function getBatteryCell(iLog, readingLog) {
@@ -274,8 +276,11 @@
   }
   
   function updateReadingLog(inc) {
-    if(user.readingLog < 18000 && user.readingLog >= 20 ) {
+    if(user.readingLog < 18000 && user.readingLog >= 0 ) {
       user.readingLog = parseInt(user.readingLog) + inc;
+      if(user.readingLog < 0) {
+        user.readingLog = 0;
+      }
       if(user.readingLog % 600 == 0 && user.readingLog > 0) {
         drawBadge();
       }
@@ -340,7 +345,7 @@
     
     $('#activityModal').find('.modal-body').empty().append(modalBody);
     
-    var modalFooter = '<button type="button" class="btn btn-default" onclick="closeActivityModal()">Do it Later</button>';
+    var modalFooter = '<button type="button" class="btn btn-default" onclick="closeActivityModal()">Cancel</button>';
     modalFooter += '<button type="button" class="btn btn-primary" onclick="closeActivityModal(' + cellIndex + ')">Save</button>';
     $('#activityModal').find('.modal-footer').empty().append(modalFooter);
     $("#activityCompleted").bootstrapSwitch()
@@ -454,8 +459,11 @@
       if(data.user && data.user.activityGrid && data.user.prizes) {
           if(isPrizeStateChanged(data.user)) {
               user = data.user;
+              if(data.user.prizes[0].state || data.user.prizes[1].state) {
+                showMsgModal(0, 1);
+              }
           }
-          drawWinTab();      
+          drawWinTab();
       }
   }
   
@@ -675,6 +683,40 @@
     else {
       return user.prizes[prizeIndex].state;
     }
+  }
+
+
+  function showMsgModal(readingLogMsg, activityGridMsg) {
+    var modalBody = '';
+    var modalFooter = '';
+    modalBody = '<p>';
+    if(readingLogMsg && (user.readingLog % 600 == 0)) {
+      if(user.readingLog == 600) {
+        modalBody += contentMap["user.activity.message.readinglog.full.winPrize"];
+      }
+      else {
+        modalBody += contentMap["user.activity.message.readinglog.full"];
+      }
+    }
+    else if(activityGridMsg){
+      if(user.prizes[0].state) {
+        modalBody += contentMap["user.activity.message.activityGrid.rowOrColumn.winPrize"];
+      }
+      else if(user.prizes[1].state) {
+        modalBody += contentMap["user.activity.message.activityGrid.blackout.winPrize"];
+      }
+    }
+    modalBody += '</p>';
+    modalFooter += '<button type="button" class="btn btn-default" onclick="closeMsgModal()">Close</button>';
+    
+    $('#msgModal').find('.modal-body').empty().append(modalBody);
+    $('#msgModal').find('.modal-footer').empty().append(modalFooter);
+    
+    $('#msgModal').modal('show');
+  }
+
+  function closeMsgModal() {
+    $('#msgModal').modal('hide');
   }
 
   function getReadingLogHourPart() {
