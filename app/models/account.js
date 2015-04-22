@@ -68,7 +68,7 @@ var Account = function () {
     for(var iUr1 in users) {
       for(var iUr2 in users) {
         if(iUr2 != iUr1) {
-          if(users[iUr2].firstName == users[iUr1].firstName && users[iUr2].lastName == users[iUr1].lastName) {
+          if(users[iUr2].firstName == users[iUr1].firstName && users[iUr2].lastName == users[iUr1].lastName && users[iUr2].userType == users[iUr1].userType) {
             return false;
           }
         }
