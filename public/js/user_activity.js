@@ -5,7 +5,7 @@
     
     jQuery.ajaxSetup({ cache: false }); 
     
-    var showUserPanel = function(obj) {
+      var showUserPanel = function(obj) {
       var userPanel = '';
       userPanel += '<ul class="nav nav-tabs">'
           + '<li class="active"><a href="#battery" data-toggle="tab"><strong>Read</strong></a></li>'
@@ -40,10 +40,10 @@
           userPanel += '<div class="tab-pane" id="prize">'
 		  +'<br/><div class="row"><div class="col-md-12">'
           + '<div class="alert alert-info"><strong>'+ contentMap['user.activity.message.prizeGrid.instruction'] + '</strong></div>'
-          + '</div></div>';
+          + '</div>'
           + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divPrize"></div></div></div>'
           + '</div>'
-          + '</div>';
+          + '</div>' ;
 
       emptyUserPanel(); // empty previously opened user panel since there are many components sharing same Id
       $("#pnlbdy_" + $(obj).prop('id')).empty().append(userPanel);
