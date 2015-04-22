@@ -631,7 +631,7 @@
 }
 
 .batt-action-icon{
-  background:transparent url("/img/read.png");
+  background:transparent url("/img/minus20.png");
   -moz-background-size: 50px 75px;
   -webkit-background-size: 50px 75px;
   background-size: 50px 75px;
@@ -644,6 +644,7 @@
   float: left;
   display: table-cell;
   vertical-align: middle;
+  cursor: pointer;
 }
 
 .batt-action-text{
