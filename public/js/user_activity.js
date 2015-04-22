@@ -191,18 +191,16 @@
   function drawUserReadingLog() {
     var batteryHtml = '';
     batteryHtml += '<div class="batt-action">'
-       + '<div class="batt-action-icon"> </div>'
-       + '<div class="batt-action-text"><div class="text-align">Button artwork, robot reading</div></div>'
-       + '<div class="batt-action-btn-plus" onclick="updateReadingLog(20);"><div class="text-align">+20</div></div>'
-       + '</div>';
+       + '<div class="batt-action-icon"><img src = "../../img/plus20.png" width="200" height="80" onclick="updateReadingLog(20);"/> </div>'
+       + '<br/></div>';
 
     batteryHtml += "<br/><table id='batt'>";
     batteryHtml += "</table>";
     batteryHtml += '<br/><div class="batt-action">'
-       + '<div class="batt-badge-desc"><div class="text-align">What is behind above grid?</div></div>'
-       + '<div class="batt-action-btn-minus-text"><div class="text-align">Opps!</div></div>'
-       + '<div class="batt-action-btn-minus" onclick="updateReadingLog(-20);"><div class="text-align">-20</div></div>'
+       + '<div class="batt-action-icon"><img src = "../../img/minus20.png" width="200" height="80" onclick="updateReadingLog(-20);"/> </div>'
        + '</div>';
+	   
+	   
     $('#divBattery').empty().append(batteryHtml);
     if(parseInt(user.readingLog) == 0 || parseInt(user.readingLog) % 600 > 0) {
       drawBattery();
