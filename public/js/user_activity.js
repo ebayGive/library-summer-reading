@@ -5,7 +5,7 @@
     
     jQuery.ajaxSetup({ cache: false }); 
     
-    var showUserPanel = function(obj) {
+      var showUserPanel = function(obj) {
       var userPanel = '';
       userPanel += '<ul class="nav nav-tabs">'
           + '<li class="active"><a href="#battery" data-toggle="tab"><strong>Read</strong></a></li>'
@@ -15,13 +15,11 @@
           + '</ul>'
           + '<div class="tab-content">'
           + '<div class="tab-pane active" id="battery">';
-        /*if(!isPrizeChangeAllowed()){
-          userPanel += '<div class="row"><br/><div class="col-md-10">'
-          + '<div class="alert alert-info"><strong>Challenge yourself to read at least 20 minutes a day.  See if you can charge your Reading Battery by July 31 to win bonus prizes!</strong></div>'
-          + '</div>'
-          + '<div class="col-md-2"><button id="chargeMe" type="button" class="btn btn-danger" onclick="updateReadingLog();">I read for<br/>20 minutes</button></div>'
-          + '</div>';
-        }*/
+        // if(!isPrizeChangeAllowed()){
+          userPanel += '<br/><div class="row"><div class="col-md-12">'
+          + '<div class="alert alert-info"><strong>'+ contentMap['user.activity.message.batteryGrid.instruction'] + '</strong></div>'
+          + '</div></div>';
+       // } 
         userPanel += '<div class="row"><div class="col-md-1"></div><div class="col-md-8"><br/>'
           + '<div id="divBattery"></div>'
           + '</div>';
@@ -41,13 +39,16 @@
           + '</div>';
           
           userPanel += '<div class="tab-pane" id="prize">'
+		  +'<br/><div class="row"><div class="col-md-12">'
+          + '<div class="alert alert-info"><strong>'+ contentMap['user.activity.message.prizeGrid.instruction'] + '</strong></div>'
+          + '</div>'
           + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divPrize"></div></div></div>'
           + '</div>'
           + '<div class="tab-pane" id="info">'
           + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divInfo"><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></div></div></div>'
           + '</div>'
-          
           + '</div>';
+          + '</div>' ;
 
       emptyUserPanel(); // empty previously opened user panel since there are many components sharing same Id
       $("#pnlbdy_" + $(obj).prop('id')).empty().append(userPanel);
@@ -203,10 +204,10 @@
     batteryHtml += "<br/><table id='batt'>";
     batteryHtml += "</table>";
     batteryHtml += '<br/><div class="batt-action">'
-       + '<div class="batt-badge-desc"><div class="text-align">What is behind above grid?</div></div>'
-       + '<div class="batt-action-btn-minus-text"><div class="text-align">Opps!</div></div>'
-       + '<div class="batt-action-btn-minus" onclick="updateReadingLog(-20);"><div class="text-align">-20</div></div>'
+       + '<div class="batt-action-icon"><img src = "../../img/READING LOG Button - REMOVE 20.png" width="200" height="80" onclick="updateReadingLog(-20);"/> </div>'
        + '</div>';
+	   
+	   
     $('#divBattery').empty().append(batteryHtml);
     if(parseInt(user.readingLog) == 0 || parseInt(user.readingLog) % 600 > 0) {
       drawBattery();

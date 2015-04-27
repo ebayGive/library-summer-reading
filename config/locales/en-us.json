@@ -2,7 +2,9 @@
     "user.activity.note.accessReader" : "Click on the + sign close to your name to play",
     "user.activity.message.readinglog.full.winPrize" : "You have won a prize for reading for 10 hours. Please visit your local San José Public Library to claim your prize. If you would like to continue reading, click +20.",
     "user.activity.message.readinglog.full" : "If you would like to continue reading, click +20.",
-    "user.activity.message.activityGrid.instruction" : "Complete any 4 squares in a row (vertical, horizontal, or diagonal) to win prizes. Visit your local San José Public Library once your prize is ready to claim!",
     "user.activity.message.activityGrid.rowOrColumn.winPrize" : "You have won a prize for completing activities in a row/column. Please visit your local San José Public Library to claim your prize.",
-    "user.activity.message.activityGrid.blackout.winPrize" : "You have won a prize for completing all the activities. Please visit your local San José Public Library to claim your prize."
+    "user.activity.message.activityGrid.blackout.winPrize" : "You have won a prize for completing all the activities. Please visit your local San José Public Library to claim your prize.",
+	"user.activity.message.activityGrid.instruction" : "Add message here ID 10",
+	"user.activity.message.prizeGrid.instruction" : "Add message here ID 11.",
+	"user.activity.message.batteryGrid.instruction" : "Add message here ID 12."
 }
