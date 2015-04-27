@@ -48,12 +48,12 @@
 
 <form class="form-inline" role="form">
 <%- contentTag('input', account.id, {name: 'id', id: 'id', type: 'hidden'}); %>
-  <div class="form-group col-md-6">
-      <div><strong><h4>User&nbsp;Name</strong> : <%=account.accountName%></h4></div>
-  </div>
 </form>
 <div class="row">
-  <div class="col-md-12 text-info">&nbsp;&nbsp;&nbsp;&nbsp;<%=i18n.t("user.activity.note.accessReader")%></div>
+  <div class="col-md-12 read-challenge-text">User&nbsp;Name</strong> : <%=account.accountName%></div>
+</div>
+<div class="row">
+  <div class="col-md-12 read-challenge-instruction"><%=i18n.t("user.activity.note.accessReader")%></div>
 </div>
 
 <%if(account.users && account.users.length > 0) {%>

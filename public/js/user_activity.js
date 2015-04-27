@@ -11,6 +11,7 @@
           + '<li class="active"><a href="#battery" data-toggle="tab"><strong>Read</strong></a></li>'
           + '<li><a href="#activity" data-toggle="tab"><strong>Play</strong></a></li>'
           + '<li><a href="#prize" data-toggle="tab"><strong>Win</strong></a></li>'
+          + '<li><a href="#info" data-toggle="tab"><strong>Info</strong></a></li>'
           + '</ul>'
           + '<div class="tab-content">'
           + '<div class="tab-pane active" id="battery">';
@@ -42,6 +43,10 @@
           userPanel += '<div class="tab-pane" id="prize">'
           + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divPrize"></div></div></div>'
           + '</div>'
+          + '<div class="tab-pane" id="info">'
+          + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divInfo"><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></div></div></div>'
+          + '</div>'
+          
           + '</div>';
 
       emptyUserPanel(); // empty previously opened user panel since there are many components sharing same Id
@@ -191,8 +196,8 @@
     var batteryHtml = '';
     batteryHtml += '<div class="batt-action">'
        + '<div class="batt-action-icon"> </div>'
-       + '<div class="batt-action-text"><div class="text-align">Button artwork, robot reading</div></div>'
-       + '<div class="batt-action-btn-plus" onclick="updateReadingLog(20);"><div class="text-align">+20</div></div>'
+      // + '<div class="batt-action-text"><div class="text-align">Button artwork, robot reading</div></div>'
+       + '<div class="batt-action-btn-plus" onclick="updateReadingLog(20);"><img src="../../img/READING LOG Button - ADD 20.png" width="200px"/></div>'
        + '</div>';
 
     batteryHtml += "<br/><table id='batt'>";
