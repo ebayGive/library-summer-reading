@@ -7,7 +7,7 @@ function AuthenticationHelper() {
           callbackFn(new Error('Account Name and Passcode are required'));
           return;
         }
-        geddy.model.Account.first({accountName: authParams['accountName']}, function(err, account) {
+        geddy.model.Account.first({accountName: authParams['accountName'].trim().toLowerCase()}, function(err, account) {
           if (err) {
               callbackFn(err);
               return;

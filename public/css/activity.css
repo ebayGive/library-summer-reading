@@ -185,7 +185,7 @@
 }
 
 .grid-discover-01 {
-  background:#FFFFFF url("/img/GRID - DISCOVER - 01 Available.jpg");
+  background:#FFFFFF url("/img/EXPLORE - OFF.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -203,7 +203,7 @@
 }
 
 .grid-discover-03 {
-  background:#FFFFFF url("/img/GRID - DISCOVER - 03 Row Complete.jpg");
+  background:#FFFFFF url("/img/EXPLORE - ON.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -212,7 +212,7 @@
 }
 
 .grid-energize-01 {
-  background:#FFFFFF url("/img/GRID - ENERGIZE - 01 Available.jpg");
+  background:#FFFFFF url("/img/ENERGIZE - OFF.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -230,7 +230,7 @@
 }
 
 .grid-energize-03 {
-  background:#FFFFFF url("/img/GRID - ENERGIZE - 03 Row Complete.jpg");
+  background:#FFFFFF url("/img/ENERGIZE - ON.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -239,7 +239,7 @@
 }
 
 .grid-learn-01 {
-  background:#FFFFFF url("/img/GRID - LEARN - 01 Available.jpg");
+  background:#FFFFFF url("/img/LEARN - OFF.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -257,7 +257,7 @@
 }
 
 .grid-learn-03 {
-  background:#FFFFFF url("/img/GRID - LEARN - 03 Row Complete.jpg");
+  background:#FFFFFF url("/img/LEARN - ON.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -266,7 +266,7 @@
 }
 
 .grid-read-01 {
-  background:#FFFFFF url("/img/GRID - READ - 01 Available.jpg");
+  background:#FFFFFF url("/img/READ - OFF.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -284,7 +284,7 @@
 }
 
 .grid-read-03 {
-  background:#FFFFFF url("/img/GRID - READ - 03 Row Complete.jpg");
+  background:#FFFFFF url("/img/READ - ON.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -669,7 +669,7 @@
 .batt-action-btn-plus{
   margin: 0px;
   padding: 0px;
-  background-color: #00CCCC;
+  #background-color: #00CCCC;
   color: #FFFFFF;
   font: 30px arial, sans-serif;
   border-left: 1px solid #AAAAAA;
