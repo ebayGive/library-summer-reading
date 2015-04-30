@@ -62,7 +62,71 @@ var Accounts = function () {
     }
   };
 
-  this.add = function (req, resp, params) {
+    this.pickWinners = function (req, resp, params) {
+        var self = this;
+        console.log(params);
+        var criteria = getPickWinnerCriteria(params);
+        var winners = {};
+        if(hasFilters(criteria)) {
+            addAdditionalFilterIfNeeded(self, criteria);
+            geddy.model.Account.all(criteria, {sort: 'accountName'}, function(err, accounts) {
+                if (err) {
+                    self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+                }
+                self.respondTo({
+                    html: function() {
+
+
+                        //pick random winners from the account list
+                        if(typeof params['userTypeId'] != 'undefined') {
+                            var usersEligibleForPrize = buildUsersEligibleForPrize(accounts, params['userTypeId'].trim());
+                        }
+
+                        //pick random winners from the usersEligibleForPrize  list
+                        winners = getRandomUsers(usersEligibleForPrize);
+                        self.flash.discard();
+                        geddy.model.Branch.all({},{sort: 'name'},function(err, branches) {
+                            if (err) {
+                                self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+                            }
+                            geddy.model.UserType.all({},{sort: 'minAge'},function(err, userTypes) {
+                                if (err) {
+                                    self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+                                }
+                                self.respond({winners: winners, branches: branches, userTypes: userTypes, roles: getRoles()});
+                            });
+                        });
+                    },
+                    json: function() {
+                        self.respondWith(winners, {type:'Winner'});
+                    }
+                });
+            });
+        }
+        else {
+            self.respondTo({
+                html: function() {
+                    geddy.model.Branch.all({},{sort: 'name'},function(err, branches) {
+                        if (err) {
+                            self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+                        }
+                        geddy.model.UserType.all(function(err, userTypes) {
+                            if (err) {
+                                self.respondWith(  getUserFriendlyErrorMessage( err, self ) );
+                            }
+                            self.respond({winners: [], branches: branches, userTypes: userTypes, roles: getRoles()});
+                        });
+                    });
+                },
+                json: function() {
+                    self.respondWith([], {type:'Account'});
+                }
+            });
+        }
+    };
+
+
+    this.add = function (req, resp, params) {
     var self = this;
       geddy.model.Branch.all({},{sort: 'name'}, function(err, branches) {
       if (err) {
@@ -655,6 +719,70 @@ var getCriteria = function(params) {
     }
     return criteria;
 }
+
+var getPickWinnerCriteria = function(params) {
+    var criteria = {};
+
+    if(typeof params['branchId'] != "undefined" && params['branchId'].length > 0) {
+        branches = params['branchId'];
+        criteria['branchId'] = branches;
+        //pick winners with role = READER
+        criteria['role'] = 'READER';
+    }
+
+
+    return criteria;
+}
+
+
+var  buildUsersEligibleForPrize=  function(accounts,userTypeId) {
+    var m = accounts.length, t, i;
+
+    var users =[];
+
+
+    for (var index = 0; index < accounts.length; ++index) {
+        if(typeof accounts[index].users != 'undefined' && accounts[index].users.length > 0) {
+            for (var index2 = 0; index2 < accounts[index].users.length; index2++) {
+                // add user only if the usertypeID is matched.
+                if(typeof accounts[index].users[index2].userType != 'undefined'  && accounts[index].users[index2].userType === userTypeId)
+                {
+                    var user = {};
+                    user.accountId = accounts[index].id;
+                    user.accountName = accounts[index].accountName;
+                    user.firstName = accounts[index].users[index2].firstName;
+                    user.lastName = accounts[index].users[index2].lastName;
+                    user.userType = accounts[index].users[index2].userType;
+                    user.phone = accounts[index].phone;
+                    user.emailAddress = accounts[index].emailAddress;
+                    //add to users list
+                    users.push(user);
+                }
+            }
+
+        }
+    }
+
+    return users;
+
+}
+
+var getRandomUsers = function(users) {
+    var m = users.length, t, i;
+    // While there remain elements to shuffle
+    while (m) {
+
+        // Pick a remaining element…
+        i = Math.floor(Math.random() * m--);
+
+        // And swap it with the current element.
+        t = users[m];
+        users[m] = users[i];
+        users[i] = t;
+    }
+    return users.slice(0,5);
+}
+
 
 var hasFilters = function(criteria) {
     for(var filter in criteria) {

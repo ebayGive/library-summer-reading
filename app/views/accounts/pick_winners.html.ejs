@@ -1,0 +1,116 @@
+<h3>Pick Winners</h3>
+<%- partial('/partial/message', {flash: flash}) %>
+<%
+function getValue(data, propertyName) {
+    if(typeof data != 'undefined' && typeof data[propertyName] != 'undefined') {
+        return data[propertyName];
+    }
+    return "";
+}
+%>
+<form class="form-horizontal" role="form" action="<%=urlFor({controller: 'accounts', action: 'pick_winners'})%>" method="get">
+    <div class="form-group">
+        <label for="userTypeId" class="col-md-1 control-label">UserType</label>
+        <div class="col-md-2">
+            <%
+            var branchOptions = [];
+            var branchLookup = {};
+            var userTypeLookup = {}; 
+            var userTypeOptions = [];
+            var rolePanelClass = {ADMIN: 'panel-danger', VOLUNTEER: 'panel-info', READER: 'panel-success' };
+
+            for(var iUT in userTypes) {
+                userTypeLookup[userTypes[iUT].id] = userTypes[iUT].name;
+                userTypeOptions[userTypeOptions.length] = {text: userTypes[iUT].name, value: userTypes[iUT].id}
+            }
+
+            %>
+            <%- selectTag(userTypeOptions, params['userTypeId'], {id: 'userTypeId', name: 'userTypeId', class: 'form-control'});%>
+        </div>
+
+
+        <label for="branchId" class="col-md-1 control-label">Library</label>
+        <div class="col-md-2">
+            <%
+            var branchOptions = [];
+            var branchLookup = {};
+            var userTypeLookup = {};
+            var rolePanelClass = {ADMIN: 'panel-danger', VOLUNTEER: 'panel-info', READER: 'panel-success' };
+            branchOptions[branchOptions.length] = {text: '---- Branch ----', value: ' '};
+            for(var iBr in branches) {
+                branchOptions[branchOptions.length] = {text: branches[iBr].name, value: branches[iBr].id}
+                branchLookup[branches[iBr].id] = branches[iBr].name;
+            }
+            for(var iUT in userTypes) {
+                userTypeLookup[userTypes[iUT].id] = userTypes[iUT].name;
+            }
+
+            %>
+            <%- selectTag(branchOptions, params['branchId'], {id: 'branchId', name: 'branchId', class: 'form-control',multiple:true});%>
+        </div>
+        <div class="col-md-3 text-right">
+            <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"> Pick</i></button>
+        </div>
+    </div>
+
+</form>
+<br/><br/>
+<%if(typeof params['branchId'] != 'undefined') {%>
+<div class='row'>
+    <div class='col-md-1 col-sm-1'>
+    </div>
+    <div class='col-md-10 col-sm-10'>
+        <table class="table table-detail">
+            <tr>
+                <th>Account&nbsp;Name</th>
+                <th>First&nbsp;Name</th>
+                <th>Last&nbsp;Name</th>
+                <th>User&nbsp;Type</th>
+                <th>Phone</th>
+                <th>Email&nbsp;Address</th>
+            </tr>
+
+        <%if(typeof winners != 'undefined' && winners.length > 0) {
+                for(var iAct in winners) {%>
+
+                    <tr>
+                        <td><%=winners[iAct].accountName%></td>
+                        <td><%=winners[iAct].firstName%></td>
+                        <td><%=winners[iAct].lastName%></td>
+                        <td><%=getValue(userTypeLookup, winners[iAct].userType)%></td>
+                        <td><%=winners[iAct].phone%></td>
+                        <td><%=winners[iAct].emailAddress%></td>
+                    </tr>
+
+
+                 <%}
+
+        }%>
+        </table>
+</div>
+<div class='col-md-1 col-sm-1'>
+</div>
+</div>
+<%}%>
+<script>
+    $(document).ready(function(){
+    });
+
+    var toggleDisplay = function(id) {
+        $('#users_' + id).toggleClass('user-hide user-show');
+        $('#chevron_' + id).toggleClass("glyphicon-chevron-down glyphicon-chevron-up");
+    }
+
+    var editAccount = function(id) {
+        $(document).attr("location", "/accounts/" + id + "/edit");
+    }
+
+    var showAcccount = function(id) {
+        $(document).attr("location", "/accounts/" + id);
+    }
+
+    var editActivityLog = function(id) {
+        $(document).attr("location", "/accounts/" + id + "/edit_users");
+    }
+
+</script>

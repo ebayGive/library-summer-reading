@@ -10,7 +10,7 @@ var actionsNotRequiredAuth = {'Main': ['index'],
                               'GridIcons': ['index'],
                               'Helps': ['applicationHelp']}
                               
-var actionsRequiredAuth = {'ADMIN': {'Accounts':['index', 'add', 'edit', 'update', 'show', 'remove', 'showUser', 'addUser','updateUser','editUsers','showUserActivityGridCell','updateUserActivityGridCell','showUserPrize','updateUserPrize', 'showUserReadingLog', 'updateUserReadingLog'],
+var actionsRequiredAuth = {'ADMIN': {'Accounts':['index', 'add', 'edit', 'update', 'show', 'remove', 'showUser', 'addUser','updateUser','editUsers','showUserActivityGridCell','updateUserActivityGridCell','showUserPrize','updateUserPrize', 'showUserReadingLog', 'updateUserReadingLog','pickWinners'],
                                     'Grids': ['add', 'create', 'edit', 'update', 'show', 'remove'],
                                     'Prizes': ['add', 'create', 'edit', 'update', 'show', 'remove'],
                                     'Branches': ['add', 'create', 'edit', 'update', 'show', 'remove'],
