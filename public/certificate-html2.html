@@ -1,0 +1,42 @@
+<html>
+<head>
+    <script src="/js/jquery.js" type="text/javascript"></script>
+    <script>
+        function setNameAndTime() {
+
+            var url = location.href;
+            var name = $.urlParam('name');
+            var time = $.urlParam('time');
+            var nameDiv = document.getElementById("name");
+            var timeDiv = document.getElementById("time");
+            nameDiv.innerHTML = name;
+            timeDiv.innerHTML = time
+        }
+
+        $.urlParam = function(name, url) {
+            if (!url) {
+                url = window.location.href;
+            }
+            var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
+            if (!results) {
+                return undefined;
+            }
+            return results[1] || undefined;
+        }
+
+    </script>
+</head>
+<body onload="setNameAndTime()" bgcolor="#FFFFFF">
+<table border="0" cellspacing="0" cellpadding="0" width="900" height="687">
+<tr>
+<td width="292" valign="top" rowspan="5"><img src="/img/certificate/certificate-logo.png" /></td>
+<td width="532" height="163" valign="top"><img src="/img/certificate/certificate-congrats.png" /></td>
+<td width="76" valign="top" rowspan="5"><img src="/img/certificate/certificate-edge.png" /></td></tr>
+<tr><td width="532" height="66" valign="top"><h3 align="center"><br /> <div id = "name"/></h3></td></tr>
+<tr><td width="532" height="86" valign="top"><img src="/img/certificate/certificate-mid.png" /></td></tr>
+<tr><td width="532" height="65" valign="top"><h3 align="center"><br /><div id = "time"/></h3></td></tr>
+<tr><td width="532" height="307" valign="top"><img src="/img/certificate/certificate-foot.png" /></td></tr>
+</table>
+</body>
+
+</html>

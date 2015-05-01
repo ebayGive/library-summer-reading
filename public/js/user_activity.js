@@ -516,10 +516,17 @@
     readStatusHtml += '<div class="row reading-status-pane">';
     readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 label reading-status reading-status-bg">' + getReadingLogHourPart() + '</div></div><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 reading-status">Hours!</div></div></div>';
     readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 label reading-status reading-status-bg">' + getReadingLogMinutePart() + '</div></div><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 reading-status">Minutes</div></div></div>';
-    readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><button class="btn btn-danger"><br/>Print your<br/>Reading<br/>certificate!<br/><br/></button></div>';
+    readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><button class="btn btn-danger" onclick="displayCertificate()"><br/>Print your<br/>Reading<br/>certificate!<br/><br/></button></div>';
     readStatusHtml += '</div>';
     return readStatusHtml;
   }
+
+    //added for opening the certificate
+    function  displayCertificate(name,time) {
+      var name = 'something';
+      var time = 'sometime';
+      window.open('/certificate-html2.html?name=' + name + '&time=' + time,'_blank' ,"width=400, height=400");
+    }
 
   function getPrizeHtml() {
     var prizeHtml = '<div class="row"><div class="col-md-11 col-sm-11 col-xs-11 reading-status-title">Prizes" - Instructions</div></div>';
