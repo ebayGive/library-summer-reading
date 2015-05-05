@@ -593,10 +593,10 @@
                 prizeHtml += 'Click to Play!';
                 break;
         case 1:
-                prizeHtml += 'Ready to Receive';
+                prizeHtml += 'Prize Earned!';
                 break;
         case 2:
-                prizeHtml += 'Collected!';
+                prizeHtml += 'Prize Awarded!';
                 break;
       }
       prizeHtml += '</div>';
