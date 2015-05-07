@@ -592,16 +592,32 @@
 
   function getUserPrizeFooter(prizeIndex) {
       var prizeHtml = '<div class="prize-footer">';
-      switch(getPrizeState(prizeIndex)){
-        case 0:
-                prizeHtml += 'Click to Play!';
-                break;
-        case 1:
-                prizeHtml += 'Prize Earned!';
-                break;
-        case 2:
-                prizeHtml += 'Prize Awarded!';
-                break;
+      if(!isPrizeChangeAllowed()) {
+        switch(getPrizeState(prizeIndex)){
+          case 0:
+                  prizeHtml += 'Click to Play!';
+                  break;
+          case 1:
+                  prizeHtml += 'Prize Earned!';
+                  break;
+          case 2:
+                  prizeHtml += 'Prize Awarded!';
+                  break;
+        }
+      }
+      else {
+        prizeHtml += '<b>' + getPrize(prizeIndex) + '</b><br/>';
+        switch(getPrizeState(prizeIndex)){
+          case 0:
+                  prizeHtml += '(Not Earned)';
+                  break;
+          case 1:
+                  prizeHtml += '(Prize Earned)';
+                  break;
+          case 2:
+                  prizeHtml += '(Prize Awarded)';
+                  break;
+        }
       }
       prizeHtml += '</div>';
       return prizeHtml;
