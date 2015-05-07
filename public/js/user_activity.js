@@ -14,11 +14,11 @@
           + '</ul>'
           + '<div class="tab-content">'
           + '<div class="tab-pane active" id="battery">';
-        // if(!isPrizeChangeAllowed()){
+         if(!isPrizeChangeAllowed()) {
           userPanel += '<br/><div class="row"><div class="col-md-12">'
           + '<div class="alert alert-info"><strong>'+ contentMap['user.activity.message.batteryGrid.instruction'] + '</strong></div>'
           + '</div></div>';
-       // } 
+        } 
         userPanel += '<div class="row"><div class="col-md-1"></div><div class="col-md-8"><br/>'
           + '<div id="divBattery"></div>'
           + '</div>';
@@ -26,7 +26,7 @@
           + '</div>'
           + '<div class="tab-pane" id="activity">';
           
-        if(!isPrizeChangeAllowed()){
+        if(!isPrizeChangeAllowed()) {
           userPanel += '<div class="row"><div class="col-md-12">'
           + '<br/><div class="alert alert-info"><strong>' + contentMap['user.activity.message.activityGrid.instruction'] + '</strong></div>'
           + '</div></div>';
@@ -37,11 +37,13 @@
           + '</div>'
           + '</div>';
           
-          userPanel += '<div class="tab-pane" id="prize">'
-		  +'<br/><div class="row"><div class="col-md-12">'
-          + '<div class="alert alert-info"><strong>'+ contentMap['user.activity.message.prizeGrid.instruction'] + '</strong></div>'
-          + '</div>'
-          + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divPrize"></div></div></div>'
+          userPanel += '<div class="tab-pane" id="prize">';
+         if(!isPrizeChangeAllowed()) {
+		  userPanel += '<div class="row"><div class="col-md-12">'
+          + '<br/><div class="alert alert-info"><strong>'+ contentMap['user.activity.message.prizeGrid.instruction'] + '</strong></div>'
+          + '</div></div>';
+         }
+          userPanel += '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divPrize"></div></div></div>'
           + '</div>'
           + '</div>';
           + '</div>' ;
@@ -561,11 +563,15 @@
   
   function getUserPrizeTag(prizeIndex) {
       var prizeHtml = '<a href="#" title="Click to Play!" onclick="';
-      if(prizeIndex < 2)
-        prizeHtml += 'activateActivityGrid()';
-      else
-       prizeHtml += 'activateReadingBattery()';
-
+      if(!isPrizeChangeAllowed()) {
+        if(prizeIndex < 2)
+          prizeHtml += 'activateActivityGrid()';
+        else
+         prizeHtml += 'activateReadingBattery()';
+      }
+      else {
+         prizeHtml += 'showPrizeModal(' + prizeIndex + ')';
+      }
       prizeHtml += ';return false;" data-target="#prizeModal">';
       prizeHtml += '<div class="prize">';
       switch(getPrizeState(prizeIndex)){
@@ -651,10 +657,10 @@
 
       modalFooter = '<button type="button" class="btn btn-default" ';
       if(getPrizeState(prizeIndex) == 2) {
-        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 1);">Prize Not Claimed</button>';
+        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 1);">Prize Not Awarded</button>';
       }
       else {
-        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 2);">Prize Claimed</button>';
+        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 2);">Prize Awarded</button>';
       }
       modalFooter += '<button type="button" class="btn btn-default" onclick="closePrizeModal(' + prizeIndex + ', ' + getPrizeState(prizeIndex) + ')">Close</button>';
     }
