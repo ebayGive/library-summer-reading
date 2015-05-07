@@ -525,7 +525,7 @@
     function  displayCertificate() {
       var name = user.firstName + " " + user.lastName;
       var time = getReadingLogHourPart() + ":" + getReadingLogMinutePart();
-      window.open('/certificate-html2.html?name=' + name + '&time=' + time,'_blank' ,"width=400, height=400");
+      window.open('/certificate-html2.html?name=' + name + '&time=' + time,'_blank' ,"width=900, height=687");
     }
 
   function getPrizeHtml() {
