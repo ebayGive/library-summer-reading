@@ -6,6 +6,7 @@
 
             var url = location.href;
             var name = $.urlParam('name');
+            name = name.replace("%20", " ");
             var time = $.urlParam('time');
             var nameDiv = document.getElementById("name");
             var timeDiv = document.getElementById("time");
