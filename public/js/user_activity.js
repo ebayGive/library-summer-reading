@@ -11,7 +11,6 @@
           + '<li class="active"><a href="#battery" data-toggle="tab"><strong>Read</strong></a></li>'
           + '<li><a href="#activity" data-toggle="tab"><strong>Play</strong></a></li>'
           + '<li><a href="#prize" data-toggle="tab"><strong>Win</strong></a></li>'
-          + '<li><a href="#info" data-toggle="tab"><strong>Info</strong></a></li>'
           + '</ul>'
           + '<div class="tab-content">'
           + '<div class="tab-pane active" id="battery">';
@@ -43,9 +42,6 @@
           + '<div class="alert alert-info"><strong>'+ contentMap['user.activity.message.prizeGrid.instruction'] + '</strong></div>'
           + '</div>'
           + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divPrize"></div></div></div>'
-          + '</div>'
-          + '<div class="tab-pane" id="info">'
-          + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divInfo"><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></div></div></div>'
           + '</div>'
           + '</div>';
           + '</div>' ;
@@ -467,7 +463,7 @@
       if(data.user && data.user.activityGrid && data.user.prizes) {
           if(isPrizeStateChanged(data.user)) {
               user = data.user;
-              if(data.user.prizes[0].state == 1 || data.user.prizes[1].state == 1) {
+              if(user.prizes[0].state == 1 || user.prizes[1].state == 1) {
                 showMsgModal(0, 1);
               }
           }
