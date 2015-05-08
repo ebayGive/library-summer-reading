@@ -1,10 +1,10 @@
 {
-    "user.activity.note.accessReader" : "Click on the + sign close to your name to play",
-    "user.activity.message.readinglog.full.winPrize" : "You have won a prize for reading for 10 hours. Please visit your local San José Public Library to claim your prize. If you would like to continue reading, click +20.",
-    "user.activity.message.readinglog.full" : "If you would like to continue reading, click +20.",
-    "user.activity.message.activityGrid.rowOrColumn.winPrize" : "You have won a prize for completing activities in a row/column. Please visit your local San José Public Library to claim your prize.",
-    "user.activity.message.activityGrid.blackout.winPrize" : "You have won a prize for completing all the activities. Please visit your local San José Public Library to claim your prize.",
-	"user.activity.message.activityGrid.instruction" : "Add message here ID 10",
-	"user.activity.message.prizeGrid.instruction" : "Add message here ID 11.",
-	"user.activity.message.batteryGrid.instruction" : "Add message here ID 12."
+    "user.activity.note.accessReader" : "Click the '+' by your name to begin",
+    "user.activity.message.readinglog.full.winPrize" : "You've won the following prize for completing 10 hours of reading: [1]. \\nKeep tracking your reading to earn more reading badges!",
+    "user.activity.message.readinglog.full" : "Keep tracking your reading to earn more reading badges!",
+    "user.activity.message.activityGrid.rowOrColumn.winPrize" : "You've won the following prize for completing 4 activity squares in a row: [1].\\nPlease visit your local San Jose Public Library to claim your prize. \\nComplete the entire activity grid for a chance to win more prizes!",
+    "user.activity.message.activityGrid.blackout.winPrize" : "For completing all activities, you've won : [1]. \\nThe library will contact you if you win. Please make sure you have a valid phone number or email listed on your account.",
+                "user.activity.message.activityGrid.instruction" : "Complete activities in any 4 squares in a row (vertical, horizontal, or diagonal) to win a prize.\\nComplete all activities to be entered into prize drawings.",
+                "user.activity.message.prizeGrid.instruction" : "Keep track of your total time spent reading and prizes earned.\\nVisit your local San Jose Public Library to pick up prizes. The library will contact you if you win a prize drawing.",
+                "user.activity.message.batteryGrid.instruction" : "For every 20 minutes you read, click 'ADD 20 Minutes'\\nRead for 10 hours to reveal special artwork and win a prize."
 }

@@ -11,15 +11,14 @@
           + '<li class="active"><a href="#battery" data-toggle="tab"><strong>Read</strong></a></li>'
           + '<li><a href="#activity" data-toggle="tab"><strong>Play</strong></a></li>'
           + '<li><a href="#prize" data-toggle="tab"><strong>Win</strong></a></li>'
-          + '<li><a href="#info" data-toggle="tab"><strong>Info</strong></a></li>'
           + '</ul>'
           + '<div class="tab-content">'
           + '<div class="tab-pane active" id="battery">';
-        // if(!isPrizeChangeAllowed()){
+         if(!isPrizeChangeAllowed()) {
           userPanel += '<br/><div class="row"><div class="col-md-12">'
           + '<div class="alert alert-info"><strong>'+ contentMap['user.activity.message.batteryGrid.instruction'] + '</strong></div>'
           + '</div></div>';
-       // } 
+        } 
         userPanel += '<div class="row"><div class="col-md-1"></div><div class="col-md-8"><br/>'
           + '<div id="divBattery"></div>'
           + '</div>';
@@ -27,7 +26,7 @@
           + '</div>'
           + '<div class="tab-pane" id="activity">';
           
-        if(!isPrizeChangeAllowed()){
+        if(!isPrizeChangeAllowed()) {
           userPanel += '<div class="row"><div class="col-md-12">'
           + '<br/><div class="alert alert-info"><strong>' + contentMap['user.activity.message.activityGrid.instruction'] + '</strong></div>'
           + '</div></div>';
@@ -38,14 +37,13 @@
           + '</div>'
           + '</div>';
           
-          userPanel += '<div class="tab-pane" id="prize">'
-		  +'<br/><div class="row"><div class="col-md-12">'
-          + '<div class="alert alert-info"><strong>'+ contentMap['user.activity.message.prizeGrid.instruction'] + '</strong></div>'
-          + '</div>'
-          + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divPrize"></div></div></div>'
-          + '</div>'
-          + '<div class="tab-pane" id="info">'
-          + '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divInfo"><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/></div></div></div>'
+          userPanel += '<div class="tab-pane" id="prize">';
+         if(!isPrizeChangeAllowed()) {
+		  userPanel += '<div class="row"><div class="col-md-12">'
+          + '<br/><div class="alert alert-info"><strong>'+ contentMap['user.activity.message.prizeGrid.instruction'] + '</strong></div>'
+          + '</div></div>';
+         }
+          userPanel += '<div class="row"><div class="col-xs-1 col-sm-1 col-md-1"></div><div class="col-xs-11 col-sm-11 col-md-11"><div id="divPrize"></div></div></div>'
           + '</div>'
           + '</div>';
           + '</div>' ;
@@ -248,7 +246,9 @@
     $('#batt').removeClass('batt').addClass('badge');
     $('div.batt-badge-desc').empty().append('<div class="text-align">' + badges[Math.floor(parseInt(user.readingLog) / 600) -1].desc + '</div>');
 
-    showMsgModal(1, 0);
+    if(user.prizes[2].state == 1) {
+      showMsgModal(1, 0);
+    }
   }
   
   function getBatteryCell(iLog, readingLog) {
@@ -465,7 +465,7 @@
       if(data.user && data.user.activityGrid && data.user.prizes) {
           if(isPrizeStateChanged(data.user)) {
               user = data.user;
-              if(data.user.prizes[0].state || data.user.prizes[1].state) {
+              if(user.prizes[0].state == 1 || user.prizes[1].state == 1) {
                 showMsgModal(0, 1);
               }
           }
@@ -512,17 +512,24 @@
   }
 
   function getReadingstatusHtml() {
-    var readStatusHtml = '<div class="row"><div class="col-md-11 col-sm-11 col-xs-11 reading-status-title">You have read:</div></div>';
+    var readStatusHtml = '<div class="row"><div class="col-md-11 col-sm-11 col-xs-11 reading-status-title">You have read</div></div>';
     readStatusHtml += '<div class="row reading-status-pane">';
-    readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 label reading-status reading-status-bg">' + getReadingLogHourPart() + '</div></div><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 reading-status">Hours!</div></div></div>';
+    readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 label reading-status reading-status-bg">' + getReadingLogHourPart() + '</div></div><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 reading-status">Hours</div></div></div>';
     readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 label reading-status reading-status-bg">' + getReadingLogMinutePart() + '</div></div><div class="row"><div class="col-xm-11 col-sm-11 col-md-11 reading-status">Minutes</div></div></div>';
-    readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><button class="btn btn-danger"><br/>Print your<br/>Reading<br/>certificate!<br/><br/></button></div>';
+    readStatusHtml += '<div class="col-xm-4 col-sm-4 col-md-4"><button class="btn btn-danger" onclick="displayCertificate()"><br/>Print your<br/>Reading<br/>certificate!<br/><br/></button></div>';
     readStatusHtml += '</div>';
     return readStatusHtml;
   }
 
+    //added for opening the certificate
+    function  displayCertificate() {
+      var name = user.firstName + " " + user.lastName;
+      var time = getReadingLogHourPart() + ":" + getReadingLogMinutePart();
+      window.open('/certificate-html2.html?name=' + name + '&time=' + time,'_blank' ,"width=900, height=687");
+    }
+
   function getPrizeHtml() {
-    var prizeHtml = '<div class="row"><div class="col-md-11 col-sm-11 col-xs-11 reading-status-title">Prizes" - Instructions</div></div>';
+    var prizeHtml = '<div class="row"><div class="col-md-11 col-sm-11 col-xs-11 reading-status-title">Prizes</div></div>';
     prizeHtml += '<div class="row reading-status-pane">';
     prizeHtml += '<div class="col-xm-3 col-sm-3 col-md-3">' + getPrizeBingoHtml() + '</div>';
     prizeHtml += '<div class="col-xm-1 col-sm-1 col-md-1"></div>';
@@ -556,11 +563,15 @@
   
   function getUserPrizeTag(prizeIndex) {
       var prizeHtml = '<a href="#" title="Click to Play!" onclick="';
-      if(prizeIndex < 2)
-        prizeHtml += 'activateActivityGrid()';
-      else
-       prizeHtml += 'activateReadingBattery()';
-
+      if(!isPrizeChangeAllowed()) {
+        if(prizeIndex < 2)
+          prizeHtml += 'activateActivityGrid()';
+        else
+         prizeHtml += 'activateReadingBattery()';
+      }
+      else {
+         prizeHtml += 'showPrizeModal(' + prizeIndex + ')';
+      }
       prizeHtml += ';return false;" data-target="#prizeModal">';
       prizeHtml += '<div class="prize">';
       switch(getPrizeState(prizeIndex)){
@@ -581,16 +592,32 @@
 
   function getUserPrizeFooter(prizeIndex) {
       var prizeHtml = '<div class="prize-footer">';
-      switch(getPrizeState(prizeIndex)){
-        case 0:
-                prizeHtml += 'Click to Play!';
-                break;
-        case 1:
-                prizeHtml += 'Ready to Receive';
-                break;
-        case 2:
-                prizeHtml += 'Collected!';
-                break;
+      if(!isPrizeChangeAllowed()) {
+        switch(getPrizeState(prizeIndex)){
+          case 0:
+                  prizeHtml += 'Click to Play!';
+                  break;
+          case 1:
+                  prizeHtml += 'Prize Earned!';
+                  break;
+          case 2:
+                  prizeHtml += 'Prize Awarded!';
+                  break;
+        }
+      }
+      else {
+        prizeHtml += '<b>' + getPrize(prizeIndex) + '</b><br/>';
+        switch(getPrizeState(prizeIndex)){
+          case 0:
+                  prizeHtml += '(Not Earned)';
+                  break;
+          case 1:
+                  prizeHtml += '(Prize Earned)';
+                  break;
+          case 2:
+                  prizeHtml += '(Prize Awarded)';
+                  break;
+        }
       }
       prizeHtml += '</div>';
       return prizeHtml;
@@ -646,10 +673,10 @@
 
       modalFooter = '<button type="button" class="btn btn-default" ';
       if(getPrizeState(prizeIndex) == 2) {
-        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 1);">Prize Not Claimed</button>';
+        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 1);">Prize Not Awarded</button>';
       }
       else {
-        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 2);">Prize Claimed</button>';
+        modalFooter += ' onclick="closePrizeModal(' + prizeIndex + ', 2);">Prize Awarded</button>';
       }
       modalFooter += '<button type="button" class="btn btn-default" onclick="closePrizeModal(' + prizeIndex + ', ' + getPrizeState(prizeIndex) + ')">Close</button>';
     }
@@ -696,20 +723,20 @@
     var modalBody = '';
     var modalFooter = '';
     modalBody = '<p>';
-    if(readingLogMsg && (user.readingLog % 600 == 0)) {
+    if(readingLogMsg && (user.readingLog % 600 == 0) && user.prizes[2].state < 2) {
       if(user.readingLog == 600) {
-        modalBody += contentMap["user.activity.message.readinglog.full.winPrize"];
+        modalBody += contentMap["user.activity.message.readinglog.full.winPrize"].replace("[1]", "<b>" + getPrize(2) + "</b>").replace(/\n/g, "<br>");
       }
       else {
         modalBody += contentMap["user.activity.message.readinglog.full"];
       }
     }
     else if(activityGridMsg){
-      if(user.prizes[0].state) {
-        modalBody += contentMap["user.activity.message.activityGrid.rowOrColumn.winPrize"];
+      if(user.prizes[1].state == 1) {
+        modalBody += contentMap["user.activity.message.activityGrid.blackout.winPrize"].replace("[1]", "<b>" + getPrize(1) + "</b>").replace(/\n/g, "<br>");
       }
-      else if(user.prizes[1].state) {
-        modalBody += contentMap["user.activity.message.activityGrid.blackout.winPrize"];
+      else if(user.prizes[0].state == 1) {
+        modalBody += contentMap["user.activity.message.activityGrid.rowOrColumn.winPrize"].replace("[1]", "<b>" + getPrize(0) + "</b>").replace(/\n/g, "<br>");
       }
     }
     modalBody += '</p>';
@@ -750,7 +777,7 @@
   }
 
   function getReadingBadgesHtml() {
-    var prizeHtml = '<div class="row"><div class="col-md-11 col-sm-11 col-xs-11 reading-status-title">Reading "Badges" Collected / Collect / Unlock them all! </div></div>';
+    var prizeHtml = '<div class="row"><div class="col-md-11 col-sm-11 col-xs-11 reading-status-title">Reading Badges Collected / Unlock them all!</div></div>';
     prizeHtml += '<div class="row reading-status-pane">';
     for(var iBdg=0; iBdg<30; iBdg++) {
       prizeHtml += getReadingBadge(iBdg);

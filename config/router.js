@@ -55,6 +55,7 @@ router.get('/accounts/:id/users/:userId/reading_log(.:format)').to('Accounts.sho
 router.put('/accounts/:id/users/:userId/reading_log(.:format)').to('Accounts.updateUserReadingLog');
 router.get('/reports').to('Reports.index');
 router.post('/badges/update_file(.:format)').to('Badges.updateFile');
+router.get('/accounts/pick_winners').to('Accounts.pickWinners');
 
 
 router.resource('accounts');
