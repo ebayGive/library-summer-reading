@@ -8,7 +8,7 @@ var Account = function () {
 
   this.defineProperties({
         accountName: {type:'string', required: true},
-        phone: {type:'string', required: false},
+        phone: {type:'string', required: true},
         emailAddress: {type: 'string', required: false},
         branchId: {type: 'string', required: true},
         role: {type: 'string', required: true},
@@ -41,7 +41,7 @@ var Account = function () {
     if(typeof phone === 'undefined' || phone == "") {
       return true;
     }
-    return /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)?\d{4}$/.test(phone);
+    return /^[0-9]{1,10}$/.test(phone);
   }, {message: 'Phone number must consist of 10 digits, including area code.'});
   
   // Validate Mandatory Fields
