@@ -42,7 +42,7 @@ var Account = function () {
       return true;
     }
     return /^[0-9]{1,10}$/.test(phone);
-  }, {message: 'Phone number must consist of 10 digits, including area code.'});
+  }, {message: 'Phone number can only consist of 10 digits, including area code.'});
   
   // Validate Mandatory Fields
   this.validatesWithFunction('users', function (users) {
