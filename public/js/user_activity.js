@@ -1,4 +1,6 @@
     var NO_BATTERY_CELLS = 30;
+    var MINUTES_PER_CELL = 20;
+    var FULL_BATTERY_MINUTES = NO_BATTERY_CELLS * MINUTES_PER_CELL;
     var prizeChangeAllowed;
     
     var activityIconClassMap = {'DISCOVER': 'grid-discover', 'EXPLORE': 'grid-discover', 'ENERGIZE': 'grid-energize', 'READ': 'grid-read', 'LEARN': 'grid-learn', 'ROBOT': 'grid-robot'};
@@ -20,8 +22,10 @@
           + '</div></div>';
         } 
         userPanel += '<div class="row"><div class="col-md-1"></div><div class="col-md-8"><br/>'
-          + '<div id="divBattery"></div>'
-          + '</div>';
+          + '<div id="divBattery"></div></div>';
+         if(isPrizeChangeAllowed()) {
+           userPanel += '<div class="col-md-1"><br/><button id="btnFillReadingLog" class="btn btn-danger" onclick="fillReadingLog();">Fill<br/>Reading Log</button></div>';
+         }
         userPanel += '</div>'
           + '</div>'
           + '<div class="tab-pane" id="activity">';
@@ -31,13 +35,17 @@
           + '<br/><div class="alert alert-info"><strong>' + contentMap['user.activity.message.activityGrid.instruction'] + '</strong></div>'
           + '</div></div>';
         }
-        userPanel += '<div class="row"><div class="col-xs-1 col-sm-1  col-md-2"></div><div class="col-xs-11 col-sm-11 col-md-10">'
-          + '<div id="divGrid"></div>'
-          + '</div>'
-          + '</div>'
+        userPanel += '<div class="row"><div class="col-xs-1 col-sm-1  col-md-1"></div><div class="col-xs-9 col-sm-9 col-md-9">'
+          + '<div id="divGrid"></div></div>';
+         if(isPrizeChangeAllowed()) {
+           userPanel += '<div class="col-xs-2 col-sm-2  col-md-2"><br/><button id="btnFillActivity" class="btn btn-danger" onclick="fillActivity();">Fill<br/>Activity Grid</button></div>';
+         }
+
+        userPanel += '</div>'
           + '</div>';
           
-          userPanel += '<div class="tab-pane" id="prize">';
+        userPanel += '<div class="tab-pane" id="prize">';
+
          if(!isPrizeChangeAllowed()) {
 		  userPanel += '<div class="row"><div class="col-md-12">'
           + '<br/><div class="alert alert-info"><strong>'+ contentMap['user.activity.message.prizeGrid.instruction'] + '</strong></div>'
@@ -141,6 +149,7 @@
        gridHtml += '</div>';
     }
     $('#divGrid').empty().append(gridHtml);
+    setFillActivityButtonStatus();
   }
   
   function getGridCellDesc(cell) {
@@ -163,6 +172,51 @@
   
   function toggleGridCellDesc(obj) {
     $(obj).find('span').toggleClass('show-grid-desc hide-grid-desc');
+  }
+
+  function fillReadingLog() {
+    var readingLog = parseInt(user.readingLog);
+    if(readingLog < FULL_BATTERY_MINUTES && prizeChangeAllowed) {
+      updateReadingLog(FULL_BATTERY_MINUTES - readingLog);
+      setFillReadingLogButtonStatus();
+    }
+  }
+
+  function setFillReadingLogButtonStatus() {
+    var enabled = parseInt(user.readingLog) < FULL_BATTERY_MINUTES && prizeChangeAllowed;
+    if(enabled) {
+      $('#btnFillReadingLog').prop("disabled", false);
+    }else {
+      $('#btnFillReadingLog').prop("disabled", "disabled");
+    }
+  }
+
+  function fillActivity() {
+    if(getPrizeState(1) == 0 && prizeChangeAllowed) {
+      if(user && user.activityGrid) {
+       for(var iCell=0; iCell < user.activityGrid.length; iCell++) {
+         if(typeof user.activityGrid[iCell].activity === 'undefined' || !user.activityGrid[iCell].activity) {
+            user.activityGrid[iCell].activity = 1;
+            setActivityGridCellClass(iCell, 1);
+            user.activityGrid[iCell].notes = 'ADMIN UPDATED';
+            user.activityGrid[iCell].updatedAt = new Date();
+         }
+       }
+       saveUserActivity();
+       setFillActivityButtonStatus(false);
+      }
+    }
+  }
+
+  function setFillActivityButtonStatus(enabled) {
+    if(typeof enabled === 'undefined') {
+      enabled = getPrizeState(1) == 0 && prizeChangeAllowed;
+    }
+    if(enabled) {
+      $('#btnFillActivity').prop("disabled", false);
+    }else {
+      $('#btnFillActivity').prop("disabled", "disabled");
+    }
   }
 
   function getActivityCellClass(cell, activityCompleted) {
@@ -211,12 +265,13 @@
 	   
 	   
     $('#divBattery').empty().append(batteryHtml);
-    if(parseInt(user.readingLog) == 0 || parseInt(user.readingLog) % 600 > 0) {
+    if(parseInt(user.readingLog) == 0 || parseInt(user.readingLog) % FULL_BATTERY_MINUTES > 0) {
       drawBattery();
     }
     else {
       drawBadge();
     }
+    setFillReadingLogButtonStatus();
     showReadingLog(user.readingLog);
   }
 
@@ -244,11 +299,11 @@
 
   function drawBadge() {
     var badgeHtml = "<tbody><tr>"
-    badgeHtml += "<td><img src='../../img/" + badges[Math.floor(parseInt(user.readingLog) / 600) -1].imageSrc + "' class='badge-img'></td>"
+    badgeHtml += "<td><img src='../../img/" + badges[Math.floor(parseInt(user.readingLog) / FULL_BATTERY_MINUTES) -1].imageSrc + "' class='badge-img'></td>"
     badgeHtml += "</tr></tbody>";
     $('#batt').empty().append(badgeHtml);
     $('#batt').removeClass('batt').addClass('badge');
-    $('div.batt-badge-desc').empty().append('<div class="text-align">' + badges[Math.floor(parseInt(user.readingLog) / 600) -1].desc + '</div>');
+    $('div.batt-badge-desc').empty().append('<div class="text-align">' + badges[Math.floor(parseInt(user.readingLog) / FULL_BATTERY_MINUTES) -1].desc + '</div>');
 
     if(user.prizes[2].state == 1 && !prizeChangeAllowed) {
       showMsgModal(1, 0);
@@ -291,7 +346,7 @@
       if(user.readingLog < 0) {
         user.readingLog = 0;
       }
-      if(user.readingLog % 600 == 0 && user.readingLog > 0) {
+      if(user.readingLog % FULL_BATTERY_MINUTES == 0 && user.readingLog > 0) {
         drawBadge();
       }
       else {
@@ -308,7 +363,7 @@
     if(typeof readingLog === 'undefined') {
       return;
     }
-    var cellLogged = (readingLog % 600) / 20;
+    var cellLogged = (readingLog % FULL_BATTERY_MINUTES) / 20;
     for(var iCell=1; iCell<=NO_BATTERY_CELLS; iCell++) {
       if(iCell <= cellLogged) {
         $('#battCell_' + iCell).removeClass('cell-off').addClass('cell-activated');
@@ -749,8 +804,8 @@
     var modalBody = '';
     var modalFooter = '';
     modalBody = '<p>';
-    if(readingLogMsg && (user.readingLog % 600 == 0) && user.prizes[2].state < 2) {
-      if(user.readingLog == 600) {
+    if(readingLogMsg && (user.readingLog % FULL_BATTERY_MINUTES == 0) && user.prizes[2].state < 2) {
+      if(user.readingLog == FULL_BATTERY_MINUTES) {
         modalBody += contentMap["user.activity.message.readinglog.full.winPrize"].replace("[1]", "<b>" + getPrize(2) + "</b>").replace(/\n/g, "<br>");
       }
       else {
@@ -809,7 +864,7 @@
     prizeHtml += '<div class="row reading-status-pane">';
     for(var iBdg=0; iBdg<30; iBdg++) {
       prizeHtml += getReadingBadge(iBdg);
-      if(((iBdg+1)%6 == 0) && parseInt(user.readingLog) < (600 * iBdg)){
+      if(((iBdg+1)%6 == 0) && parseInt(user.readingLog) < (FULL_BATTERY_MINUTES * iBdg)){
         break;
       }
     }
@@ -819,7 +874,7 @@
 
   function getReadingBadge(badgeIndex) {
     var badgeHtml = '<div class="col-xm-2 col-sm-2 col-md-2">';
-    if(parseInt(user.readingLog) / 600 >= (badgeIndex+1)) {
+    if(parseInt(user.readingLog) / FULL_BATTERY_MINUTES >= (badgeIndex+1)) {
        badgeHtml += '<div class="read-badge read-badge-collected"><img  src="../../img/badges/' + badges[badgeIndex].imageSrc + '" width="100%"/></div>'; 
     }
     else {
