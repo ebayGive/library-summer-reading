@@ -30,6 +30,11 @@
     }
 %>
 <script>
+  var userTypes = [];
+  <%for(var iUType=0, utypeLength=userTypes.length; iUType < utypeLength; iUType++){%>
+    userTypes["<%=userTypes[iUType].id%>"] = "<%=userTypes[iUType].name%>";
+  <%}%>
+
   var badges = [];
   <%for(var iBdg=0, bdgLength=badges.length; iBdg < bdgLength; iBdg++){%>
     badges[<%=iBdg%>] = {desc: "<%=badges[iBdg].desc%>", imageSrc: "<%=badges[iBdg].imageSrc%>"};

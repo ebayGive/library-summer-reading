@@ -189,6 +189,10 @@
   function activateActivityGrid() {
     $('a[href="#activity"]').tab('show');
   }
+
+  function activateWin() {
+    $('a[href="#prize"]').tab('show');
+  }
   
   
   function drawUserReadingLog() {
@@ -246,7 +250,7 @@
     $('#batt').removeClass('batt').addClass('badge');
     $('div.batt-badge-desc').empty().append('<div class="text-align">' + badges[Math.floor(parseInt(user.readingLog) / 600) -1].desc + '</div>');
 
-    if(user.prizes[2].state == 1) {
+    if(user.prizes[2].state == 1 && !prizeChangeAllowed) {
       showMsgModal(1, 0);
     }
   }
@@ -465,7 +469,7 @@
       if(data.user && data.user.activityGrid && data.user.prizes) {
           if(isPrizeStateChanged(data.user)) {
               user = data.user;
-              if(user.prizes[0].state == 1 || user.prizes[1].state == 1) {
+              if((user.prizes[0].state == 1 || user.prizes[1].state == 1) && !prizeChangeAllowed) {
                 showMsgModal(0, 1);
               }
           }
@@ -573,7 +577,7 @@
          prizeHtml += 'showPrizeModal(' + prizeIndex + ')';
       }
       prizeHtml += ';return false;" data-target="#prizeModal">';
-      prizeHtml += '<div class="prize">';
+      prizeHtml += '<div class="prize ' + getPrizeClass(prizeIndex) + '">';
       switch(getPrizeState(prizeIndex)){
         case 0:
                 prizeHtml += '!';
@@ -592,32 +596,21 @@
 
   function getUserPrizeFooter(prizeIndex) {
       var prizeHtml = '<div class="prize-footer">';
-      if(!isPrizeChangeAllowed()) {
-        switch(getPrizeState(prizeIndex)){
-          case 0:
-                  prizeHtml += 'Click to Play!';
-                  break;
-          case 1:
-                  prizeHtml += 'Prize Earned!';
-                  break;
-          case 2:
-                  prizeHtml += 'Prize Awarded!';
-                  break;
-        }
-      }
-      else {
-        prizeHtml += '<b>' + getPrize(prizeIndex) + '</b><br/>';
-        switch(getPrizeState(prizeIndex)){
-          case 0:
+      prizeHtml += '<b>' + getPrize(prizeIndex) + '</b><br/>';
+      switch(getPrizeState(prizeIndex)){
+        case 0:
+                if(!isPrizeChangeAllowed()) {
+                  prizeHtml += '(Click to Play!)';
+                }else{
                   prizeHtml += '(Not Earned)';
-                  break;
-          case 1:
-                  prizeHtml += '(Prize Earned)';
-                  break;
-          case 2:
-                  prizeHtml += '(Prize Awarded)';
-                  break;
-        }
+                }
+                break;
+        case 1:
+                prizeHtml += '(Prize Earned!)';
+                break;
+        case 2:
+                prizeHtml += '(Prize Awarded!)';
+                break;
       }
       prizeHtml += '</div>';
       return prizeHtml;
@@ -654,6 +647,36 @@
     return prizeDesc;
   }
 
+  function getPrizeClass(prizeIndex) {
+    var prizeClass = 'prize-';
+    switch(prizeIndex) {
+      case 0:
+              prizeClass += 'bingo-';
+              prizeClass += userTypes[user.userType].toLowerCase() + '-';
+              break;
+      case 1: 
+              prizeClass += 'blackout-';
+              prizeClass += userTypes[user.userType].toLowerCase() + '-';
+              break;
+      case 2:
+              prizeClass += 'reading-';
+              break;
+    }
+
+    switch(getPrizeState(prizeIndex)) {
+      case 0:
+              prizeClass += 'not-earned';
+              break;
+      case 1:
+              prizeClass += 'earned';
+              break;
+      case 2:
+              prizeClass += 'awarded';
+              break;
+    }
+    return prizeClass;
+  }
+
   function showPrizeModal(prizeIndex) {
     if(!user || !user.prizes) {
       return;
@@ -661,6 +684,9 @@
     var modalBody = '';
     var modalFooter = '';
     if(isPrizeChangeAllowed()) {
+      if(getPrizeState(prizeIndex) == 0) {
+        return;
+      }
       modalBody = '<dl class="dl-horizontal">';
       modalBody += '<dt>Prize ' + (prizeIndex +1) + '</dt>';
       modalBody += '<dd>' + getPrize(prizeIndex) + '</dd>';
@@ -750,6 +776,8 @@
 
   function closeMsgModal() {
     $('#msgModal').modal('hide');
+    //mgsModal is used for only showing prize message
+    activateWin();
   }
 
   function getReadingLogHourPart() {

@@ -41,7 +41,7 @@ var Account = function () {
     if(typeof phone === 'undefined' || phone == "") {
       return true;
     }
-    return /^[0-9]{1,10}$/.test(phone);
+    return /^[0-9]{10}$/.test(phone);
   }, {message: 'Phone number can only consist of 10 digits, including area code.'});
   
   // Validate Mandatory Fields

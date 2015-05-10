@@ -362,8 +362,9 @@
   display: block;
 }
 
-.prize-not-charged-1 {
-  background:#FFFFFF url("/img/not-charged-yet-1.png");
+
+.prize-bingo-adult-not-earned {
+  background:#DDDDDD url("/img/prize/PRIZE_ADULT - Bingo - 2.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -371,8 +372,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-ready-to-claim-1 {
-  background:#FFFFFF url("/img/prize-ready-to-claim-1.png");
+.prize-bingo-adult-earned  {
+  background:#DDDDDD url("/img/prize/PRIZE_ADULT - Bingo - 1.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -380,8 +381,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-claimed-1 {
-  background:#FFFFFF url("/img/badge-1.png");
+.prize-bingo-adult-awarded  {
+  background:#DDDDDD url("/img/prize/PRIZE_ADULT - Bingo - 3.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -389,8 +390,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-not-charged-2 {
-  background:#FFFFFF url("/img/not-charged-yet-2.png");
+.prize-blackout-adult-not-earned {
+  background:#DDDDDD url("/img/prize/PRIZE_ADULT - Drawing - 2.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -398,8 +399,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-ready-to-claim-2 {
-  background:#FFFFFF url("/img/prize-ready-to-claim-2.png");
+.prize-blackout-adult-earned  {
+  background:#DDDDDD url("/img/prize/PRIZE_ADULT - Drawing - 1.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -407,8 +408,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-claimed-2 {
-  background:#FFFFFF url("/img/badge-2.png");
+.prize-blackout-adult-awarded  {
+  background:#DDDDDD url("/img/prize/PRIZE_ADULT - Drawing - 3.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -416,8 +417,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-not-charged-3 {
-  background:#FFFFFF url("/img/not-charged-yet-3.png");
+.prize-bingo-pre-reader-not-earned {
+  background:#DDDDDD url("/img/prize/PRIZE_PREREADER - Bingo - 2.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -425,8 +426,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-ready-to-claim-3 {
-  background:#FFFFFF url("/img/prize-ready-to-claim-3.png");
+.prize-bingo-pre-reader-earned  {
+  background:#DDDDDD url("/img/prize/PRIZE_PREREADER - Bingo - 1.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -434,8 +435,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-claimed-3 {
-  background:#FFFFFF url("/img/badge-3.png");
+.prize-bingo-pre-reader-awarded  {
+  background:#DDDDDD url("/img/prize/PRIZE_PREREADER - Bingo - 3.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -443,8 +444,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-not-charged-4 {
-  background:#FFFFFF url("/img/not-charged-yet-4.png");
+.prize-blackout-pre-reader-not-earned {
+  background:#DDDDDD url("/img/prize/PRIZE_PREREADER - Drawing - 2.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -452,8 +453,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-ready-to-claim-4 {
-  background:#FFFFFF url("/img/prize-ready-to-claim-4.png");
+.prize-blackout-pre-reader-earned  {
+  background:#DDDDDD url("/img//prize/PRIZE_PREREADER - Drawing - 1.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -461,8 +462,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-claimed-4 {
-  background:#FFFFFF url("/img/badge-4.png");
+.prize-blackout-pre-reader-awarded  {
+  background:#DDDDDD url("/img/prize/PRIZE_PREREADER - Drawing - 3.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -470,8 +471,10 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-not-charged-5 {
-  background:#FFFFFF url("/img/not-charged-yet-5.png");
+
+
+.prize-bingo-reader-not-earned {
+  background:#DDDDDD url("/img/prize/PRIZE_READER - Bingo - 2.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -479,8 +482,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-ready-to-claim-5 {
-  background:#FFFFFF url("/img/prize-ready-to-claim-5.png");
+.prize-bingo-reader-earned  {
+  background:#DDDDDD url("/img/prize/PRIZE_READER - Bingo - 1.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -488,8 +491,8 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-claimed-5 {
-  background:#FFFFFF url("/img/badge-5.png");
+.prize-bingo-reader-awarded  {
+  background:#DDDDDD url("/img/prize/PRIZE_READER - Bingo - 3.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
@@ -497,34 +500,112 @@
   background-repeat: no-repeat !important;
 }
 
-.prize-not-charged-6 {
-  background:#FFFFFF url("/img/not-charged-yet-5.png");
+.prize-blackout-reader-not-earned {
+  background:#DDDDDD url("/img/prize/PRIZE_READER - Drawing - 2.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
   background-position: top center !important;
   background-repeat: no-repeat !important;
-  width: 100px;
 }
 
-.prize-ready-to-claim-6 {
-  background:#FFFFFF url("/img/prize-ready-to-claim-5.png");
+.prize-blackout-reader-earned  {
+  background:#DDDDDD url("/img/prize/PRIZE_READER - Drawing - 1.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
   background-position: top center !important;
   background-repeat: no-repeat !important;
-  width: 100px;
 }
 
-.prize-claimed-6 {
-  background:#FFFFFF url("/img/prize-claimed-5.png");
+.prize-blackout-reader-awarded  {
+  background:#DDDDDD url("/img/prize/PRIZE_READER - Drawing - 3.png");
   -moz-background-size: contain;
   -webkit-background-size: contain;
   background-size: contain;
   background-position: top center !important;
   background-repeat: no-repeat !important;
-  width: 100px;
+}
+
+.prize-bingo-teen-not-earned {
+  background:#DDDDDD url("/img/prize/PRIZE_TEEN - Bingo - 2.png");
+  -moz-background-size: contain;
+  -webkit-background-size: contain;
+  background-size: contain;
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
+}
+
+.prize-bingo-teen-earned  {
+  background:#DDDDDD url("/img/prize/PRIZE_TEEN - Bingo - 1.png");
+  -moz-background-size: contain;
+  -webkit-background-size: contain;
+  background-size: contain;
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
+}
+
+.prize-bingo-teen-awarded  {
+  background:#DDDDDD url("/img/prize/PRIZE_TEEN - Bingo - 3.png");
+  -moz-background-size: contain;
+  -webkit-background-size: contain;
+  background-size: contain;
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
+}
+
+.prize-blackout-teen-not-earned {
+  background:#DDDDDD url("/img/prize/PRIZE_TEEN - Drawing - 2.png");
+  -moz-background-size: contain;
+  -webkit-background-size: contain;
+  background-size: contain;
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
+}
+
+.prize-blackout-teen-earned  {
+  background:#DDDDDD url("/img/prize/PRIZE_TEEN - Drawing - 1.png");
+  -moz-background-size: contain;
+  -webkit-background-size: contain;
+  background-size: contain;
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
+}
+
+.prize-blackout-teen-awarded  {
+  background:#DDDDDD url("/img/prize/PRIZE_TEEN - Drawing - 3.png");
+  -moz-background-size: contain;
+  -webkit-background-size: contain;
+  background-size: contain;
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
+}
+
+.prize-reading-not-earned {
+  background:#DDDDDD url("/img/prize/PRIZE_READING LOG - 2.png");
+  -moz-background-size: contain;
+  -webkit-background-size: contain;
+  background-size: contain;
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
+}
+
+.prize-reading-earned  {
+  background:#DDDDDD url("/img/prize/PRIZE_READING LOG - 1.png");
+  -moz-background-size: contain;
+  -webkit-background-size: contain;
+  background-size: contain;
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
+}
+
+.prize-reading-awarded  {
+  background:#DDDDDD url("/img/prize/PRIZE_READING LOG - 3.png");
+  -moz-background-size: contain;
+  -webkit-background-size: contain;
+  background-size: contain;
+  background-position: top center !important;
+  background-repeat: no-repeat !important;
 }
 
 .user-hide {
