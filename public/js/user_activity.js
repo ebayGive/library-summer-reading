@@ -299,7 +299,7 @@
 
   function drawBadge() {
     var badgeHtml = "<tbody><tr>"
-    badgeHtml += "<td><img src='../../img/" + badges[Math.floor(parseInt(user.readingLog) / FULL_BATTERY_MINUTES) -1].imageSrc + "' class='badge-img'></td>"
+    badgeHtml += "<td><img src='../../img/badges/" + badges[Math.floor(parseInt(user.readingLog) / FULL_BATTERY_MINUTES) -1].imageSrc + "' class='badge-img'></td>"
     badgeHtml += "</tr></tbody>";
     $('#batt').empty().append(badgeHtml);
     $('#batt').removeClass('batt').addClass('badge');
@@ -878,7 +878,7 @@
        badgeHtml += '<div class="read-badge read-badge-collected"><img  src="../../img/badges/' + badges[badgeIndex].imageSrc + '" width="100%"/></div>'; 
     }
     else {
-      badgeHtml += '<div class="read-badge read-badge-locked"><br/>?</div>'; 
+      badgeHtml += '<div class="read-badge read-badge-locked"><img  src="../../img/badges/OFF - reading badge.png" width="100%"/></div>'; 
     }
     badgeHtml += '</div>';
     return badgeHtml;

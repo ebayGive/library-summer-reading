@@ -107,7 +107,7 @@ var Badges = function () {
       part.addListener('data', function (data) {
         // Initial chunk, set the filename and create the FS stream
         if (!uploadedFile) {
-          uploadedFile = encodeURIComponent(part.filename);
+          uploadedFile = part.filename;
           savedFile = fs.createWriteStream(path.join('public', 'img', 'badges', uploadedFile));
         }
         // Write each chunk to disk
