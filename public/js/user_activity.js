@@ -252,15 +252,14 @@
   function drawUserReadingLog() {
     var batteryHtml = '';
     batteryHtml += '<div class="batt-action">'
-       + '<div class="batt-action-icon"> </div>'
-      // + '<div class="batt-action-text"><div class="text-align">Button artwork, robot reading</div></div>'
-       + '<div class="batt-action-btn-plus" onclick="updateReadingLog(20);"><img src="../../img/READING LOG Button - ADD 20.png" width="200px"/></div>'
+       + '<div class="batt-action-icon">&nbsp;</div>'
+       + '<div class="batt-action-btn-plus" onclick="updateReadingLog(20);"><img src="../../img/READING LOG Button - ADD 20.png" width="150px"/></div>'
        + '</div>';
 
-    batteryHtml += "<br/><table id='batt'>";
+    batteryHtml += "<table id='batt'>";
     batteryHtml += "</table>";
-    batteryHtml += '<br/><div class="batt-action">'
-       + '<div class="batt-action-icon"><img src = "../../img/READING LOG Button - REMOVE 20.png" width="200" height="80" onclick="updateReadingLog(-20);"/> </div>'
+    batteryHtml += '<div class="batt-action">'
+       + '<div class="batt-action-icon">&nbsp;</div><div class="batt-action-btn-minus"><img src = "../../img/READING LOG Button - REMOVE 20.png" width="150px" onclick="updateReadingLog(-20);"/> </div>'
        + '</div>';
 	   
 	   
@@ -835,6 +834,19 @@
     activateWin();
   }
 
+  function showBadgeModal(bdgId) {
+    var modalBody = '<img  width="100%" src="../../img/badges/' + badges[bdgId].imageSrc + '"/>';
+    $('#badgeModalHeader').append(badges[bdgId].desc);
+    $('#badgeModal').find('.modal-body').empty().append(modalBody);
+    $('#badgeModal').modal('show');
+  }
+
+  function closeBadgeModal() {
+    $('#msgModal').modal('hide');
+  }
+
+
+
   function getReadingLogHourPart() {
     var hour = 0;
     if(typeof user.readingLog != "undefined") {
@@ -875,7 +887,7 @@
   function getReadingBadge(badgeIndex) {
     var badgeHtml = '<div class="col-xm-2 col-sm-2 col-md-2">';
     if(parseInt(user.readingLog) / FULL_BATTERY_MINUTES >= (badgeIndex+1)) {
-       badgeHtml += '<div class="read-badge read-badge-collected"><img  src="../../img/badges/' + badges[badgeIndex].imageSrc + '" width="100%"/></div>'; 
+       badgeHtml += '<div class="read-badge read-badge-collected"><a href="#" onclick="showBadgeModal(' + badgeIndex + ');return false;"><img  src="../../img/badges/' + badges[badgeIndex].imageSrc + '" width="100%"/></a></div>'; 
     }
     else {
       badgeHtml += '<div class="read-badge read-badge-locked"><img  src="../../img/badges/OFF - reading badge.png" width="100%"/></div>'; 

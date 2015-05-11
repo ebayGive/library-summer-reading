@@ -73,6 +73,14 @@
   background-color: #808080;
 }
 
+.badge-popup {
+  width:490px;
+}
+
+.modal-body .badge-popup-body {
+  margin: 0px;
+}
+
 @media (max-width: 767px) {
   .grid-bordered {
     height: 70px;
@@ -155,7 +163,10 @@
     height:140px;
   }
   .read-badge {
-    height:140px;
+    height:189px;
+  }
+  .badge-popup {
+    width: 490px;
   }
 }
 
@@ -619,8 +630,8 @@
 
 .badge {
   width:250px;
-  height: 300px;
-  border: 3px solid #AAAAAA;
+  height: 417px;
+  border: 1px solid #AAAAAA;
   border-collapse: collapse;
   padding: 0px;
   margin: 0px;
@@ -646,7 +657,7 @@
 
 .batt {
   width:250px;
-  border: 3px solid #AAAAAA;
+  border: 1px solid #DDDDDD;
   border-collapse: collapse;
   padding: 0px;
   margin: 0px;
@@ -660,9 +671,9 @@
 .batt > tbody > tr > td {
   padding: 0px;
   margin: 0px;
-  height:75px;
+  height:69px;
   width:50px;
-  border: 1px solid #AAAAAA;
+  border: 1px solid #DDDDDD;
 }
 
 .batt > tbody > tr > td.batt-message {
@@ -685,7 +696,7 @@
   background-repeat: no-repeat !important;
   margin: 0px;
   padding: 0px;
-  border: 1px solid #AAAAAA;
+  border: 1px solid #DDDDDD;
 }
 
 .cell-off {
@@ -697,46 +708,28 @@
   background-repeat: no-repeat !important;
   margin: 0px;
   padding: 0px;
-  border: 1px solid #AAAAAA;
+  border: 1px solid #DDDDDD;
 }
 
 .batt-action {
   width: 250px;
+  background-color: #DDDDDD;
   position: relative;
   display: table;
-  height: 75px;
-  border: 1px solid #AAAAAA;
+  height: 50px;
+  border: 0px;
   border-collapse: collapse;
   margin: 0px;
   padding: 0px;
+  overflow: auto;
 }
 
 .batt-action-icon{
-  background:transparent url("/img/minus20.png");
-  -moz-background-size: 50px 75px;
-  -webkit-background-size: 50px 75px;
-  background-size: 50px 75px;
-  background-position: top center !important;
-  background-repeat: no-repeat !important;
+  background-color: #DDDDDD;
   margin: 0px;
   padding: 0px;
-  width: 20%;
-  height: 73px;
+  width: 30%;
   float: left;
-  display: table-cell;
-  vertical-align: middle;
-  cursor: pointer;
-}
-
-.batt-action-text{
-  margin: 0px;
-  padding: 0px;
-  background-color: #FFFFFF;
-  color: #444444;
-  font: italic 16px arial, sans-serif;
-  width: 50%;
-  float: left;
-  height: 73px;
   display: table-cell;
   vertical-align: middle;
 }
@@ -748,29 +741,25 @@
 }
 
 .batt-action-btn-plus{
+  background-color: #DDDDDD;
   margin: 0px;
   padding: 0px;
-  #background-color: #00CCCC;
-  color: #FFFFFF;
-  font: 30px arial, sans-serif;
-  border-left: 1px solid #AAAAAA;
-  float: left;
-  width: 30%;
-  height: 73px;
+  border: 0px;
+  text-align: right;
+  width: 70%;
+  height: 50px;
   display: table-cell;
-  vertical-align: middle;
 }
 
 .batt-action-btn-minus{
+  background-color: #DDDDDD;
   margin: 0px;
   padding: 0px;
-  background-color: #d9534f;
-  color: #FFFFFF;
-  font: 30px arial, sans-serif;
-  border-left: 1px solid #AAAAAA;
-  float: left;
-  width: 25%;
-  height: 73px;
+  border: 0px;
+  text-align: right;
+  width: 70%;
+  height: 50px;
+  display: table-cell;
 }
 
 .batt-badge-desc{
@@ -780,19 +769,6 @@
   color: #444444;
   font: italic 16px arial, sans-serif;
   width: 50%;
-  float: left;
-  height: 73px;
-  display: table-cell;
-  vertical-align: middle;
-}
-
-.batt-action-btn-minus-text{
-  margin: 0px;
-  padding: 0px;
-  background-color: #FFFFFF;
-  color:#444444 ;
-  font: italic 16px arial, sans-serif;
-  width: 25%;
   float: left;
   height: 73px;
   display: table-cell;
