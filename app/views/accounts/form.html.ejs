@@ -38,11 +38,11 @@
             }
            %>
            <%- selectTag(branchOptions, getInputValue(account, 'branchId'), {id: 'branchId', name: 'branchId', class: 'form-control'});%>
-        </div>
-        <label for="phone" class="col-md-3 control-label">Phone</label>
+         </div>
+        <label for="phone" class="col-md-3 control-label">Phone&nbsp;<span class="mandatory">*</span></label>
         <div class="col-md-3">
-          <%- contentTag('input', getInputValue(account, 'phone'), {type: 'text', class: 'form-control', id: 'phone', name: 'phone', placeholder: 'Phone'});%>
-        </div>    
+          <%- contentTag('input', getInputValue(account, 'phone'), {type: 'text', class: 'form-control', id: 'phone', name: 'phone', placeholder: 'Phone (10 digits)'});%>
+        </div>   
      </div>
     <div class="form-group">
         <label for="emailAddress" class="col-md-3 control-label">Email&nbsp;Address</label>
