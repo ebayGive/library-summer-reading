@@ -745,18 +745,20 @@ var  buildUsersEligibleForPrize=  function(accounts,userTypeId) {
         if(typeof accounts[index].users != 'undefined' && accounts[index].users.length > 0) {
             for (var index2 = 0; index2 < accounts[index].users.length; index2++) {
                 // add user only if the usertypeID is matched.
-                if(typeof accounts[index].users[index2].userType != 'undefined'  && accounts[index].users[index2].userType === userTypeId)
+                if(typeof accounts[index].users[index2].userType != 'undefined'  && accounts[index].users[index2].userType === userTypeId )
                 {
-                    var user = {};
-                    user.accountId = accounts[index].id;
-                    user.accountName = accounts[index].accountName;
-                    user.firstName = accounts[index].users[index2].firstName;
-                    user.lastName = accounts[index].users[index2].lastName;
-                    user.userType = accounts[index].users[index2].userType;
-                    user.phone = accounts[index].phone;
-                    user.emailAddress = accounts[index].emailAddress;
-                    //add to users list
-                    users.push(user);
+                    if(hasUserCompletedActivityGrid(accounts[index].users[index2])) {
+                        var user = {};
+                        user.accountId = accounts[index].id;
+                        user.accountName = accounts[index].accountName;
+                        user.firstName = accounts[index].users[index2].firstName;
+                        user.lastName = accounts[index].users[index2].lastName;
+                        user.userType = accounts[index].users[index2].userType;
+                        user.phone = accounts[index].phone;
+                        user.emailAddress = accounts[index].emailAddress;
+                        //add to users list
+                        users.push(user);
+                    }
                 }
             }
 
@@ -766,6 +768,17 @@ var  buildUsersEligibleForPrize=  function(accounts,userTypeId) {
     return users;
 
 }
+
+var hasUserCompletedActivityGrid = function(user) {
+
+    if(user != 'undefined' && user.prizes != 'undefined' && user.prizes.length > 0 && user.prizes[1].state > 0){
+        return true;
+    }
+    
+    return false;
+}
+
+
 
 var getRandomUsers = function(users) {
     var m = users.length, t, i;
