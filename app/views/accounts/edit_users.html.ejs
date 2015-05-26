@@ -20,7 +20,8 @@
                             'reader': 'panel-reader',
                             'teen': 'panel-teen',
                             'adult': 'panel-adult',
-                            'staff': 'panel-staff'};
+                            'staff sjpl': 'panel-staff'};
+                            
     function getPanelClass(userType) {
       var panelClass = panelColorLookup[getValue(userTypeLookup, userType).toLowerCase()];
       if(!panelClass) {

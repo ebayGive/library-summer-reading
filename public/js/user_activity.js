@@ -631,19 +631,7 @@
          prizeHtml += 'showPrizeModal(' + prizeIndex + ')';
       }
       prizeHtml += ';return false;" data-target="#prizeModal">';
-      prizeHtml += '<div class="prize ' + getPrizeClass(prizeIndex) + '">';
-      switch(getPrizeState(prizeIndex)){
-        case 0:
-                prizeHtml += '!';
-                break;
-        case 1:
-                prizeHtml += '?';
-                break;
-        case 2:
-                prizeHtml += '$';
-                break;
-      }
-      prizeHtml += '</div>';
+      prizeHtml += '<div class="prize ' + getPrizeClass(prizeIndex) + '">&nbsp;</div>';
       prizeHtml += '</a>';
       return prizeHtml;
   }
@@ -685,15 +673,6 @@
         case 2:
             prizeDesc = prize.prize3;
             break;
-      /*  case 3:
-            prizeDesc = prize.prize4;
-            break;
-        case 4:
-            prizeDesc = prize.prize5;
-            break;
-        case 5:
-            prizeDesc = prize.prize6;
-            break;*/
     }
     if(typeof prizeDesc === 'undefined') {
         return '';
@@ -706,14 +685,20 @@
     switch(prizeIndex) {
       case 0:
               prizeClass += 'bingo-';
-              prizeClass += userTypes[user.userType].toLowerCase() + '-';
+              prizeClass += userTypes[user.userType].toLowerCase().replace(' ', '-') + '-';
               break;
       case 1: 
               prizeClass += 'blackout-';
-              prizeClass += userTypes[user.userType].toLowerCase() + '-';
+              prizeClass += userTypes[user.userType].toLowerCase().replace(' ', '-') + '-';
               break;
       case 2:
-              prizeClass += 'reading-';
+              if(userTypes[user.userType].toLowerCase() == 'adult') {
+                prizeClass += 'blackout-';
+                prizeClass += userTypes[user.userType].toLowerCase().replace(' ', '-') + '-';
+              }
+              else {
+                prizeClass += 'reading-';
+              }
               break;
     }
 
@@ -836,7 +821,7 @@
 
   function showBadgeModal(bdgId) {
     var modalBody = '<img  width="100%" src="../../img/badges/' + badges[bdgId].imageSrc + '"/>';
-    $('#badgeModalHeader').append(badges[bdgId].desc);
+    $('#badgeModalHeader').empty().append(badges[bdgId].desc);
     $('#badgeModal').find('.modal-body').empty().append(modalBody);
     $('#badgeModal').modal('show');
   }

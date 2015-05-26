@@ -316,25 +316,25 @@ code {
 }
 
 .panel-staff {
-  border-color: #f4e5c3;
+  border-color: #cfcfcf;
 }
 .panel-staff > .panel-heading {
   color: #494949;
-  background-color: #f4e5c3;
-  border-color: #f4e5c3;
+  background-color: #cfcfcf;
+  border-color: #cfcfcf;
 }
 .panel-staff > .panel-heading + .panel-collapse .panel-body {
-  border-top-color: #f4e5c3;
+  border-top-color: #cfcfcf;
 }
 .panel-staff > .panel-footer + .panel-collapse .panel-body {
-  border-bottom-color: #f4e5c3;
+  border-bottom-color: #cfcfcf;
 }
 
 .panel-staff .nav > li.active > a,
 .panel-staff .nav > li.active > a:hover,
 .panel-staff .nav > li.active > a:focus {
   color: #494949;
-  background-color: #f4e5c3;
+  background-color: #cfcfcf;
 }
 
 .table-primary > tbody > tr > th,
