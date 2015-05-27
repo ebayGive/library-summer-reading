@@ -219,8 +219,8 @@ var Reports = function ()
 									 if(age < 0) {
 										 age = 0;
 									 }
-									 else if(age > 100) {
-										 age = 100;
+									 else if(age >= 100) {
+										 age = 99;
 									 }
 									
 									 report.agereports[age].totalUsers++;
