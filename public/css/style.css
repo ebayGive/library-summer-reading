@@ -73,6 +73,12 @@ code {
   background-color: #02af98;
   border-color: #02af98;
 }
+
+.navbar-brand {
+  font-size: 20px;
+  font-weight: bold;
+}
+
 .navbar-inverse .navbar-brand {
   color: #fff;
 }
