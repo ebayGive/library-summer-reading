@@ -216,14 +216,18 @@ var Reports = function ()
 							 {
 									 var userTypeId = users[user].userType;
 									 var age = parseInt(typeof  users[user].age == 'undefined' || users[user].age == 'undefined ' || users[user].age == '' || users[user].age == 'NaN' ? '0' : users[user].age); 
-									 if(age < 0) {
+									 if(age < 0 ) {
 										 age = 0;
 									 }
 									 else if(age >= 100) {
 										 age = 99;
 									 }
-									
+								 //skip if age is not a number
+								 if ( isNaN(Number(age))) {
+										continue;
+								 }else{
 									 report.agereports[age].totalUsers++;
+								 }
 									 
 									 for(userTypeTemp in userTypes)
 									 {
