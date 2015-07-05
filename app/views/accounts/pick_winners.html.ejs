@@ -48,6 +48,27 @@ function getValue(data, propertyName) {
             %>
             <%- selectTag(branchOptions, params['branchId'], {id: 'branchId', name: 'branchId', class: 'form-control',multiple:true});%>
         </div>
+
+        <label for="branchId" class="col-md-1 control-label">Number of winners:</label>
+        <div class="col-md-2">
+            <%
+            var choices = [ {value: 1,    text: '1' },
+                {value: 2,    text: '2'},
+                {value: 3,    text: '3'} ,
+                {value: 4,    text: '4'},
+                {value: 5,    text: '5'},
+                {value: 6,    text: '6'},
+                {value: 7,    text: '7'},
+                {value: 8,    text: '8'},
+                {value: 9,    text: '9'},
+                {value: 10,    text: '10'},
+                {value: 15,    text: '15'},
+                {value: 20,    text: '20'} ]
+
+            %>
+            <%- selectTag(choices, params['choice'], {id: 'choice', name: 'choice', class: 'form-control'});%>
+        </div>
+
         <div class="col-md-3 text-right">
             <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"> Pick</i></button>
         </div>

@@ -83,7 +83,12 @@ var Accounts = function () {
                         }
 
                         //pick random winners from the usersEligibleForPrize  list
-                        winners = getRandomUsers(usersEligibleForPrize);
+                        var winnersSize = 5;
+                        if(params['choice']) {
+                            winnersSize = params['choice'].trim();
+                        }
+
+                        winners = getRandomUsers(usersEligibleForPrize,winnersSize);
                         self.flash.discard();
                         geddy.model.Branch.all({},{sort: 'name'},function(err, branches) {
                             if (err) {
@@ -780,7 +785,7 @@ var hasUserCompletedActivityGrid = function(user) {
 
 
 
-var getRandomUsers = function(users) {
+var getRandomUsers = function(users,winnersSize) {
     var m = users.length, t, i;
     // While there remain elements to shuffle
     while (m) {
@@ -793,7 +798,7 @@ var getRandomUsers = function(users) {
         users[m] = users[i];
         users[i] = t;
     }
-    return users.slice(0,5);
+    return users.slice(0,winnersSize);
 }
 
 
